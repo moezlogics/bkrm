@@ -23,7 +23,7 @@ export function SortSelect({ current, canNearest, defaultSort }: { current: stri
       value={current}
       onChange={(e) => change(e.target.value)}
       aria-label="Sort"
-      className="text-[14.5px] font-bold text-content bg-white ring-1 ring-card-border rounded-full pl-3.5 pr-2 h-10 outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
+      className="text-[13.5px] sm:text-[14.5px] font-bold text-content bg-white ring-1 ring-card-border rounded-full pl-3.5 pr-2 h-9 sm:h-10 outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
     >
       <option value="newest">Newest first</option>
       {canNearest && <option value="nearest">Nearest first</option>}

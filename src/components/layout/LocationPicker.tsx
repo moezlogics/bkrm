@@ -269,11 +269,11 @@ export function LocationPicker({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className={`flex items-center gap-1.5 min-w-0 text-[14.5px] font-semibold text-content ${variant === "compact" ? "max-w-[44vw] h-9 pl-2.5 pr-2 rounded-full bg-surface-secondary active:bg-surface-tertiary" : ""}`}
+        className={`flex items-center gap-1.5 min-w-0 text-[14.5px] font-bold text-primary hover:text-primary-dark transition-colors ${variant === "compact" ? "max-w-[44vw] h-9 pl-2.5 pr-2 rounded-full bg-primary-soft ring-1 ring-primary/15 active:bg-primary/15" : ""}`}
       >
-        <MapPin className={`h-4 w-4 shrink-0 text-primary ${location.precise ? "fill-primary/15" : ""}`} />
+        <MapPin className={`h-4 w-4 shrink-0 text-primary ${location.precise ? "fill-primary/20" : ""}`} />
         <span className="truncate max-w-[160px]">{label}</span>
-        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-content-tertiary transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-primary/75 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {/* Desktop dropdown */}

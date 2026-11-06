@@ -91,9 +91,9 @@ export function Header({
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-40 bg-white transition-[transform,box-shadow] duration-300 ease-out
-        ${scrolled ? "shadow-[0_1px_0_var(--card-border)]" : ""}
-        ${tucked ? "max-md:-translate-y-[52px]" : "translate-y-0"} ${immersive ? "max-md:hidden" : ""}`}
+      className={`fixed top-0 inset-x-0 z-40 bg-white border-b border-card-border transition-[transform, box - shadow] duration - 300 ease - out
+        ${ scrolled ? "shadow-xs" : "" }
+        ${ tucked ? "max-md:-translate-y-[52px]" : "translate-y-0" } ${ immersive ? "max-md:hidden" : "" } `}
     >
       <div className="wrap h-[52px] md:h-[72px] flex items-center gap-3 md:gap-5">
         <Link href="/" prefetch className="shrink-0 flex items-center" aria-label={siteName}>
@@ -115,169 +115,172 @@ export function Header({
         {/* Desktop quick links */}
         <nav className="hidden lg:flex items-center gap-1 text-[14.5px] font-semibold text-content-secondary">
           {VERTICAL.bookings?.service && (
-            <Link href={`${location.prefix}/${VERTICAL.bookings.service.tops[0]}`} className="px-3 h-10 inline-flex items-center rounded-full hover:bg-surface-secondary hover:text-content transition-colors">{VERTICAL.bookings.service.title}</Link>
-          )}
-          {VERTICAL.bookings?.share && (
-            <Link href={`${location.prefix}/${VERTICAL.bookings.share.tops[0]}`} className="px-3 h-10 inline-flex items-center rounded-full hover:bg-surface-secondary hover:text-content transition-colors">{VERTICAL.bookings.share.title}</Link>
-          )}
-        </nav>
+            <Link href={`${ location.prefix } /${VERTICAL.bookings.service.tops[0]}`} className="px-3 h-10 inline-flex items-center rounded-full hover:bg-surface-secondary hover:text-content transition-colors">{VERTICAL.bookings.service.title}</Link >
+          )
+}
+{
+  VERTICAL.bookings?.share && (
+    <Link href={`${location.prefix}/${VERTICAL.bookings.share.tops[0]}`} className="px-3 h-10 inline-flex items-center rounded-full hover:bg-surface-secondary hover:text-content transition-colors">{VERTICAL.bookings.share.title}</Link>
+  )
+}
+        </nav >
 
-        <div className="ml-auto md:ml-0 flex items-center gap-1 md:gap-2 shrink-0">
-          <div className="md:hidden min-w-0"><LocationPicker location={location} variant="compact" autoDetect /></div>
+  <div className="ml-auto md:ml-0 flex items-center gap-1 md:gap-2 shrink-0">
+    <div className="md:hidden min-w-0"><LocationPicker location={location} variant="compact" autoDetect /></div>
 
-          {session && (
-            <>
-              <IconLink href="/chat" label="Chats" count={badges.chats} className="hidden md:grid"><MessageCircle className="h-[21px] w-[21px]" /></IconLink>
-              <IconLink href="/dashboard/saved" label="Saved" className="hidden md:grid"><Heart className="h-[21px] w-[21px]" /></IconLink>
-              <IconLink href="/dashboard/notifications" label="Notifications" count={badges.notifications}><Bell className="h-[21px] w-[21px]" /></IconLink>
-            </>
-          )}
+    {session && (
+      <>
+        <IconLink href="/chat" label="Chats" count={badges.chats} className="hidden md:grid"><MessageCircle className="h-[21px] w-[21px]" /></IconLink>
+        <IconLink href="/dashboard/saved" label="Saved" className="hidden md:grid"><Heart className="h-[21px] w-[21px]" /></IconLink>
+        <IconLink href="/dashboard/notifications" label="Notifications" count={badges.notifications}><Bell className="h-[21px] w-[21px]" /></IconLink>
+      </>
+    )}
 
-          {status === "loading" ? (
-            <div className="hidden md:block h-10 w-10 rounded-full bg-surface-secondary animate-pulse" />
-          ) : session ? (
-            <div className="relative hidden md:block">
-              <button onClick={() => setAcctOpen((o) => !o)} className="flex items-center gap-1 pl-1 pr-2 h-11 rounded-full hover:bg-surface-secondary transition-colors" aria-expanded={acctOpen} aria-label="Account menu">
-                {session.user?.image ? (
-                  <Image src={session.user.image} alt="" width={36} height={36} className="h-9 w-9 rounded-full object-cover" />
-                ) : (
-                  <span className="h-9 w-9 rounded-full bg-primary-soft text-primary-dark grid place-items-center font-bold text-sm">{initial}</span>
-                )}
-                <ChevronDown className="h-4 w-4 text-content-tertiary" />
-              </button>
-              {acctOpen && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setAcctOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl ring-1 ring-black/5 p-2 z-20 animate-slide-up">
-                    <div className="px-3 py-2.5 mb-1">
-                      <p className="text-sm font-bold truncate text-content">{session.user?.name}</p>
-                      <p className="text-xs text-content-tertiary truncate">{session.user?.email}</p>
-                    </div>
-                    {[
-                      { href: "/dashboard", icon: LayoutDashboard, label: "My account" },
-                      { href: "/dashboard/seller", icon: BadgePercent, label: "My ads" },
-                      ...(BOOKINGS_ON ? [{ href: "/dashboard/bookings", icon: CalendarCheck, label: "Bookings" }] : []),
-                      { href: "/dashboard/saved", icon: Heart, label: "Saved" },
-                    ].map((it) => (
-                      <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="flex items-center gap-3 px-3 h-10 rounded-xl text-sm font-medium text-content-secondary hover:text-content hover:bg-surface-secondary transition-colors">
-                        <it.icon className="h-[18px] w-[18px]" /> {it.label}
-                      </Link>
-                    ))}
-                    {(session as any).role === "admin" && (
-                      <Link href="/admin" onClick={() => setAcctOpen(false)} className="flex items-center gap-3 px-3 h-10 rounded-xl text-sm font-semibold text-primary hover:bg-primary-soft">
-                        <Settings className="h-[18px] w-[18px]" /> Admin panel
-                      </Link>
-                    )}
-                    <div className="h-px bg-card-border my-1.5 mx-2" />
-                    <button onClick={() => { setAcctOpen(false); logout("/"); }} className="w-full flex items-center gap-3 px-3 h-10 rounded-xl text-sm font-medium text-danger hover:bg-danger-light/60 text-left">
-                      <LogOut className="h-[18px] w-[18px]" /> Log out
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
+    {status === "loading" ? (
+      <div className="hidden md:block h-10 w-10 rounded-full bg-surface-secondary animate-pulse" />
+    ) : session ? (
+      <div className="relative hidden md:block">
+        <button onClick={() => setAcctOpen((o) => !o)} className="flex items-center gap-1 pl-1 pr-2 h-11 rounded-full hover:bg-surface-secondary transition-colors" aria-expanded={acctOpen} aria-label="Account menu">
+          {session.user?.image ? (
+            <Image src={session.user.image} alt="" width={36} height={36} className="h-9 w-9 rounded-full object-cover" />
           ) : (
-            <Link href="/login" className="hidden md:inline-flex items-center gap-2 h-11 px-4 rounded-full text-sm font-semibold text-content hover:bg-surface-secondary transition-colors">
-              <UserIcon className="h-[18px] w-[18px]" /> Log in
-            </Link>
+            <span className="h-9 w-9 rounded-full bg-primary-soft text-primary-dark grid place-items-center font-bold text-sm">{initial}</span>
           )}
+          <ChevronDown className="h-4 w-4 text-content-tertiary" />
+        </button>
+        {acctOpen && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setAcctOpen(false)} />
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl ring-1 ring-black/5 p-2 z-20 animate-slide-up">
+              <div className="px-3 py-2.5 mb-1">
+                <p className="text-sm font-bold truncate text-content">{session.user?.name}</p>
+                <p className="text-xs text-content-tertiary truncate">{session.user?.email}</p>
+              </div>
+              {[
+                { href: "/dashboard", icon: LayoutDashboard, label: "My account" },
+                { href: "/dashboard/seller", icon: BadgePercent, label: "My ads" },
+                ...(BOOKINGS_ON ? [{ href: "/dashboard/bookings", icon: CalendarCheck, label: "Bookings" }] : []),
+                { href: "/dashboard/saved", icon: Heart, label: "Saved" },
+              ].map((it) => (
+                <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="flex items-center gap-3 px-3 h-10 rounded-xl text-sm font-medium text-content-secondary hover:text-content hover:bg-surface-secondary transition-colors">
+                  <it.icon className="h-[18px] w-[18px]" /> {it.label}
+                </Link>
+              ))}
+              {(session as any).role === "admin" && (
+                <Link href="/admin" onClick={() => setAcctOpen(false)} className="flex items-center gap-3 px-3 h-10 rounded-xl text-sm font-semibold text-primary hover:bg-primary-soft">
+                  <Settings className="h-[18px] w-[18px]" /> Admin panel
+                </Link>
+              )}
+              <div className="h-px bg-card-border my-1.5 mx-2" />
+              <button onClick={() => { setAcctOpen(false); logout("/"); }} className="w-full flex items-center gap-3 px-3 h-10 rounded-xl text-sm font-medium text-danger hover:bg-danger-light/60 text-left">
+                <LogOut className="h-[18px] w-[18px]" /> Log out
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    ) : (
+      <Link href="/login" className="hidden md:inline-flex items-center gap-2 h-11 px-4 rounded-full text-sm font-semibold text-content hover:bg-surface-secondary transition-colors">
+        <UserIcon className="h-[18px] w-[18px]" /> Log in
+      </Link>
+    )}
 
-          <Link href="/ads/post" className="hidden md:inline-flex items-center gap-1.5 h-11 pl-4 pr-5 rounded-full bg-primary hover:bg-primary-dark text-white text-sm font-bold transition-colors">
-            <Plus className="h-[18px] w-[18px] stroke-[2.6]" /> Sell
-          </Link>
+    <Link href="/ads/post" className="hidden md:inline-flex items-center gap-1.5 h-11 pl-4 pr-5 rounded-full bg-primary hover:bg-primary-dark text-white text-sm font-bold transition-colors">
+      <Plus className="h-[18px] w-[18px] stroke-[2.6]" /> Sell
+    </Link>
 
-          <button type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)} className="md:hidden grid place-items-center h-10 w-10 -mr-2 rounded-full text-content active:bg-surface-secondary">
-            <Menu className="h-[22px] w-[22px]" />
+    <button type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)} className="md:hidden grid place-items-center h-10 w-10 -mr-2 rounded-full text-content active:bg-surface-secondary">
+      <Menu className="h-[22px] w-[22px]" />
+    </button>
+  </div>
+      </div >
+
+  {/* Phones: search row (stays when the app bar tucks away) */ }
+  < div className = "md:hidden wrap pb-3" >
+    <SearchBox variant="mobile" className="w-full" placeholder={searchHint} />
+      </div >
+
+  { menuOpen && mounted && createPortal(
+    <div className="md:hidden fixed inset-0 z-[100]">
+      <div className="absolute inset-0 bg-overlay animate-fade-in" onClick={() => setMenuOpen(false)} />
+      <div className="absolute right-0 top-0 bottom-0 w-[86vw] max-w-sm bg-surface flex flex-col animate-slide-in-right">
+        <div className="flex items-center justify-between px-4 h-14 shrink-0">
+          <span className="text-base font-bold text-content">Menu</span>
+          <button onClick={() => setMenuOpen(false)} aria-label="Close menu" className="grid place-items-center h-10 w-10 -mr-2 rounded-full active:bg-surface-secondary text-content">
+            <X className="h-5 w-5" />
           </button>
         </div>
-      </div>
 
-      {/* Phones: search row (stays when the app bar tucks away) */}
-      <div className="md:hidden wrap pb-3">
-        <SearchBox variant="mobile" className="w-full" placeholder={searchHint} />
-      </div>
-
-      {menuOpen && mounted && createPortal(
-        <div className="md:hidden fixed inset-0 z-[100]">
-          <div className="absolute inset-0 bg-overlay animate-fade-in" onClick={() => setMenuOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-[86vw] max-w-sm bg-surface flex flex-col animate-slide-in-right">
-            <div className="flex items-center justify-between px-4 h-14 shrink-0">
-              <span className="text-base font-bold text-content">Menu</span>
-              <button onClick={() => setMenuOpen(false)} aria-label="Close menu" className="grid place-items-center h-10 w-10 -mr-2 rounded-full active:bg-surface-secondary text-content">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-3 pb-4">
-              {session ? (
-                <Link href="/dashboard" className="flex items-center gap-3 p-3 rounded-2xl bg-surface-secondary">
-                  <span className="h-11 w-11 rounded-full bg-primary text-white grid place-items-center font-bold">{initial}</span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-bold text-content truncate">{session.user?.name}</span>
-                    <span className="block text-xs text-content-tertiary">View your account</span>
-                  </span>
-                  <ChevronRight className="h-4 w-4 text-content-tertiary" />
-                </Link>
-              ) : (
-                <div className="p-4 rounded-2xl bg-surface-secondary">
-                  <p className="text-[15px] font-bold text-content">Welcome to {siteName}</p>
-                  <p className="text-xs text-content-secondary mt-0.5">Log in to chat, save ads and book.</p>
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <Link href="/login" className="h-10 grid place-items-center rounded-xl bg-primary text-white text-sm font-bold">Log in</Link>
-                    <Link href="/signup" className="h-10 grid place-items-center rounded-xl bg-white text-content text-sm font-bold ring-1 ring-card-border">Sign up</Link>
-                  </div>
-                </div>
-              )}
-
-              <p className="px-2 pt-5 pb-2 flex items-center gap-1.5 text-xs font-semibold text-content-tertiary">
-                Browse
-                {location.city && (
-                  <span className="inline-flex items-center gap-0.5 text-primary font-semibold"><MapPin className="h-3 w-3" />{location.label}</span>
-                )}
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {categories.map((c) => (
-                  <Link key={c.slug} href={catHref(c.path)} prefetch className="flex items-center gap-2.5 p-2 rounded-xl bg-white ring-1 ring-card-border active:bg-surface-secondary">
-                    <SectionThumb src={covers[c.slug]} icon={c.icon} className="h-9 w-9 rounded-lg" />
-                    <span className="text-[14px] font-semibold text-content leading-tight line-clamp-2">{c.name}</span>
-                  </Link>
-                ))}
+        <div className="flex-1 overflow-y-auto px-3 pb-4">
+          {session ? (
+            <Link href="/dashboard" className="flex items-center gap-3 p-3 rounded-2xl bg-surface-secondary">
+              <span className="h-11 w-11 rounded-full bg-primary text-white grid place-items-center font-bold">{initial}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-bold text-content truncate">{session.user?.name}</span>
+                <span className="block text-xs text-content-tertiary">View your account</span>
+              </span>
+              <ChevronRight className="h-4 w-4 text-content-tertiary" />
+            </Link>
+          ) : (
+            <div className="p-4 rounded-2xl bg-surface-secondary">
+              <p className="text-[15px] font-bold text-content">Welcome to {siteName}</p>
+              <p className="text-xs text-content-secondary mt-0.5">Log in to chat, save ads and book.</p>
+              <div className="grid grid-cols-2 gap-2 mt-3">
+                <Link href="/login" className="h-10 grid place-items-center rounded-xl bg-primary text-white text-sm font-bold">Log in</Link>
+                <Link href="/signup" className="h-10 grid place-items-center rounded-xl bg-white text-content text-sm font-bold ring-1 ring-card-border">Sign up</Link>
               </div>
-
-              <p className="px-2 pt-5 pb-2 text-xs font-semibold text-content-tertiary">More</p>
-              <div className="rounded-2xl ring-1 ring-card-border overflow-hidden divide-y divide-card-border bg-white">
-                {[
-                  { href: "/chat", label: "Chats", icon: MessageCircle },
-                  ...(BOOKINGS_ON ? [{ href: "/dashboard/bookings", label: "My bookings", icon: CalendarCheck }] : []),
-                  { href: "/dashboard/plans", label: "Plans & boost", icon: BadgePercent },
-                  { href: "/blog", label: "Guides", icon: Newspaper },
-                  { href: "/faq", label: "Help & FAQ", icon: HelpCircle },
-                ].map((l) => (
-                  <Link key={l.href} href={l.href} className="flex items-center gap-3 px-4 h-12 text-sm font-medium text-content active:bg-surface-secondary">
-                    <l.icon className="h-[18px] w-[18px] text-content-secondary" />
-                    <span className="flex-1">{l.label}</span>
-                    <ChevronRight className="h-4 w-4 text-content-tertiary" />
-                  </Link>
-                ))}
-              </div>
-
-              {session && (
-                <button onClick={() => { setMenuOpen(false); logout("/"); }} className="w-full mt-3 h-12 rounded-2xl text-sm font-semibold text-danger bg-white ring-1 ring-card-border">
-                  Log out
-                </button>
-              )}
             </div>
+          )}
 
-            <div className="p-3 pb-[calc(12px+env(safe-area-inset-bottom))] shrink-0">
-              <Link href="/ads/post" className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-primary text-white font-bold text-[15px]">
-                <Plus className="h-5 w-5 stroke-[2.6]" /> {VERTICAL.copy.sellCta}
+          <p className="px-2 pt-5 pb-2 flex items-center gap-1.5 text-xs font-semibold text-content-tertiary">
+            Browse
+            {location.city && (
+              <span className="inline-flex items-center gap-0.5 text-primary font-semibold"><MapPin className="h-3 w-3" />{location.label}</span>
+            )}
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {categories.map((c) => (
+              <Link key={c.slug} href={catHref(c.path)} prefetch className="flex items-center gap-2.5 p-2 rounded-xl bg-white ring-1 ring-card-border active:bg-surface-secondary">
+                <SectionThumb src={covers[c.slug]} icon={c.icon} className="h-9 w-9 rounded-lg" />
+                <span className="text-[14px] font-semibold text-content leading-tight line-clamp-2">{c.name}</span>
               </Link>
-            </div>
+            ))}
           </div>
-        </div>,
-        document.body
-      )}
-    </header>
+
+          <p className="px-2 pt-5 pb-2 text-xs font-semibold text-content-tertiary">More</p>
+          <div className="rounded-2xl ring-1 ring-card-border overflow-hidden divide-y divide-card-border bg-white">
+            {[
+              { href: "/chat", label: "Chats", icon: MessageCircle },
+              ...(BOOKINGS_ON ? [{ href: "/dashboard/bookings", label: "My bookings", icon: CalendarCheck }] : []),
+              { href: "/dashboard/plans", label: "Plans & boost", icon: BadgePercent },
+              { href: "/blog", label: "Guides", icon: Newspaper },
+              { href: "/faq", label: "Help & FAQ", icon: HelpCircle },
+            ].map((l) => (
+              <Link key={l.href} href={l.href} className="flex items-center gap-3 px-4 h-12 text-sm font-medium text-content active:bg-surface-secondary">
+                <l.icon className="h-[18px] w-[18px] text-content-secondary" />
+                <span className="flex-1">{l.label}</span>
+                <ChevronRight className="h-4 w-4 text-content-tertiary" />
+              </Link>
+            ))}
+          </div>
+
+          {session && (
+            <button onClick={() => { setMenuOpen(false); logout("/"); }} className="w-full mt-3 h-12 rounded-2xl text-sm font-semibold text-danger bg-white ring-1 ring-card-border">
+              Log out
+            </button>
+          )}
+        </div>
+
+        <div className="p-3 pb-[calc(12px+env(safe-area-inset-bottom))] shrink-0">
+          <Link href="/ads/post" className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-primary text-white font-bold text-[15px]">
+            <Plus className="h-5 w-5 stroke-[2.6]" /> {VERTICAL.copy.sellCta}
+          </Link>
+        </div>
+      </div>
+    </div>,
+    document.body
+  )}
+    </header >
   );
 }
 
