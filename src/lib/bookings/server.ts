@@ -222,7 +222,10 @@ export async function createBooking(customerId: string, body: any) {
     if (a.kind === "share" && shares > a.available) {
       throw new BookingError(a.available ? `Only ${plural(a.available, "share")} ${a.available === 1 ? "is" : "are"} free` : "All shares are booked", "shares");
     }
-    const names = (Array.isArray(body.names) ? body.names : []).slice(0, shares).map((n: unknown) => clean(n, 60));
+    const names = Array.from({ length: shares }, (_, i) => clean(Array.isArray(body.names) ? body.names[i] : "", 60));
+    if (names.some((n) => n.length < 2)) {
+      throw new BookingError(shares === 1 ? "Please write the name for the hissa" : "Please write a name for each hissa", "names");
+    }
     const day = b.days[0] || { key: "eid1", label: "Eid day 1", date: null, pickDate: false, past: false };
     const price = Number(b.listing.price) || 0;
     Object.assign(doc, {
@@ -238,7 +241,7 @@ export async function createBooking(customerId: string, body: any) {
     type: "booking_request",
     vars: { customer: customer?.name || contactName, what, when: booking.dayLabel, listing: b.listing.name },
     url: `/dashboard/bookings?tab=received&b=${booking.code}`, tag: `booking:${booking.code}`,
-  }).catch(() => {});
+  }).catch(() => { });
   sendEmailQuietly(provider.email, {
     subject: `New booking ${booking.code}: ${what}`,
     preheader: `${customer?.name || contactName} wants ${what} on ${booking.dayLabel}.`,
@@ -299,7 +302,7 @@ export async function updateBooking(id: string, actor: Actor, action: BookingAct
     throw new BookingError("Unknown action");
   }
   await bk.save();
-  void tell(bk, action).catch(() => {});
+  void tell(bk, action).catch(() => { });
   return bk;
 }
 
