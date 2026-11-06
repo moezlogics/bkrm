@@ -1,0 +1,73 @@
+import type { Vertical } from "./types";
+
+/** Motorcycles & scooters marketplace (Pakistan). */
+export const bikes: Vertical = {
+  id: "bikes",
+  noun: { one: "bike", many: "bikes", One: "Bike", Many: "Bikes" },
+  primaryTop: "motorcycles",
+  brandWord: { one: "make", many: "makes" },
+  defaults: {
+    siteName: "Bike Market",
+    tagline: "Buy & sell motorcycles in Pakistan",
+    heroTitle: "Your next bike, from a seller near you",
+    heroSubtitle: "New and used motorcycles, scooters, electric bikes and parts from verified sellers.",
+    searchPlaceholder: "CD 70, CG 125, YBR, GS 150…",
+    metaKeywords: ["bikes for sale Pakistan", "used motorcycles", "Honda CD 70", "Honda CG 125", "Yamaha YBR", "Suzuki GS 150", "electric bikes Pakistan", "bike parts"],
+    brandColor: "#e2521d",
+  },
+  copy: {
+    sellCta: "Sell your bike",
+    browseAll: "Browse all bikes",
+    everythingLabel: "Motorcycles, scooters & parts",
+    inCityLabel: "Bikes & parts",
+    titleHint: "Make, model and year — e.g. the way buyers search.",
+    titlePlaceholder: "e.g. Honda CG 125 2022 — Karachi number",
+    modelNotListed: "Model not listed? Type it (e.g. CG 125 Gold)",
+    videoHint: "Optional 15-second video with the engine running — buyers love hearing it start.",
+    descriptionPlaceholder: "Condition, how it's been used, any work done, documents, why you're selling…",
+    inspectTip: "Check the chassis and engine numbers against the book/smart card before paying.",
+  },
+  trust: [
+    { icon: "badge", title: "Verified sellers", sub: "CNIC-checked" },
+    { icon: "chat", title: "Direct contact", sub: "WhatsApp & chat" },
+    { icon: "documents", title: "Documents", sub: "Book & smart card" },
+  ],
+  icon: "motorbike",
+  placeholderImage: "/placeholders/bike.svg",
+  cardSpecs: [
+    { field: "model_year", icon: "calendar", label: "Year", format: "year" },
+    { field: "mileage", icon: "gauge", label: "Mileage", format: "km" },
+    { field: "engine_capacity", icon: "engine", label: "Engine" },
+    { field: "battery_range", icon: "range", label: "Range", format: "km" },
+    { field: "registered_in", icon: "city", label: "Registered in" },
+  ],
+  keySpecs: [
+    { field: "model_year", icon: "calendar", label: "Model year", format: "year" },
+    { field: "mileage", icon: "gauge", label: "Mileage", format: "km" },
+    { field: "engine_capacity", icon: "engine", label: "Engine" },
+    { field: "battery_range", icon: "range", label: "Range", format: "km" },
+    { field: "registered_in", icon: "city", label: "Registered in" },
+  ],
+  featureFields: ["features"],
+  titleFields: ["model_year"],
+  searchAliases: {
+    bike: "motorcycles", bikes: "motorcycles", motorcycle: "motorcycles", motorcycles: "motorcycles",
+    motorbike: "motorcycles", motorbikes: "motorcycles", "used bike": "motorcycles", "used bikes": "motorcycles",
+    scooter: "scooters", scooters: "scooters", scooty: "scooters",
+    "electric bike": "electric-bikes", "electric bikes": "electric-bikes", ebike: "electric-bikes", "e bike": "electric-bikes", ev: "electric-bikes",
+    part: "bike-parts", parts: "bike-parts", "spare parts": "bike-parts", "bike parts": "bike-parts",
+    helmet: "bike-accessories", helmets: "bike-accessories", accessories: "bike-accessories",
+  },
+  priceFloor: { motorcycles: 15000, scooters: 15000, "electric-bikes": 20000, "bike-parts": 50, "bike-accessories": 50 },
+  moderation: {
+    sells: "a Pakistani motorcycles classifieds marketplace (motorcycles, scooters, electric bikes, parts and riding gear)",
+    scamHints: [
+      "Stolen or snatched bikes, tampered chassis/engine numbers, 'without documents' or 'kagzat nahi' bikes",
+      "Non-custom-paid / smuggled bikes offered as registered",
+      "Advance 'token' or booking payments demanded before inspection, courier 'delivery after payment'",
+      "Unrealistically low prices for popular models (CD 70, CG 125) — a classic advance-fee bait",
+    ],
+  },
+  priceStyle: "lakh",
+  budgets: [100_000, 150_000, 250_000, 400_000, 700_000, 1_500_000],
+};

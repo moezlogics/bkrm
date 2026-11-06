@@ -1,0 +1,742 @@
+{
+ "country": {
+  "name": "Pakistan",
+  "slug": "pakistan",
+  "code": "PK",
+  "currency": "PKR"
+ },
+ "states": [
+  {
+   "name": "Punjab",
+   "slug": "punjab",
+   "order": 1
+  },
+  {
+   "name": "Sindh",
+   "slug": "sindh",
+   "order": 2
+  },
+  {
+   "name": "Khyber Pakhtunkhwa",
+   "slug": "kpk",
+   "order": 3
+  },
+  {
+   "name": "Islamabad Capital Territory",
+   "slug": "ict",
+   "order": 4
+  }
+ ],
+ "cities": [
+  {
+   "name": "Lahore",
+   "slug": "lahore",
+   "state": "Punjab",
+   "stateName": "Punjab",
+   "lat": 31.5204,
+   "lng": 74.3587,
+   "order": 1,
+   "areas": [
+    {
+     "name": "Bahria Town",
+     "slug": "bahria-town",
+     "lat": 31.540109597961564,
+     "lng": 74.38131706763029
+    },
+    {
+     "name": "Cantt",
+     "slug": "cantt",
+     "lat": 31.504302812459986,
+     "lng": 74.38401561876198
+    },
+    {
+     "name": "DHA Phase 3",
+     "slug": "dha-phase-3",
+     "lat": 31.54767892280477,
+     "lng": 74.34621559490358
+    },
+    {
+     "name": "DHA Phase 5",
+     "slug": "dha-phase-5",
+     "lat": 31.545644129544236,
+     "lng": 74.37490906917604
+    },
+    {
+     "name": "DHA Phase 6",
+     "slug": "dha-phase-6",
+     "lat": 31.524633600241796,
+     "lng": 74.32900022510198
+    },
+    {
+     "name": "Faisal Town",
+     "slug": "faisal-town",
+     "lat": 31.5500807473987,
+     "lng": 74.35433499898573
+    },
+    {
+     "name": "Garden Town",
+     "slug": "garden-town",
+     "lat": 31.532763554557253,
+     "lng": 74.33136609214345
+    },
+    {
+     "name": "Gulberg",
+     "slug": "gulberg",
+     "lat": 31.5204,
+     "lng": 74.3887
+    },
+    {
+     "name": "Hafeez Centre",
+     "slug": "hafeez-centre",
+     "lat": 31.51201753505403,
+     "lng": 74.38750510859951
+    },
+    {
+     "name": "Hall Road",
+     "slug": "hall-road",
+     "lat": 31.550118220670846,
+     "lng": 74.36280211654623
+    },
+    {
+     "name": "Iqbal Town",
+     "slug": "iqbal-town",
+     "lat": 31.504079366673317,
+     "lng": 74.33352785412771
+    },
+    {
+     "name": "Johar Town",
+     "slug": "johar-town",
+     "lat": 31.49769592514076,
+     "lng": 74.3390906913741
+    },
+    {
+     "name": "Model Town",
+     "slug": "model-town",
+     "lat": 31.491632271760103,
+     "lng": 74.3672098655639
+    },
+    {
+     "name": "Shadman",
+     "slug": "shadman",
+     "lat": 31.533005011104798,
+     "lng": 74.3859234034435
+    },
+    {
+     "name": "Wapda Town",
+     "slug": "wapda-town",
+     "lat": 31.49040029380348,
+     "lng": 74.35883277093964
+    }
+   ]
+  },
+  {
+   "name": "Karachi",
+   "slug": "karachi",
+   "state": "Sindh",
+   "stateName": "Sindh",
+   "lat": 24.8607,
+   "lng": 67.0011,
+   "order": 2,
+   "areas": [
+    {
+     "name": "Bahadurabad",
+     "slug": "bahadurabad",
+     "lat": 24.880409597961567,
+     "lng": 67.02371706763029
+    },
+    {
+     "name": "Clifton",
+     "slug": "clifton",
+     "lat": 24.8607,
+     "lng": 67.0311
+    },
+    {
+     "name": "DHA Phase 5",
+     "slug": "dha-phase-5",
+     "lat": 24.88594412954424,
+     "lng": 67.01730906917604
+    },
+    {
+     "name": "DHA Phase 6",
+     "slug": "dha-phase-6",
+     "lat": 24.887978922804773,
+     "lng": 66.98861559490358
+    },
+    {
+     "name": "Gulistan-e-Johar",
+     "slug": "gulistan-e-johar",
+     "lat": 24.8903807473987,
+     "lng": 66.99673499898573
+    },
+    {
+     "name": "Gulshan-e-Iqbal",
+     "slug": "gulshan-e-iqbal",
+     "lat": 24.864933600241798,
+     "lng": 66.97140022510197
+    },
+    {
+     "name": "Korangi",
+     "slug": "korangi",
+     "lat": 24.84437936667332,
+     "lng": 66.9759278541277
+    },
+    {
+     "name": "Malir Cantt",
+     "slug": "malir-cantt",
+     "lat": 24.873063554557255,
+     "lng": 66.97376609214345
+    },
+    {
+     "name": "Nazimabad",
+     "slug": "nazimabad",
+     "lat": 24.84460281245999,
+     "lng": 67.02641561876197
+    },
+    {
+     "name": "North Nazimabad",
+     "slug": "north-nazimabad",
+     "lat": 24.837995925140763,
+     "lng": 66.98149069137409
+    },
+    {
+     "name": "PECHS",
+     "slug": "pechs",
+     "lat": 24.83070029380348,
+     "lng": 67.00123277093964
+    },
+    {
+     "name": "Saddar",
+     "slug": "saddar",
+     "lat": 24.831932271760106,
+     "lng": 67.00960986556389
+    },
+    {
+     "name": "Tariq Road",
+     "slug": "tariq-road",
+     "lat": 24.852317535054034,
+     "lng": 67.02990510859951
+    }
+   ]
+  },
+  {
+   "name": "Islamabad",
+   "slug": "islamabad",
+   "state": "Islamabad Capital Territory",
+   "stateName": "ICT",
+   "lat": 33.6844,
+   "lng": 73.0479,
+   "order": 3,
+   "areas": [
+    {
+     "name": "Bahria Town",
+     "slug": "bahria-town",
+     "lat": 33.668302812459984,
+     "lng": 73.07321561876198
+    },
+    {
+     "name": "Blue Area",
+     "slug": "blue-area",
+     "lat": 33.6844,
+     "lng": 73.0779
+    },
+    {
+     "name": "DHA Phase 2",
+     "slug": "dha-phase-2",
+     "lat": 33.69700501110479,
+     "lng": 73.0751234034435
+    },
+    {
+     "name": "E-11",
+     "slug": "e-11",
+     "lat": 33.69676355455725,
+     "lng": 73.02056609214345
+    },
+    {
+     "name": "F-10",
+     "slug": "f-10",
+     "lat": 33.711678922804765,
+     "lng": 73.03541559490358
+    },
+    {
+     "name": "F-11",
+     "slug": "f-11",
+     "lat": 33.70964412954423,
+     "lng": 73.06410906917604
+    },
+    {
+     "name": "F-6",
+     "slug": "f-6",
+     "lat": 33.655632271760105,
+     "lng": 73.0564098655639
+    },
+    {
+     "name": "F-7",
+     "slug": "f-7",
+     "lat": 33.68863360024179,
+     "lng": 73.01820022510198
+    },
+    {
+     "name": "F-8",
+     "slug": "f-8",
+     "lat": 33.66169592514076,
+     "lng": 73.0282906913741
+    },
+    {
+     "name": "G-10",
+     "slug": "g-10",
+     "lat": 33.70410959796156,
+     "lng": 73.07051706763029
+    },
+    {
+     "name": "G-11",
+     "slug": "g-11",
+     "lat": 33.67601753505403,
+     "lng": 73.07670510859951
+    },
+    {
+     "name": "G-9",
+     "slug": "g-9",
+     "lat": 33.7140807473987,
+     "lng": 73.04353499898573
+    },
+    {
+     "name": "I-8",
+     "slug": "i-8",
+     "lat": 33.66807936667332,
+     "lng": 73.02272785412771
+    },
+    {
+     "name": "I-9",
+     "slug": "i-9",
+     "lat": 33.65440029380348,
+     "lng": 73.04803277093964
+    },
+    {
+     "name": "PWD Society",
+     "slug": "pwd-society",
+     "lat": 33.71411822067084,
+     "lng": 73.05200211654623
+    }
+   ]
+  },
+  {
+   "name": "Rawalpindi",
+   "slug": "rawalpindi",
+   "state": "Punjab",
+   "stateName": "Punjab",
+   "lat": 33.5651,
+   "lng": 73.0169,
+   "order": 4,
+   "areas": [
+    {
+     "name": "Adyala Road",
+     "slug": "adyala-road",
+     "lat": 33.5947807473987,
+     "lng": 73.01253499898574
+    },
+    {
+     "name": "Bahria Town",
+     "slug": "bahria-town",
+     "lat": 33.5693336002418,
+     "lng": 72.98720022510199
+    },
+    {
+     "name": "Chaklala Scheme 3",
+     "slug": "chaklala-scheme-3",
+     "lat": 33.556717535054034,
+     "lng": 73.04570510859952
+    },
+    {
+     "name": "Chandni Chowk",
+     "slug": "chandni-chowk",
+     "lat": 33.54239592514077,
+     "lng": 72.9972906913741
+    },
+    {
+     "name": "Commercial Market",
+     "slug": "commercial-market",
+     "lat": 33.590344129544235,
+     "lng": 73.03310906917605
+    },
+    {
+     "name": "Murree Road",
+     "slug": "murree-road",
+     "lat": 33.584809597961566,
+     "lng": 73.0395170676303
+    },
+    {
+     "name": "Saddar",
+     "slug": "saddar",
+     "lat": 33.5651,
+     "lng": 73.04690000000001
+    },
+    {
+     "name": "Satellite Town",
+     "slug": "satellite-town",
+     "lat": 33.59237892280477,
+     "lng": 73.00441559490359
+    },
+    {
+     "name": "Westridge",
+     "slug": "westridge",
+     "lat": 33.53633227176011,
+     "lng": 73.0254098655639
+    }
+   ]
+  },
+  {
+   "name": "Faisalabad",
+   "slug": "faisalabad",
+   "state": "Punjab",
+   "stateName": "Punjab",
+   "lat": 31.4504,
+   "lng": 73.135,
+   "order": 5,
+   "areas": [
+    {
+     "name": "Canal Road",
+     "slug": "canal-road",
+     "lat": 31.421632271760103,
+     "lng": 73.1435098655639
+    },
+    {
+     "name": "D Ground",
+     "slug": "d-ground",
+     "lat": 31.4504,
+     "lng": 73.165
+    },
+    {
+     "name": "Ghulam Mohammad Abad",
+     "slug": "ghulam-mohammad-abad",
+     "lat": 31.44201753505403,
+     "lng": 73.16380510859952
+    },
+    {
+     "name": "Jaranwala Road",
+     "slug": "jaranwala-road",
+     "lat": 31.470109597961564,
+     "lng": 73.1576170676303
+    },
+    {
+     "name": "Katchery Bazaar",
+     "slug": "katchery-bazaar",
+     "lat": 31.475644129544236,
+     "lng": 73.15120906917605
+    },
+    {
+     "name": "Kohinoor City",
+     "slug": "kohinoor-city",
+     "lat": 31.454633600241795,
+     "lng": 73.10530022510198
+    },
+    {
+     "name": "Madina Town",
+     "slug": "madina-town",
+     "lat": 31.47767892280477,
+     "lng": 73.12251559490359
+    },
+    {
+     "name": "Peoples Colony",
+     "slug": "peoples-colony",
+     "lat": 31.42769592514076,
+     "lng": 73.1153906913741
+    },
+    {
+     "name": "Satiana Road",
+     "slug": "satiana-road",
+     "lat": 31.4800807473987,
+     "lng": 73.13063499898574
+    }
+   ]
+  },
+  {
+   "name": "Multan",
+   "slug": "multan",
+   "state": "Punjab",
+   "stateName": "Punjab",
+   "lat": 30.1575,
+   "lng": 71.5249,
+   "order": 6,
+   "areas": [
+    {
+     "name": "Bosan Road",
+     "slug": "bosan-road",
+     "lat": 30.182744129544236,
+     "lng": 71.54110906917604
+    },
+    {
+     "name": "Cantt",
+     "slug": "cantt",
+     "lat": 30.18477892280477,
+     "lng": 71.51241559490359
+    },
+    {
+     "name": "Gulgasht Colony",
+     "slug": "gulgasht-colony",
+     "lat": 30.1575,
+     "lng": 71.5549
+    },
+    {
+     "name": "MDA Chowk",
+     "slug": "mda-chowk",
+     "lat": 30.177209597961564,
+     "lng": 71.5475170676303
+    },
+    {
+     "name": "Model Town",
+     "slug": "model-town",
+     "lat": 30.14911753505403,
+     "lng": 71.55370510859952
+    },
+    {
+     "name": "New Multan",
+     "slug": "new-multan",
+     "lat": 30.13479592514076,
+     "lng": 71.5052906913741
+    },
+    {
+     "name": "Officers Colony",
+     "slug": "officers-colony",
+     "lat": 30.1871807473987,
+     "lng": 71.52053499898574
+    },
+    {
+     "name": "Old Bahawalpur Road",
+     "slug": "old-bahawalpur-road",
+     "lat": 30.128732271760104,
+     "lng": 71.5334098655639
+    },
+    {
+     "name": "Shah Rukn-e-Alam Colony",
+     "slug": "shah-rukn-e-alam-colony",
+     "lat": 30.161733600241796,
+     "lng": 71.49520022510198
+    }
+   ]
+  },
+  {
+   "name": "Gujranwala",
+   "slug": "gujranwala",
+   "state": "Punjab",
+   "stateName": "Punjab",
+   "lat": 32.1877,
+   "lng": 74.1945,
+   "order": 7,
+   "areas": [
+    {
+     "name": "Cantt",
+     "slug": "cantt",
+     "lat": 32.164995925140765,
+     "lng": 74.1748906913741
+    },
+    {
+     "name": "Civil Lines",
+     "slug": "civil-lines",
+     "lat": 32.17931753505403,
+     "lng": 74.22330510859952
+    },
+    {
+     "name": "DC Colony",
+     "slug": "dc-colony",
+     "lat": 32.21497892280477,
+     "lng": 74.18201559490359
+    },
+    {
+     "name": "Model Town",
+     "slug": "model-town",
+     "lat": 32.1877,
+     "lng": 74.2245
+    },
+    {
+     "name": "Peoples Colony",
+     "slug": "peoples-colony",
+     "lat": 32.207409597961565,
+     "lng": 74.2171170676303
+    },
+    {
+     "name": "Rahwali Cantt",
+     "slug": "rahwali-cantt",
+     "lat": 32.15893227176011,
+     "lng": 74.2030098655639
+    },
+    {
+     "name": "Satellite Town",
+     "slug": "satellite-town",
+     "lat": 32.21294412954423,
+     "lng": 74.21070906917605
+    },
+    {
+     "name": "Wapda Town",
+     "slug": "wapda-town",
+     "lat": 32.191933600241796,
+     "lng": 74.16480022510198
+    }
+   ]
+  },
+  {
+   "name": "Peshawar",
+   "slug": "peshawar",
+   "state": "Khyber Pakhtunkhwa",
+   "stateName": "KPK",
+   "lat": 34.0151,
+   "lng": 71.5249,
+   "order": 8,
+   "areas": [
+    {
+     "name": "Cantt",
+     "slug": "cantt",
+     "lat": 34.019333600241794,
+     "lng": 71.49520022510198
+    },
+    {
+     "name": "City Circular Road",
+     "slug": "city-circular-road",
+     "lat": 34.03480959796156,
+     "lng": 71.5475170676303
+    },
+    {
+     "name": "Gulbahar",
+     "slug": "gulbahar",
+     "lat": 33.986332271760105,
+     "lng": 71.5334098655639
+    },
+    {
+     "name": "Hayatabad",
+     "slug": "hayatabad",
+     "lat": 34.0151,
+     "lng": 71.5549
+    },
+    {
+     "name": "Karkhano Market",
+     "slug": "karkhano-market",
+     "lat": 33.99239592514076,
+     "lng": 71.5052906913741
+    },
+    {
+     "name": "Saddar",
+     "slug": "saddar",
+     "lat": 34.042378922804765,
+     "lng": 71.51241559490359
+    },
+    {
+     "name": "University Road",
+     "slug": "university-road",
+     "lat": 34.04034412954423,
+     "lng": 71.54110906917604
+    },
+    {
+     "name": "Warsak Road",
+     "slug": "warsak-road",
+     "lat": 34.00671753505403,
+     "lng": 71.55370510859952
+    }
+   ]
+  },
+  {
+   "name": "Sialkot",
+   "slug": "sialkot",
+   "state": "Punjab",
+   "stateName": "Punjab",
+   "lat": 32.4945,
+   "lng": 74.5229,
+   "order": 9,
+   "areas": [
+    {
+     "name": "Allama Iqbal Road",
+     "slug": "allama-iqbal-road",
+     "lat": 32.486117535054035,
+     "lng": 74.55170510859952
+    },
+    {
+     "name": "Cantt",
+     "slug": "cantt",
+     "lat": 32.519744129544236,
+     "lng": 74.53910906917605
+    },
+    {
+     "name": "Defence Road",
+     "slug": "defence-road",
+     "lat": 32.4987336002418,
+     "lng": 74.49320022510199
+    },
+    {
+     "name": "Kashmir Road",
+     "slug": "kashmir-road",
+     "lat": 32.47179592514077,
+     "lng": 74.5032906913741
+    },
+    {
+     "name": "Model Town",
+     "slug": "model-town",
+     "lat": 32.52177892280477,
+     "lng": 74.51041559490359
+    },
+    {
+     "name": "Paris Road",
+     "slug": "paris-road",
+     "lat": 32.4945,
+     "lng": 74.55290000000001
+    },
+    {
+     "name": "Rangpura",
+     "slug": "rangpura",
+     "lat": 32.46573227176011,
+     "lng": 74.5314098655639
+    }
+   ]
+  },
+  {
+   "name": "Hyderabad",
+   "slug": "hyderabad",
+   "state": "Sindh",
+   "stateName": "Sindh",
+   "lat": 25.396,
+   "lng": 68.3578,
+   "order": 10,
+   "areas": [
+    {
+     "name": "Auto Bhan Road",
+     "slug": "auto-bhan-road",
+     "lat": 25.423278922804773,
+     "lng": 68.34531559490358
+    },
+    {
+     "name": "Cantt",
+     "slug": "cantt",
+     "lat": 25.373295925140763,
+     "lng": 68.3381906913741
+    },
+    {
+     "name": "Citizen Colony",
+     "slug": "citizen-colony",
+     "lat": 25.367232271760106,
+     "lng": 68.36630986556389
+    },
+    {
+     "name": "Latifabad",
+     "slug": "latifabad",
+     "lat": 25.396,
+     "lng": 68.3878
+    },
+    {
+     "name": "Qasimabad",
+     "slug": "qasimabad",
+     "lat": 25.421244129544238,
+     "lng": 68.37400906917604
+    },
+    {
+     "name": "Saddar",
+     "slug": "saddar",
+     "lat": 25.400233600241798,
+     "lng": 68.32810022510198
+    },
+    {
+     "name": "Thandi Sarak",
+     "slug": "thandi-sarak",
+     "lat": 25.387617535054034,
+     "lng": 68.38660510859951
+    }
+   ]
+  }
+ ]
+}

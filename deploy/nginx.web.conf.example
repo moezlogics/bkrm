@@ -1,0 +1,76 @@
+# /etc/nginx/sites-available/car-market  →  symlink into sites-enabled, then: nginx -t && systemctl reload nginx
+# TLS: certbot --nginx -d example.com -d www.example.com
+#
+# The web app runs as a PM2 cluster (ecosystem.config.cjs) on PORT (3100 here) on each
+# app server. With several servers, list them all in the upstream.
+
+upstream site_web {
+    server 127.0.0.1:3100;
+    # server 10.0.0.12:3100;
+    # server 10.0.0.13:3100;
+    keepalive 64;                        # reuse connections to Node
+}
+
+# Micro-cache: a logged-out visitor's page is the same for everyone in the same
+# place, so Nginx keeps each one for 5 s. A traffic spike on a popular archive
+# is then served by Nginx, with Node rendering it once per 5 s. Keyed by the
+# location cookies (the page follows the visitor's city/area/GPS).
+proxy_cache_path /var/cache/nginx/car-market-pages levels=1:2 keys_zone=site_pages:100m max_size=2g inactive=10m use_temp_path=off;
+
+map $http_cookie $site_logged_in {
+    default 0;
+    "~*authjs\.session-token" 1;         # signed-in users always get a fresh page
+}
+
+server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name example.com www.example.com;
+    # ssl_certificate / ssl_certificate_key are added by certbot
+
+    client_max_body_size 30m;            # photo uploads (the CDN takes videos directly)
+    gzip on;
+    gzip_comp_level 5;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml text/x-component;
+
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # Build assets are content-hashed: cache forever, in browsers and here.
+    location /_next/static/ {
+        proxy_pass http://site_web;
+        proxy_cache site_pages;
+        proxy_cache_valid 200 365d;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    # APIs, auth, uploads, server actions and dashboards: never cached.
+    location ~ ^/(api|dashboard|admin|newlogin|setup|chat|login|signup|forgot-password|reset-password|media)(/|$)|^/ads/(post|[^/]+/edit)(/|$) {
+        proxy_pass http://site_web;
+        proxy_read_timeout 60s;
+    }
+
+    # Pages: 5-second micro-cache for logged-out GETs.
+    location / {
+        proxy_pass http://site_web;
+        proxy_cache site_pages;
+        proxy_cache_methods GET HEAD;
+        proxy_cache_key "$scheme$host$request_uri|$http_rsc|$http_next_router_state_tree|$cookie_loc_city|$cookie_loc_area|$cookie_loc_lat|$cookie_loc_lng";
+        proxy_ignore_headers Cache-Control Expires;
+        proxy_cache_valid 200 5s;
+        proxy_cache_bypass $site_logged_in $http_next_action;
+        proxy_no_cache $site_logged_in $http_next_action $upstream_http_set_cookie;   # never store a response that sets a cookie
+        proxy_cache_lock on;              # 1,000 simultaneous misses → one render
+        proxy_cache_use_stale updating error timeout;
+        add_header X-Cache $upstream_cache_status;
+    }
+}

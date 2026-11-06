@@ -1,0 +1,86 @@
+import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/lib/mongodb";
+import Listing from "@/models/Listing";
+import Category from "@/models/Category";
+import User from "@/models/User";
+import { requireAuth } from "@/lib/auth";
+import { plainCustomFields } from "@/lib/utils";
+
+function mapListingToAd(item: any): any {
+  const seller = item.userId
+    ? {
+        _id: item.userId._id?.toString() || item.userId.toString(),
+        name: item.userId.name || "Unknown Seller",
+        image: item.userId.profileImage || null,
+        createdAt: item.userId.createdAt || new Date(),
+      }
+    : { _id: "", name: "Unknown Seller", createdAt: new Date() };
+
+  const category = item.categoryId
+    ? {
+        _id: item.categoryId._id?.toString() || item.categoryId.toString(),
+        name: item.categoryId.name || "",
+        slug: item.categoryId.slug || "",
+        image: item.categoryId.image || null,
+        parent: item.categoryId.parentCategoryId?.toString() || null,
+      }
+    : { _id: "", name: "", slug: "" };
+
+  const images = item.galleryImages && item.galleryImages.length > 0 
+    ? item.galleryImages 
+    : (item.mainImage ? [item.mainImage] : []);
+
+  return {
+    _id: item._id.toString(),
+    slug: item.slug,
+    title: item.name,
+    description: item.description,
+    price: item.price,
+    images: images,
+    category,
+    location: {
+      city: item.city || "",
+      state: item.state || "",
+    },
+    condition: item.condition || "used",
+    customFields: plainCustomFields(item.customFieldValues),
+    seller,
+    isFeatured: !!item.isFeatured,
+    status: item.status === "approved" ? "active" : item.status === "sold out" ? "sold" : item.status === "rejected" || item.status === "expired" ? "expired" : "pending",
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  };
+}
+
+export async function GET() {
+  try {
+    // 1. Authenticate user
+    const { session, error } = await requireAuth();
+    if (error) return error;
+
+    await dbConnect();
+
+    // 2. Query user's ads
+    const items = await Listing.find({
+      userId: session.userId,
+    })
+      .sort({ createdAt: -1 })
+      .limit(1000) // bounded even for the largest shops
+      .populate({ path: "categoryId", model: Category, select: "name slug image parentCategoryId" })
+      .populate({ path: "userId", model: User, select: "name profileImage createdAt verificationLevel rating ratingCount" })
+      .lean();
+
+    const mapped = items.map((item) => mapListingToAd(item));
+
+    return NextResponse.json({
+      success: true,
+      data: mapped,
+    });
+  } catch (error: any) {
+    console.error("GET My Ads Error:", error);
+    return NextResponse.json(
+      { success: false, message: error.message || "Failed to fetch your ads" },
+      { status: 500 }
+    );
+  }
+}

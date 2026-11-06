@@ -1,0 +1,71 @@
+import type { Vertical } from "./types";
+
+/** Cars marketplace (Pakistan). */
+export const cars: Vertical = {
+  id: "cars",
+  noun: { one: "car", many: "cars", One: "Car", Many: "Cars" },
+  primaryTop: "cars",
+  brandWord: { one: "make", many: "makes" },
+  defaults: {
+    siteName: "Car Market",
+    tagline: "Buy & sell cars in Pakistan",
+    heroTitle: "Find the right car at the right price",
+    heroSubtitle: "New and used cars, spare parts and accessories from verified sellers near you.",
+    searchPlaceholder: "Corolla, Civic, Alto, Sportage…",
+    metaKeywords: ["cars for sale Pakistan", "used cars", "buy car", "sell car", "car prices Pakistan", "Toyota Corolla", "Honda Civic", "Suzuki Alto", "car parts"],
+    brandColor: "#0f4fd6",
+  },
+  copy: {
+    sellCta: "Sell your car",
+    browseAll: "Browse all cars",
+    everythingLabel: "Cars, parts & accessories",
+    inCityLabel: "Cars & parts",
+    titleHint: "Make, model, variant and year — e.g. the way buyers search.",
+    titlePlaceholder: "e.g. Toyota Corolla Altis Grande 1.8 2021",
+    modelNotListed: "Model not listed? Type it (e.g. Corolla Cross)",
+    videoHint: "Optional 15-second walkaround: outside, inside, engine running. Real videos build buyer trust.",
+    descriptionPlaceholder: "Condition, service history, accident/repaint details, what's new, why you're selling…",
+    inspectTip: "Inspect the car and its documents (file, book, smart card) — and get a mechanic's check — before paying.",
+  },
+  trust: [
+    { icon: "badge", title: "Verified sellers", sub: "CNIC-checked" },
+    { icon: "chat", title: "Direct contact", sub: "WhatsApp & chat" },
+    { icon: "documents", title: "Full details", sub: "Year, mileage, docs" },
+  ],
+  icon: "car",
+  placeholderImage: "/placeholders/car.svg",
+  cardSpecs: [
+    { field: "model_year", icon: "calendar", label: "Year", format: "year" },
+    { field: "mileage", icon: "gauge", label: "Mileage", format: "km" },
+    { field: "fuel_type", icon: "fuel", label: "Fuel" },
+    { field: "transmission", icon: "gear", label: "Transmission" },
+  ],
+  keySpecs: [
+    { field: "model_year", icon: "calendar", label: "Model year", format: "year" },
+    { field: "mileage", icon: "gauge", label: "Mileage", format: "km" },
+    { field: "fuel_type", icon: "fuel", label: "Fuel" },
+    { field: "transmission", icon: "gear", label: "Transmission" },
+  ],
+  featureFields: ["features"],
+  titleFields: ["model_year"],
+  searchAliases: {
+    car: "cars", cars: "cars", gari: "cars", gaari: "cars", gadi: "cars", auto: "cars", automobile: "cars",
+    "used car": "cars", "used cars": "cars", "new car": "cars", "new cars": "cars",
+    part: "car-parts", parts: "car-parts", "spare parts": "car-parts", "car parts": "car-parts",
+    accessory: "car-accessories", accessories: "car-accessories", "car accessories": "car-accessories",
+    tyre: "tyres-wheels", tyres: "tyres-wheels", tire: "tyres-wheels", tires: "tyres-wheels", rims: "tyres-wheels", wheels: "tyres-wheels",
+    pickup: "commercial-vehicles", van: "commercial-vehicles", truck: "commercial-vehicles", bus: "commercial-vehicles",
+  },
+  priceFloor: { cars: 150000, "commercial-vehicles": 200000, "car-parts": 100, "car-accessories": 100, "tyres-wheels": 500 },
+  moderation: {
+    sells: "a Pakistani cars classifieds marketplace (cars, commercial vehicles, spare parts, tyres and accessories)",
+    scamHints: [
+      "Stolen or snatched vehicles, tampered chassis/engine numbers, cars without documents or on 'open letter' with suspicious wording",
+      "Non-custom-paid / smuggled vehicles offered as normal registered cars",
+      "Advance 'token' or booking payments demanded before inspection, 'delivery from another city after payment'",
+      "Unrealistically low prices for popular models, fake auction sheets or fake registration books",
+    ],
+  },
+  priceStyle: "lakh",
+  budgets: [1_000_000, 2_000_000, 3_500_000, 5_000_000, 8_000_000, 15_000_000],
+};

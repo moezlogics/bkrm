@@ -1,0 +1,712 @@
+@import "tailwindcss";
+
+/*
+ * `dark:` styles only when the site itself is in dark mode (a .dark class).
+ * Tailwind's default follows the DEVICE setting, but this site is light-only —
+ * on a phone set to dark mode, toasts and badges got dark-mode colours on a
+ * white page and became unreadable.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Design Tokens (Medusa Storefront Match) ────────────────────────────── */
+:root {
+  /* Palette matched to the main PHP site (mobiles) so the marketplace on the
+     subdomain reads as the same product: blue on white, navy ink.
+     Mirrors its theme_primary/#0f2c5c, theme_secondary/#1a56db, theme_hover. */
+  --primary: #1a56db;
+  --primary-light: #3b74ea;
+  --primary-dark: #1442ab;
+  --brand-navy: #0f2c5c;
+  --secondary: #f59e0b; /* amber — "Featured / Boost" */
+  --secondary-light: #fbbf24;
+  --secondary-dark: #d97706;
+  --accent: #1a56db;
+  --accent-light: #dbe6fb;
+  --danger: #dc2626;
+  --danger-light: #fecaca;
+  --success: #16a34a;
+  --whatsapp: #25d366;
+  --whatsapp-dark: #1ebe57;
+
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --overlay: rgba(15, 23, 42, 0.6);
+
+  --header-height: 102px;  /* mobile: logo bar + search row */
+  --sidebar-width: 280px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 10px 30px -10px rgba(15, 23, 42, 0.12);
+  --shadow-xl: 0 20px 50px rgba(15, 23, 42, 0.15);
+}
+
+.dark {
+  --bg: #0F0F23;
+  --bg-secondary: #16162e;
+  --bg-tertiary: #1e1e3a;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #F8F9FA;
+  --text-secondary: #b2bec3;
+  --text-tertiary: #636e72;
+  --overlay: rgba(0, 0, 0, 0.7);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Tailwind v4 Theme Inline ───────────────────────────────────────────── */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-secondary-light: var(--secondary-light);
+  --color-secondary-dark: var(--secondary-dark);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-danger: var(--danger);
+  --color-danger-light: var(--danger-light);
+  --color-success: var(--success);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-dark: var(--whatsapp-dark);
+  --color-surface: var(--bg);
+  --color-surface-secondary: var(--bg-secondary);
+  --color-surface-tertiary: var(--bg-tertiary);
+  --color-card: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-content: var(--text-primary);
+  --color-content-secondary: var(--text-secondary);
+  --color-content-tertiary: var(--text-tertiary);
+  --color-overlay: var(--overlay);
+  --font-sans: var(--font-poppins);
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-poppins), system-ui, -apple-system, sans-serif;
+  line-height: 1.55;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Element defaults live in the base layer. Unlayered, they outranked every
+   Tailwind utility (utilities sit in a layer), so `button { background: none }`
+   stripped the background off every button with a bg-* class — the Log in /
+   Create account buttons rendered white-on-white, card Chat buttons blank —
+   and `a { color }` / `img { height }` overrode text-* and h-* the same way. */
+@layer base {
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+}
+
+/* ─── High-Visibility Action Buttons (Marketplace Core) ──────────────────── */
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25d366 0%, #1ebe57 100%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-whatsapp:hover {
+  background: linear-gradient(135deg, #1ebe57 0%, #16a34a 100%) !important;
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+  transform: translateY(-1px);
+}
+.btn-whatsapp:active {
+  transform: scale(0.98);
+}
+
+.btn-call {
+  background: #0f172a !important; /* Solid sleek black */
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.20);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-call:hover {
+  background: #000000 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+.btn-call:active {
+  transform: scale(0.98);
+}
+
+.btn-chat-primary {
+  background: #ffffff !important;
+  color: var(--primary) !important;
+  border: 1.5px solid color-mix(in srgb, var(--primary) 28%, #e2e8f0) !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 10%, transparent);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-chat-primary:hover {
+  background: color-mix(in srgb, var(--primary) 6%, white) !important;
+  border-color: color-mix(in srgb, var(--primary) 50%, #cbd5e1) !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 18%, transparent);
+  transform: translateY(-1px);
+}
+.btn-chat-primary:active {
+  transform: scale(0.98);
+}
+.dark .btn-chat-primary {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+.dark .btn-call {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-offer {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1.5px solid #fde68a !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.10);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-offer:hover {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  color: #92400e !important;
+  transform: translateY(-1px);
+}
+.btn-offer:active {
+  transform: scale(0.98);
+}
+
+@layer base {
+  input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+  }
+}
+
+/* ─── Polish: focus rings, selection, thin scrollbar ─────────────────────── */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+::selection {
+  background: color-mix(in srgb, var(--primary) 20%, transparent);
+}
+* { scrollbar-width: thin; scrollbar-color: var(--card-border) transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 9999px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+/* Defaults only — a heading's own font-*, text-* and leading-* classes win. */
+@layer base {
+  h1 {
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+  }
+  h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-primary);
+  }
+}
+
+/* ─── Glassmorphism ──────────────────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.dark .glass-light {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Liquid Glass (premium frosted surfaces) ────────────────────────────── */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.10);
+}
+
+.dark .liquid-glass {
+  background: rgba(20, 20, 35, 0.55);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* ─── Animated mesh-gradient page background ─────────────────────────────── */
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(at 18% 20%, rgba(210, 239, 154, 0.45) 0px, transparent 50%),
+    radial-gradient(at 82% 12%, rgba(181, 219, 109, 0.30) 0px, transparent 45%),
+    radial-gradient(at 70% 80%, rgba(229, 247, 195, 0.55) 0px, transparent 50%),
+    radial-gradient(at 25% 88%, rgba(210, 239, 154, 0.25) 0px, transparent 45%);
+  background-size: 180% 180%;
+  animation: meshMove 22s ease-in-out infinite alternate;
+  filter: blur(8px);
+}
+
+.dark .mesh-bg {
+  background:
+    radial-gradient(at 18% 20%, rgba(108, 92, 231, 0.22) 0px, transparent 50%),
+    radial-gradient(at 82% 12%, rgba(181, 219, 109, 0.12) 0px, transparent 45%),
+    radial-gradient(at 70% 80%, rgba(0, 184, 148, 0.16) 0px, transparent 50%),
+    radial-gradient(at 25% 88%, rgba(108, 92, 231, 0.14) 0px, transparent 45%);
+  background-size: 180% 180%;
+}
+
+@keyframes meshMove {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-bg { animation: none; }
+}
+
+/* ─── Chat: typing indicator dots ────────────────────────────────────────── */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot {
+  width: 7px; height: 7px; border-radius: 9999px;
+  background: var(--text-secondary);
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* ─── Gradients ──────────────────────────────────────────────────────────── */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #fb7a45 0%, #f2683c 100%);
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 55%, #3b82f6 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #fb7a45 0%, #f2683c 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #2563eb 0%, #fb7a45 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-secondary) 50%,
+    var(--bg-tertiary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+.animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+.animate-spin-slow { animation: spin 1s linear infinite; }
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-tertiary) var(--bg-secondary);
+}
+
+/* ─── Utility Classes ────────────────────────────────────────────────────── */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+.line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+
+/* Focus Visible */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* Selection */
+::selection {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* ─── Mobile Bottom Nav ──────────────────────────────────────────────────
+   Floating glass tab bar, matched to the main PHP site's .site-mobile-nav so
+   both properties feel like one app.                                        */
+:root {
+  --nav-h: 52px;
+  --nav-safe: env(safe-area-inset-bottom, 0px);
+}
+
+.app-nav {
+  display: none;
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  /* Below every modal / bottom sheet (z-50): at 50 it sat on top of them and
+     covered their buttons (the review sheet's "Post review" was under it). */
+  z-index: 45;
+  min-height: calc(var(--nav-h) + max(6px, var(--nav-safe)));
+  padding-bottom: max(6px, var(--nav-safe));
+  background: rgba(255, 255, 255, 0.75);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: none !important;
+  border-radius: 28px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12),
+              0 2px 8px rgba(15, 23, 42, 0.04),
+              inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-sizing: border-box;
+}
+
+.dark .app-nav {
+  background: rgba(20, 20, 42, 0.75);
+  border: none !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 768px) {
+  .app-nav { display: flex; align-items: stretch; justify-content: space-around; }
+
+  body.has-app-nav {
+    padding-bottom: calc(var(--nav-h) + 28px + max(10px, var(--nav-safe)));
+  }
+  /* An open conversation is full screen: the bar would cover the message box. */
+  body.chat-open .app-nav { display: none !important; }
+  body.has-app-nav.chat-open { padding-bottom: 0; }
+}
+@media (min-width: 769px) {
+  .app-nav { display: none !important; }
+  body.has-app-nav { padding-bottom: 0; }
+}
+
+.app-nav a {
+  flex: 1 1 0;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 2px 5px;
+  color: #64748b;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .18s ease, transform .12s ease;
+}
+.app-nav a:active { transform: scale(.92); }
+.app-nav a svg { width: 21px; height: 21px; display: block; transition: transform .18s cubic-bezier(.34,1.4,.64,1); }
+.app-nav a > span:last-child {
+  font-size: 10px; font-weight: 600; line-height: 1.1; letter-spacing: .01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.app-nav a.is-active { color: var(--primary) !important; }
+.app-nav a.is-active > span:last-child { font-weight: 800; color: var(--primary) !important; }
+.app-nav a.is-active svg { transform: translateY(-1px); stroke-width: 2.2; stroke: var(--primary) !important; }
+
+/* Active tab top pill indicator */
+.app-nav a.is-active::before {
+  content: '';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 24px; height: 3px; border-radius: 0 0 3px 3px;
+  background: var(--primary) !important;
+}
+
+/* Center Sell Action Button (Elevated App FAB) */
+.app-nav-sell-btn {
+  position: relative;
+  top: -12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: var(--primary) !important;
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--primary) 35%, transparent);
+  border: 3px solid #ffffff;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-nav-sell-btn:active {
+  transform: scale(0.92);
+}
+.dark .app-nav-sell-btn {
+  border-color: #16162e;
+}
+
+.app-nav .nav-badge {
+  position: absolute; top: 4px; left: 50%; margin-left: 5px;
+  min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px;
+  background: #ef4444; color: #fff;
+  font-size: 9.5px; font-weight: 800; line-height: 16px; text-align: center;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+/* Single Listing Mobile Sticky Action Bar */
+.sticky-detail-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 -8px 25px rgba(15, 23, 42, 0.08);
+  padding: 10px 14px calc(10px + max(4px, env(safe-area-inset-bottom)));
+}
+.dark .sticky-detail-bar {
+  background: rgba(15, 15, 35, 0.95);
+  border-top-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Legacy per-page spacer — now a no-op; clearance lives on <body>. */
+.pb-mobile-nav { padding-bottom: 0; }
+
+@keyframes slide-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.animate-slide-in-right { animation: slide-in-right .22s cubic-bezier(.32,.72,0,1) both; }
+
+/* ─── Full-width app container (max width 100%, tiny gutters like big platforms) ─ */
+.wrap {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: clamp(6px, 1.1vw, 28px);
+}
+
+/* ─── Ad detail page: a centred reading width on desktop; on phones the
+   gallery stays full-bleed and the text sections get their own gutter ─── */
+.detail-wrap { width: 100%; max-width: 1240px; margin-inline: auto; }
+.detail-pad { padding-inline: 12px; }
+@media (min-width: 768px) {
+  .detail-wrap, .detail-wrap.detail-pad { padding-inline: 20px; }
+  .detail-pad { padding-inline: 0; }
+}
+@media (min-width: 1280px) {
+  .detail-wrap, .detail-wrap.detail-pad { padding-inline: 24px; }
+}
+
+/* Desktop header is a clean single row (no category subheader) → 64px */
+@media (min-width: 768px) {
+  :root {
+    --header-height: 64px;
+  }
+}
+
+/* Kill the blue tap-flash on mobile for an app-like feel */
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Compact spec chip used on listing cards / detail */
+.spec-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ─── Off-screen cards cost (almost) nothing ─────────────────────────────
+   A feed renders 20-30 cards; on a mid-range phone, style + layout for all of
+   them was the biggest cost of opening a page (~600 ms each, measured). The
+   browser now skips rendering work for cards until they scroll near the
+   viewport; the intrinsic size keeps the scrollbar and layout stable. */
+.listing-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 150px;
+}
+
+/* Sprite icons (components/ui/CardIcons) — lucide's default look. In the
+   components layer so `fill-*`, `size-*` and `stroke-*` utilities override it. */
+@layer components {
+  .ico {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+/* App screens (dashboard, admin, posting, chat) have no bottom tab bar, so the
+   body doesn't reserve room for one. */
+body.has-app-nav:has(main.app-screen) { padding-bottom: 0; }
+
+/* Logo size is set by the admin (Branding & Appearance) via --logo-h vars. */
+.site-logo { height: var(--logo-h, 30px); width: auto; }
+@media (min-width: 1024px) { .site-logo { height: var(--logo-h-lg, 36px); } }
+.footer-logo { height: var(--footer-logo-h, 36px); width: auto; }
