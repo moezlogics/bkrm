@@ -22,7 +22,8 @@ export async function GET(req: NextRequest) {
   const chosen = brand.favicon || brand.logo;
   if (chosen) {
     // Uploaded files are full CDN addresses; older local ones are site paths.
-    const target = /^https?:\/\//i.test(chosen) ? chosen : new URL(withBasePath(chosen), req.nextUrl.origin).toString();
+    const origin = (process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "").match(/^https?:\/\/[^/]+/)?.[0] || req.nextUrl.origin;
+    const target = /^https?:\/\//i.test(chosen) ? chosen : new URL(withBasePath(chosen), origin).toString();
     return NextResponse.redirect(target, { status: 302, headers: { "Cache-Control": "public, max-age=300" } });
   }
 

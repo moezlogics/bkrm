@@ -33,7 +33,11 @@ export async function GET(req: NextRequest) {
   }
 
   const target = await relocatePath(next, citySlug, areaSlug);
-  const res = NextResponse.redirect(new URL(withBasePath(target), url.origin), 302);
+  const origin = (process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "").match(/^https?:\/\/[^/]+/)?.[0]
+    || (req.headers.get("x-forwarded-host") || req.headers.get("host")
+      ? `${(req.headers.get("x-forwarded-proto") || "https").split(",")[0].trim()}://${(req.headers.get("x-forwarded-host") || req.headers.get("host"))!.split(",")[0].trim()}`
+      : url.origin);
+  const res = NextResponse.redirect(new URL(withBasePath(target), origin), 302);
   setLocationCookies(res, { citySlug, areaSlug, source: "manual" });
   return res;
 }
