@@ -211,6 +211,8 @@ export default async function Home() {
     nearbyCities: [], areas: [], rails: [] as Rail[], cityTotal: 0,
   };
   const city = loc.city;
+  // Featured is strictly the visitor's own city; none there → no section.
+  if (d.local && city) d.featured = d.featured.filter((ad: any) => String(ad.city || "").toLowerCase() === city.name.toLowerCase());
   const prefix = city ? `/${city.slug}` : "";
   const cityHref = city ? `/${city.slug}` : `/${VERTICAL.primaryTop}`;
   const EmptyIcon = iconFor(VERTICAL.icon);

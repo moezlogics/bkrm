@@ -89,11 +89,8 @@ export function LocationPicker({
         try { sessionStorage.setItem(syncKey, "1"); } catch { /* storage off */ }
         const j = await postLocation({ mode: "sync" });
         if (j?.changed) { router.refresh(); return; } // the profile's place is now the location
-      } else if (!location.chosen) {
-        // 1b) Nothing chosen yet → instant IP guess so the page personalises now.
-        const j = await postLocation({ mode: "ip" });
-        if (j?.changed) router.refresh();
       }
+      // No IP guessing (owner's choice): the browser asks for the exact location.
       // 2) Sharpen with GPS unless the visitor picked a place or GPS already set it.
       if (location.source === "manual" || location.source === "gps") return;
       try {
@@ -105,8 +102,10 @@ export function LocationPicker({
       } catch { /* permissions API unavailable — just ask */ }
       const pos = await requestGps();
       if (!pos) return;
-      const j = await postLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      if (j?.changed) router.refresh();
+      // Allowed → switch the whole site to that place once, on this page too.
+      const j = await postLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude, next: window.location.pathname });
+      if (j?.redirect && j.redirect !== window.location.pathname) window.location.assign(j.redirect);
+      else if (j?.changed) window.location.reload();
     })().catch(() => {});
   }, [autoDetect, authStatus, userId, location.chosen, location.source, router]);
 
@@ -130,7 +129,12 @@ export function LocationPicker({
     if (isMobile) {
       document.body.style.overflow = "hidden";
     }
-    const onDown = (e: MouseEvent) => { if (!rootRef.current?.contains(e.target as Node)) setOpen(false); };
+    // The phone sheet is portalled into <body>: taps inside it are not "outside".
+    const onDown = (e: MouseEvent) => {
+      const t = e.target as Element;
+      if (rootRef.current?.contains(t) || t.closest?.("[data-loc-panel]")) return;
+      setOpen(false);
+    };
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
@@ -289,6 +293,7 @@ export function LocationPicker({
           <div className="fixed inset-0 bg-overlay animate-fade-in" onClick={() => setOpen(false)} />
           <div
             role="dialog"
+            data-loc-panel
             aria-label="Choose location"
             className="relative z-10 bg-surface flex flex-col max-h-[85vh] rounded-t-[28px] animate-sheet-up pb-[env(safe-area-inset-bottom)]"
           >
