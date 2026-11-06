@@ -181,16 +181,14 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
       {/* ─── Mobile Sticky Action Bar (App-Native Dock) ──────────────────── */}
       {mounted && typeof document !== "undefined" && createPortal(
         <nav
-          className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-xl border-t border-card-border px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))] grid grid-cols-3 gap-2"
+          className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-xl border-t border-card-border px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))] flex items-center gap-2"
           aria-label="Contact the seller"
         >
-          {/* Three equal buttons — the old bar squeezed a Home link in as well,
-              so "WhatsApp" was cut to "WhatsA…". Back/home lives on the photo. */}
           <button
             type="button"
             onClick={callSeller}
             disabled={loggedIn && !callNum}
-            className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-surface-secondary text-content text-sm font-bold active:scale-95 transition-transform disabled:opacity-40"
+            className="flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 h-11 px-3 rounded-xl bg-surface-secondary text-content text-[13.5px] sm:text-sm font-bold leading-none whitespace-nowrap active:scale-95 transition-transform disabled:opacity-40"
             aria-label="Call the seller"
           >
             <Phone className="h-4 w-4 shrink-0" />
@@ -200,38 +198,38 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
           <button
             type="button"
             onClick={() => openWhatsApp()}
-            className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-whatsapp text-white text-sm font-bold min-w-0 active:scale-95 transition-transform"
+            className="flex-[1.2] min-w-0 inline-flex items-center justify-center gap-1.5 h-11 px-3.5 rounded-xl bg-whatsapp text-white text-[13.5px] sm:text-sm font-bold leading-none whitespace-nowrap active:scale-95 transition-transform"
             aria-label="Chat on WhatsApp"
           >
-            <WaIcon className="h-4.5 w-4.5 shrink-0" />
+            <WaIcon className="h-4 w-4 shrink-0" />
             <span>WhatsApp</span>
           </button>
 
           {booking && !isSeller ? (
             <Link
               href={booking.href}
-              className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white text-sm font-bold active:scale-95 transition-transform"
+              className="flex-[1.25] min-w-0 inline-flex items-center justify-center gap-1.5 h-11 px-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-[13.5px] sm:text-sm font-bold leading-none whitespace-nowrap active:scale-95 transition-transform"
             >
               <CalendarCheck className="h-4 w-4 shrink-0" />
               <span>{booking.cta.replace(/ now$/i, "")}</span>
             </Link>
           ) : (
-          <button
-            type="button"
-            onClick={startChat}
-            disabled={chatLoading}
-            className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white text-sm font-bold disabled:opacity-60 active:scale-95 transition-transform"
-            aria-label="Live Chat"
-          >
-            {chatLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin shrink-0" />
-            ) : (
-              <>
-                <MessageSquare className="h-4 w-4 shrink-0" />
-                <span>Chat</span>
-              </>
-            )}
-          </button>
+            <button
+              type="button"
+              onClick={startChat}
+              disabled={chatLoading}
+              className="flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 h-11 px-3 rounded-xl bg-primary hover:bg-primary-dark text-white text-[13.5px] sm:text-sm font-bold leading-none whitespace-nowrap disabled:opacity-60 active:scale-95 transition-transform"
+              aria-label="Live Chat"
+            >
+              {chatLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin shrink-0" />
+              ) : (
+                <>
+                  <MessageSquare className="h-4 w-4 shrink-0" />
+                  <span>Chat</span>
+                </>
+              )}
+            </button>
           )}
         </nav>,
         document.body

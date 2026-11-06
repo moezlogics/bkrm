@@ -168,8 +168,8 @@ export function BookingForm({ kind, title, note, ad, days, eventDate, slots, uni
           <PushNudge context="booking" />
 
           <div className="grid grid-cols-2 gap-2.5">
-            <Link href="/dashboard/bookings" className="h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white font-bold grid place-items-center">My bookings</Link>
-            <Link href={`/ads/${ad.slug}`} className="h-12 rounded-2xl bg-surface-secondary text-content font-bold grid place-items-center">Back to ad</Link>
+            <Link href="/dashboard/bookings" className="h-11 sm:h-12 px-4 rounded-xl sm:rounded-2xl bg-primary hover:bg-primary-dark text-white text-[14px] sm:text-[15px] font-bold leading-none whitespace-nowrap inline-flex items-center justify-center">My bookings</Link>
+            <Link href={`/ads/${ad.slug}`} className="h-11 sm:h-12 px-4 rounded-xl sm:rounded-2xl bg-surface-secondary text-content text-[14px] sm:text-[15px] font-bold leading-none whitespace-nowrap inline-flex items-center justify-center">Back to ad</Link>
           </div>
         </div>
       </>
@@ -229,12 +229,12 @@ export function BookingForm({ kind, title, note, ad, days, eventDate, slots, uni
                   const status = d.past ? "Over" : d.left === 0 ? "Full" : d.left != null ? `${d.left} left` : "Open";
                   return (
                     <button key={d.key} type="button" disabled={off} onClick={() => { setDay(d.key); setErr(null); }} aria-pressed={on}
-                      className={`snap-start shrink-0 w-[104px] rounded-2xl p-3 text-left transition-colors disabled:opacity-40 ${on ? "bg-primary text-white" : "bg-surface-secondary text-content active:bg-surface-tertiary"}`}>
-                      <span className={`block text-[12.5px] font-semibold ${on ? "text-white/75" : "text-content-tertiary"}`}>{d.pickDate ? "Pick a date" : d.date ? shortDate(d.date) : ""}</span>
-                      <span className="block mt-0.5 text-[14.5px] font-bold leading-tight">{d.label}</span>
-                      <span className={`mt-2 inline-flex items-center gap-1 text-[12.5px] font-semibold ${on ? "text-white" : d.left === 0 ? "text-danger" : d.left != null && d.left <= 3 ? "text-amber-600" : "text-primary"}`}>
-                        <span className={`h-1.5 w-1.5 rounded-full ${on ? "bg-white" : d.left === 0 || d.past ? "bg-content-tertiary" : d.left != null && d.left <= 3 ? "bg-amber-500" : "bg-primary"}`} />{status}
-                      </span>
+                        className={`snap-start shrink-0 min-w-[112px] rounded-2xl px-3.5 py-2.5 text-left transition-colors disabled:opacity-40 ${on ? "bg-primary text-white" : "bg-surface-secondary text-content active:bg-surface-tertiary"}`}>
+                        <span className={`block text-[12px] font-semibold whitespace-nowrap ${on ? "text-white/75" : "text-content-tertiary"}`}>{d.pickDate ? "Pick a date" : d.date ? shortDate(d.date) : ""}</span>
+                        <span className="block mt-0.5 text-[14px] font-bold leading-tight whitespace-nowrap">{d.label}</span>
+                        <span className={`mt-1.5 inline-flex items-center gap-1 text-[12px] font-semibold whitespace-nowrap ${on ? "text-white" : d.left === 0 ? "text-danger" : d.left != null && d.left <= 3 ? "text-amber-600" : "text-primary"}`}>
+                          <span className={`h-1.5 w-1.5 rounded-full ${on ? "bg-white" : d.left === 0 || d.past ? "bg-content-tertiary" : d.left != null && d.left <= 3 ? "bg-amber-500" : "bg-primary"}`} />{status}
+                        </span>
                     </button>
                   );
                 })}
@@ -298,100 +298,100 @@ export function BookingForm({ kind, title, note, ad, days, eventDate, slots, uni
               </div>
             </Section>
 
-              <Section id="bk-names" title={shares.namesLabel} error={errorFor("names")}>
-                <div className="flex flex-col gap-2">
-                  {Array.from({ length: nShares }).map((_, i) => (
+            <Section id="bk-names" title={shares.namesLabel} error={errorFor("names")}>
+              <div className="flex flex-col gap-2">
+                {Array.from({ length: nShares }).map((_, i) => (
                   <input key={i} value={names[i] || ""} maxLength={60} onChange={(e) => { setNames((x) => { const y = [...x]; y[i] = e.target.value; return y; }); if (err?.field === "names") setErr(null); }}
                     placeholder={`Hissa ${i + 1} — name`} className={`${field} ${bad("names") && (names[i] || "").trim().length < 2 ? "!ring-2 !ring-danger/50" : ""}`} aria-label={`Name for hissa ${i + 1}`} />
-                  ))}
-                </div>
-              </Section>
-
-              <Section title="Meat delivery address" aside="Optional">
-                <textarea value={address} onChange={(e) => setAddress(e.target.value)} maxLength={300} rows={2} placeholder="House, street, area"
-                  className={`${field} h-auto py-3 resize-none`} aria-label="Address" />
-              </Section>
-            </>
-        )}
-
-            <Section title="Your details" error={errorFor("contactName", "phone")}>
-              <input value={contactName} onChange={(e) => setContactName(e.target.value)} maxLength={80} autoComplete="name" placeholder="Your name"
-                className={`${field} ${bad("contactName") ? "!ring-2 !ring-danger/50" : ""}`} aria-label="Your name" />
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel" placeholder="Mobile number, 03XX XXXXXXX"
-                className={`${field} mt-2 ${bad("phone") ? "!ring-2 !ring-danger/50" : ""}`} aria-label="Mobile number" />
-              <textarea value={msg} onChange={(e) => setMsg(e.target.value)} maxLength={500} rows={2} placeholder="Anything they should know (optional)"
-                className={`${field} h-auto py-3 mt-2 resize-none text-[15px]`} aria-label="Note" />
-              <p className="mt-2 text-[13px] text-content-tertiary">Only {ad.provider.name} sees your number.</p>
+                ))}
+              </div>
             </Section>
 
-            {note && <p className="px-1 text-[13.5px] text-content-tertiary leading-relaxed">{note}</p>}
-              { err && !["day", "date", "units", "address", "contactName", "phone", "shares", "names"].includes(err.field || "") && (
-                <p role="alert" className="flex items-start gap-2 rounded-2xl bg-danger-light px-4 py-3 text-[15px] text-danger"><TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" /> {err.message}</p>
-              )}
-          </div>
+            <Section title="Meat delivery address" aside="Optional">
+              <textarea value={address} onChange={(e) => setAddress(e.target.value)} maxLength={300} rows={2} placeholder="House, street, area"
+                className={`${field} h-auto py-3 resize-none`} aria-label="Address" />
+            </Section>
+          </>
+        )}
 
-        {/* Total + send */}
-        <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-card-border px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
-          <div className="max-w-lg mx-auto flex items-center gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-content-tertiary truncate">
-                {kind === "share" ? (nShares === 1 ? "1 hissa" : `${nShares} hissay`) : totalUnits ? `${totalUnits} ${totalUnits === 1 ? "animal" : "animals"}` : "No animals added"}{chosen ? ` · ${chosen.label}` : ""}
-              </p>
-              <p className="text-[20px] font-extrabold tracking-tight text-content leading-tight">{est != null ? rs(est) : "On confirmation"}</p>
+        <Section title="Your details" error={errorFor("contactName", "phone")}>
+          <input value={contactName} onChange={(e) => setContactName(e.target.value)} maxLength={80} autoComplete="name" placeholder="Your name"
+            className={`${field} ${bad("contactName") ? "!ring-2 !ring-danger/50" : ""}`} aria-label="Your name" />
+          <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel" placeholder="Mobile number, 03XX XXXXXXX"
+            className={`${field} mt-2 ${bad("phone") ? "!ring-2 !ring-danger/50" : ""}`} aria-label="Mobile number" />
+          <textarea value={msg} onChange={(e) => setMsg(e.target.value)} maxLength={500} rows={2} placeholder="Anything they should know (optional)"
+            className={`${field} h-auto py-3 mt-2 resize-none text-[15px]`} aria-label="Note" />
+          <p className="mt-2 text-[13px] text-content-tertiary">Only {ad.provider.name} sees your number.</p>
+        </Section>
+
+        {note && <p className="px-1 text-[13.5px] text-content-tertiary leading-relaxed">{note}</p>}
+        {err && !["day", "date", "units", "address", "contactName", "phone", "shares", "names"].includes(err.field || "") && (
+          <p role="alert" className="flex items-start gap-2 rounded-2xl bg-danger-light px-4 py-3 text-[15px] text-danger"><TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" /> {err.message}</p>
+        )}
+      </div>
+
+      {/* Total + send */}
+          <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-card-border px-4 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))]">
+            <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                  <p className="text-[12.5px] sm:text-[13px] font-medium text-content-tertiary truncate">
+                    {kind === "share" ? (nShares === 1 ? "1 hissa" : `${nShares} hissay`) : totalUnits ? `${totalUnits} ${totalUnits === 1 ? "animal" : "animals"}` : "No animals added"}{chosen ? ` · ${chosen.label}` : ""}
+                  </p>
+                  <p className="text-[18px] sm:text-[20px] font-extrabold tracking-tight text-content leading-tight truncate">{est != null ? rs(est) : "On confirmation"}</p>
+              </div>
+              <button onClick={submit} disabled={!canSend}
+              className="shrink-0 h-11 sm:h-12 px-5 sm:px-6 rounded-xl sm:rounded-2xl bg-primary hover:bg-primary-dark text-white text-[14px] sm:text-[15px] font-bold leading-none whitespace-nowrap inline-flex items-center justify-center gap-2 disabled:opacity-45 transition-colors">
+                {busy ? <Loader2 className="h-4.5 w-4.5 animate-spin" /> : me.signedIn ? "Send request" : "Log in to book"}
+              </button>
             </div>
-            <button onClick={submit} disabled={!canSend}
-              className="shrink-0 h-[52px] px-6 rounded-2xl bg-primary hover:bg-primary-dark text-white text-[15px] font-bold inline-flex items-center gap-2 disabled:opacity-45 transition-colors">
-              {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : me.signedIn ? "Send request" : "Log in to book"}
-            </button>
           </div>
-        </div>
-      </>
-      );
+        </>
+        );
 }
 
-      function Section({id, title, aside, error, children}: {id ?: string; title: string; aside?: string; error?: string; children: React.ReactNode }) {
+        function Section({id, title, aside, error, children}: {id ?: string; title: string; aside?: string; error?: string; children: React.ReactNode }) {
   return (
-      <section id={id} className="card p-4">
-        <div className="flex items-baseline justify-between gap-2 mb-3">
-          <h2 className="text-[16px] font-bold text-content">{title}</h2>
-          {aside && <span className="text-[13px] font-medium text-content-tertiary">{aside}</span>}
-        </div>
-        {children}
-        {error && <p className="mt-2.5 text-[14px] font-medium text-danger">{error}</p>}
-      </section>
-      );
+        <section id={id} className="card p-4">
+          <div className="flex items-baseline justify-between gap-2 mb-3">
+            <h2 className="text-[16px] font-bold text-content">{title}</h2>
+            {aside && <span className="text-[13px] font-medium text-content-tertiary">{aside}</span>}
+          </div>
+          {children}
+          {error && <p className="mt-2.5 text-[14px] font-medium text-danger">{error}</p>}
+        </section>
+        );
 }
 
-      function Notice({children}: {children: React.ReactNode }) {
+        function Notice({children}: {children: React.ReactNode }) {
   return <p className="rounded-2xl bg-amber-50 px-4 py-3 text-[15px] text-amber-950">{children}</p>;
 }
 
-      /** Seven slots for an animal's shares: filled = taken, outlined = free. */
-      function ShareMeter({total, free}: {total: number; free: number }) {
+        /** Seven slots for an animal's shares: filled = taken, outlined = free. */
+        function ShareMeter({total, free}: {total: number; free: number }) {
   const taken = Math.max(0, total - free);
-      return (
-      <span className="mt-3.5 block">
-        <span className="flex gap-1.5">
-          {Array.from({ length: total }).map((_, i) => (
-            <span key={i} className={`h-2 flex-1 rounded-full ${i < taken ? "bg-primary" : "bg-surface-tertiary"}`} />
-          ))}
+        return (
+        <span className="mt-3.5 block">
+          <span className="flex gap-1.5">
+            {Array.from({ length: total }).map((_, i) => (
+              <span key={i} className={`h-2 flex-1 rounded-full ${i < taken ? "bg-primary" : "bg-surface-tertiary"}`} />
+            ))}
+          </span>
+          <span className="mt-2 flex justify-between text-[13.5px] font-semibold">
+            <span className="text-content">{free} of {total} shares free</span>
+            <span className="text-content-tertiary">{taken} booked</span>
+          </span>
         </span>
-        <span className="mt-2 flex justify-between text-[13.5px] font-semibold">
-          <span className="text-content">{free} of {total} shares free</span>
-          <span className="text-content-tertiary">{taken} booked</span>
-        </span>
-      </span>
-      );
+        );
 }
 
-      function Stepper({value, min, onMinus, onPlus, label}: {value: number; min: number; onMinus: () => void; onPlus: () => void; label: string }) {
+        function Stepper({value, min, onMinus, onPlus, label}: {value: number; min: number; onMinus: () => void; onPlus: () => void; label: string }) {
   return (
-      <div className="flex items-center gap-1 shrink-0 rounded-full bg-surface-secondary p-1">
-        <button type="button" onClick={onMinus} aria-label={`Fewer: ${label}`} disabled={value <= min}
-          className="grid place-items-center h-9 w-9 rounded-full bg-white text-content shadow-sm disabled:opacity-35 disabled:shadow-none active:scale-90 transition-transform"><Minus className="h-4 w-4" /></button>
-        <span className="w-8 text-center text-[16px] font-bold tabular-nums text-content" aria-live="polite">{value}</span>
-        <button type="button" onClick={onPlus} aria-label={`More: ${label}`}
-          className="grid place-items-center h-9 w-9 rounded-full bg-primary text-white active:scale-90 transition-transform"><Plus className="h-4 w-4" /></button>
-      </div>
-      );
+        <div className="flex items-center gap-1 shrink-0 rounded-full bg-surface-secondary p-1">
+          <button type="button" onClick={onMinus} aria-label={`Fewer: ${label}`} disabled={value <= min}
+            className="grid place-items-center h-9 w-9 rounded-full bg-white text-content shadow-sm disabled:opacity-35 disabled:shadow-none active:scale-90 transition-transform"><Minus className="h-4 w-4" /></button>
+          <span className="w-8 text-center text-[16px] font-bold tabular-nums text-content" aria-live="polite">{value}</span>
+          <button type="button" onClick={onPlus} aria-label={`More: ${label}`}
+            className="grid place-items-center h-9 w-9 rounded-full bg-primary text-white active:scale-90 transition-transform"><Plus className="h-4 w-4" /></button>
+        </div>
+        );
 }

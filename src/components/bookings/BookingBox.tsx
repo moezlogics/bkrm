@@ -24,10 +24,10 @@ export function BookingBox({ b, className = "" }: { b: BookingSummary; className
       {b.full ? (
         <p className="mt-3 text-[13.5px] text-content-secondary">Fully booked — you can still call or message to ask.</p>
       ) : (
-        <Link href={b.href} className="mt-3.5 h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white text-[15px] font-bold flex items-center justify-center gap-1.5">
-          {b.cta} <ChevronRight className="h-[18px] w-[18px]" />
-        </Link>
+          <Link href={b.href} className="mt-3.5 h-11 sm:h-12 px-5 rounded-xl sm:rounded-2xl bg-primary hover:bg-primary-dark text-white text-[14px] sm:text-[15px] font-bold leading-none whitespace-nowrap flex items-center justify-center gap-1.5">
+            <span>{b.cta}</span> <ChevronRight className="h-[18px] w-[18px] shrink-0" />
+          </Link>
       )}
-    </div>
-  );
+        </div>
+      );
 }
