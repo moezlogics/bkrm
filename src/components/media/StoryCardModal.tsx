@@ -252,7 +252,7 @@ export function StoryCardModal({
     ctx.fillText(seller, 150, bottomBoxY + 125);
 
     // Seller type badge
-    const badgeText = isShop ? "🏬 VERIFIED MOBILE SHOP" : "🛡️ VERIFIED DIRECT OWNER";
+    const badgeText = isShop ? "VERIFIED FARM / SHOP" : "DIRECT FROM THE OWNER";
     ctx.fillStyle = isShop ? "#f59e0b" : "#38bdf8";
     ctx.font = "bold 26px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.fillText(badgeText, 150, bottomBoxY + 175);

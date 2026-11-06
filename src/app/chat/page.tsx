@@ -232,7 +232,7 @@ function ChatPageContent() {
         <AppBar title="Messages" backHref="/" />
       </div>
       <div className="flex-1 min-h-0 w-full max-w-6xl mx-auto md:p-4">
-      <div className="bg-card md:border border-card-border md:rounded-2xl h-full flex overflow-hidden md:shadow-xl">
+      <div className="bg-card md:rounded-[24px] h-full flex overflow-hidden md:shadow-md">
         {/* Left Column: Thread list */}
         <div className={`w-full md:w-80 shrink-0 border-r border-card-border flex flex-col h-full bg-surface-secondary/40 ${selectedThreadId ? "hidden md:flex" : "flex"}`}>
           <div className="p-4 border-b border-card-border hidden md:block">
@@ -273,7 +273,7 @@ function ChatPageContent() {
                         <span className="text-sm font-bold text-content truncate">
                           {otherParticipant?.name}
                         </span>
-                        <span className="text-[10px] text-content-tertiary font-medium">
+                        <span className="text-[11px] text-content-tertiary font-medium">
                           {t.lastMessage?.senderId ? new Date(t.lastMessage.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "New"}
                         </span>
                       </div>
@@ -288,7 +288,7 @@ function ChatPageContent() {
 
                     {/* Unread badge */}
                     {t.unreadCount > 0 && (
-                      <span className="shrink-0 h-5 w-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center mt-1">
+                      <span className="shrink-0 h-5 w-5 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center mt-1">
                         {t.unreadCount}
                       </span>
                     )}
@@ -296,8 +296,11 @@ function ChatPageContent() {
                 );
               })
             ) : (
-              <div className="p-8 text-center text-sm text-content-secondary">
-                No active conversations found.
+              <div className="px-6 py-16 text-center">
+                <span className="mx-auto grid place-items-center h-16 w-16 rounded-2xl bg-primary-soft text-primary"><MessageSquare className="h-7 w-7" /></span>
+                <p className="mt-4 text-[16px] font-bold text-content">No chats yet</p>
+                <p className="mt-1 text-[15px] text-content-secondary">Message a seller from their ad — your chats show here.</p>
+                <Link href="/" className="mt-5 inline-flex items-center h-11 px-6 rounded-full bg-primary text-white text-sm font-bold">Browse animals</Link>
               </div>
             )}
           </div>
@@ -342,7 +345,7 @@ function ChatPageContent() {
                     <p className="text-xs font-semibold text-content line-clamp-1">{activeThread.ad.title}</p>
                     <p className="text-xs font-bold text-primary">{formatPrice(activeThread.ad.price)}</p>
                   </div>
-                  <span className="hidden sm:flex items-center gap-1 text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-1 rounded-md shrink-0">
+                  <span className="hidden sm:flex items-center gap-1 text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-1 rounded-md shrink-0">
                     <ShieldAlert className="h-3 w-3" /> Never pay in advance
                   </span>
                 </Link>
@@ -360,7 +363,7 @@ function ChatPageContent() {
                     <p className="text-xs text-content-secondary mt-1">Ask if it&apos;s still available, or agree a time to see it. Never pay in advance.</p>
                     <div className="mt-3 flex flex-wrap justify-center gap-2">
                       {["Is this still available?", "What's your final price?", "Where can I see it?"].map((q) => (
-                        <button key={q} type="button" onClick={() => setInputText(q)} className="rounded-full border border-card-border bg-card px-3 py-1.5 text-xs font-semibold text-content hover:border-primary">{q}</button>
+                        <button key={q} type="button" onClick={() => setInputText(q)} className="rounded-full bg-card shadow-sm ring-1 ring-black/[0.03] px-3 py-1.5 text-xs font-semibold text-content hover:border-primary">{q}</button>
                       ))}
                     </div>
                   </div>
@@ -414,7 +417,7 @@ function ChatPageContent() {
                                   </button>
                                 </div>
                               ) : (
-                                <div className="text-[10px] uppercase font-bold text-content-tertiary bg-surface-secondary px-2.5 py-1.5 rounded-lg border border-card-border self-start">
+                                <div className="text-[11px] uppercase font-bold text-content-tertiary bg-surface-secondary px-2.5 py-1.5 rounded-lg border border-card-border self-start">
                                   Pending decision
                                 </div>
                               )

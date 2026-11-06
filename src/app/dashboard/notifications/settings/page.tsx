@@ -72,7 +72,7 @@ export default function NotificationsPage() {
       <AppBar title="Notification settings" subtitle="This device, what to tell you about, your devices" backHref="/dashboard/notifications" />
       <div className="wrap py-4 flex flex-col gap-4 pb-mobile-nav">
         {/* This device */}
-        <section className="rounded-2xl border border-card-border bg-card p-4">
+        <section className="rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] p-4">
           <div className="flex items-start gap-3">
             <span className={`h-11 w-11 shrink-0 rounded-xl grid place-items-center ${on ? "bg-primary/10 text-primary" : "bg-surface-secondary text-content-tertiary"}`}>
               {on ? <BellRing className="h-5 w-5" /> : <Bell className="h-5 w-5" />}
@@ -111,7 +111,7 @@ export default function NotificationsPage() {
         </section>
 
         {/* What to send */}
-        <section className="rounded-2xl border border-card-border bg-card p-4">
+        <section className="rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] p-4">
           <h2 className="text-sm font-bold text-content mb-1">What to notify me about</h2>
           <p className="text-xs text-content-secondary mb-3">Applies to all your devices.</p>
           <div className="flex flex-col divide-y divide-card-border/60">
@@ -134,7 +134,7 @@ export default function NotificationsPage() {
         </section>
 
         {/* Devices */}
-        <section className="rounded-2xl border border-card-border bg-card p-4">
+        <section className="rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] p-4">
           <h2 className="text-sm font-bold text-content mb-3">Your devices</h2>
           {data.devices.length === 0 ? (
             <p className="text-xs text-content-secondary">No device is receiving notifications yet.</p>
@@ -149,7 +149,7 @@ export default function NotificationsPage() {
                       <span className="block text-sm font-semibold text-content truncate">
                         {d.browser} · {d.os} {d.tail === tail && <span className="text-primary font-bold">· this device</span>}
                       </span>
-                      <span className="block text-[11px] text-content-tertiary">{d.place || "Location unknown"} · added {new Date(d.since).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
+                      <span className="block text-[12px] text-content-tertiary">{d.place || "Location unknown"} · added {new Date(d.since).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
                     </span>
                     <button onClick={() => removeDevice(d.id)} aria-label="Remove device" className="p-2 rounded-lg text-content-tertiary hover:text-danger hover:bg-surface-secondary"><Trash2 className="h-4 w-4" /></button>
                   </div>

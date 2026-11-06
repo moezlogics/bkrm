@@ -186,7 +186,7 @@ function Card({ icon: Icon, title, children }: { icon: React.ComponentType<{ cla
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[13px] font-semibold text-slate-700">{label}</span>
+      <span className="text-[14px] font-semibold text-slate-700">{label}</span>
       {children}
       {hint && <span className="text-xs text-slate-500">{hint}</span>}
     </label>

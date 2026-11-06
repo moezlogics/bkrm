@@ -7,6 +7,7 @@ import { getServerSession } from "@/lib/auth";
 import { getEntitlements } from "@/lib/plan";
 import dbConnect from "@/lib/mongodb";
 import { VERTICAL } from "@/vertical";
+import { getSectionCovers } from "@/lib/section-covers";
 
 export const metadata = {
   // It said "Sell your mobile" on every vertical (left over from the mobiles site).
@@ -25,7 +26,7 @@ export default async function PostPage() {
     const ent = await getEntitlements(session.userId).catch(() => null);
     if (ent && ent.listingsUsed >= ent.listingLimit) redirect(`/dashboard/plans?reason=limit&max=${ent.listingLimit}&free=${ent.isFree ? 1 : 0}`);
   }
-  const [data, loc] = await Promise.all([getWizardData(), getVisitorLocation()]);
+  const [data, loc, covers] = await Promise.all([getWizardData(), getVisitorLocation(), getSectionCovers()]);
   // Pre-fill where the seller is (OLX does the same); they can still change it.
-  return <PostWizard {...data} defaultCity={loc.city?.name ?? ""} defaultArea={loc.area?.name ?? ""} />;
+  return <PostWizard {...data} covers={covers} defaultCity={loc.city?.name ?? ""} defaultArea={loc.area?.name ?? ""} />;
 }

@@ -66,13 +66,13 @@ export default function AdminVerifications() {
 
   const Img = ({ src, label }: { src?: string; label: string }) => (
     <div className="flex flex-col gap-1">
-      <span className="text-[10px] font-bold uppercase tracking-wide text-content-tertiary">{label}</span>
+      <span className="text-[11px] font-bold uppercase tracking-wide text-content-tertiary">{label}</span>
       {src ? (
         <button onClick={() => setZoom(src)} className="aspect-[3/2] w-full rounded-lg overflow-hidden border border-card-border bg-surface-secondary hover:ring-2 hover:ring-primary/40" aria-label={`Open ${label}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt={label} className="h-full w-full object-cover" />
         </button>
-      ) : <div className="aspect-[3/2] rounded-lg border border-dashed border-card-border grid place-items-center text-[11px] text-content-tertiary">Not sent</div>}
+      ) : <div className="aspect-[3/2] rounded-lg border border-dashed border-card-border grid place-items-center text-[12px] text-content-tertiary">Not sent</div>}
     </div>
   );
 
@@ -102,21 +102,21 @@ export default function AdminVerifications() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <Link href={`/admin/users/${r._id}`} className="font-bold text-content hover:text-primary">{r.name}</Link>
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${r.status === "verified" ? "bg-emerald-50 text-emerald-700" : r.status === "rejected" ? "bg-red-50 text-red-600" : "bg-amber-50 text-amber-700"}`}>
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${r.status === "verified" ? "bg-emerald-50 text-emerald-700" : r.status === "rejected" ? "bg-red-50 text-red-600" : "bg-amber-50 text-amber-700"}`}>
                       {r.status === "pending" ? "Waiting" : r.status === "verified" ? "Approved" : "Rejected"}
                     </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-content-secondary mt-1.5">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-content-secondary mt-1.5">
                     <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" />{r.email}</span>
                     {r.phone && <span className="flex items-center gap-1" title={r.phoneFromAd ? "The number on their latest ad" : "The number on their account"}><Phone className="h-3.5 w-3.5" />{r.phone}{r.phoneFromAd ? " (on ads)" : ""}</span>}
                     <span className="flex items-center gap-1"><Package className="h-3.5 w-3.5" />{r.ads?.total ? `${r.ads.live} live / ${r.ads.total} ads` : "No ads yet"}</span>
                     {r.city && <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{r.city}</span>}
                   </div>
                 </div>
-                {r.doc?.submittedAt && <span className="shrink-0 flex items-center gap-1 text-[11px] text-content-tertiary"><Clock className="h-3.5 w-3.5" />{ago(r.doc.submittedAt)}</span>}
+                {r.doc?.submittedAt && <span className="shrink-0 flex items-center gap-1 text-[12px] text-content-tertiary"><Clock className="h-3.5 w-3.5" />{ago(r.doc.submittedAt)}</span>}
               </div>
 
-              <div className="rounded-xl bg-surface-secondary px-3 py-2 text-[12px] text-content-secondary flex flex-wrap gap-x-4 gap-y-1">
+              <div className="rounded-xl bg-surface-secondary px-3 py-2 text-[13px] text-content-secondary flex flex-wrap gap-x-4 gap-y-1">
                 <span className="flex items-center gap-1"><IdCard className="h-3.5 w-3.5" />{(r.doc?.docType || "cnic").toUpperCase()}</span>
                 <span className="flex items-center gap-1"><UserIcon className="h-3.5 w-3.5" />Name on card: <b className="text-content">{r.doc?.fullName || "not given"}</b></span>
                 {r.doc?.cnicNumber && (
@@ -126,7 +126,7 @@ export default function AdminVerifications() {
                 )}
               </div>
               {r.cnicReused && (
-                <p className="flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-[12px] text-amber-900">
+                <p className="flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-[13px] text-amber-900">
                   <TriangleAlert className="h-4 w-4 shrink-0 mt-px" /> This CNIC number was also sent from another account. Check it isn&apos;t a blocked seller coming back.
                 </p>
               )}
@@ -137,7 +137,7 @@ export default function AdminVerifications() {
                 {r.doc?.selfieImage && <Img src={r.doc.selfieImage} label="Selfie" />}
               </div>
 
-              {r.status === "rejected" && r.doc?.rejectionReason && <p className="text-[12px] text-red-600">Rejected: {r.doc.rejectionReason}</p>}
+              {r.status === "rejected" && r.doc?.rejectionReason && <p className="text-[13px] text-red-600">Rejected: {r.doc.rejectionReason}</p>}
 
               {r.status === "pending" && (
                 <div className="flex gap-2">
@@ -162,7 +162,7 @@ export default function AdminVerifications() {
             <p className="text-xs text-content-secondary">Pick a reason or write your own — the seller sees it and can upload again.</p>
             <div className="flex flex-col gap-1.5">
               {REASONS.map((t) => (
-                <button key={t} onClick={() => setReason(t)} className={`text-left text-[13px] rounded-lg border px-3 py-2 ${reason === t ? "border-primary bg-primary/5 text-content" : "border-card-border text-content-secondary hover:border-primary/50"}`}>{t}</button>
+                <button key={t} onClick={() => setReason(t)} className={`text-left text-[14px] rounded-lg border px-3 py-2 ${reason === t ? "border-primary bg-primary/5 text-content" : "border-card-border text-content-secondary hover:border-primary/50"}`}>{t}</button>
               ))}
             </div>
             <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2} maxLength={300} placeholder="Or write a reason…" className="rounded-lg border border-card-border p-3 text-sm outline-none focus:border-primary bg-surface resize-none" />

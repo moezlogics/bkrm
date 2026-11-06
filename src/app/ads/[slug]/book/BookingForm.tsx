@@ -1,15 +1,15 @@
 "use client";
 
 /**
- * The booking form. Service (qasai…): day → time → how many animals → where
- * → contact, with the estimate as you go. Share (hissa): how many shares →
- * the names → contact. A signed-out visitor's answers are kept while they
- * sign in. After sending: the booking code and what happens next.
+ * The booking screen. Service (qasai…): day → time → animals → address →
+ * contact, with the total as you go. Share (hissa): how many shares → the
+ * names → contact. A signed-out visitor's answers are kept while they sign
+ * in. After sending: the booking number and what happens next.
  */
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CalendarDays, Check, Clock, Loader2, MapPin, Minus, Plus, ShieldCheck, TriangleAlert, Users, BadgeCheck } from "lucide-react";
+import { Check, Loader2, MapPin, Minus, Plus, TriangleAlert, BadgeCheck, Copy, CalendarDays } from "lucide-react";
 import { AppBar } from "@/components/layout/AppChrome";
 import { PushNudge } from "@/components/push/PushNudge";
 import { askForPush } from "@/lib/push-client";
@@ -33,6 +33,12 @@ type Props = {
 
 const rs = (n: number) => `Rs ${Math.round(n).toLocaleString("en-US")}`;
 const DRAFT = (slug: string) => `booking_draft_${slug}`;
+/** "Early — right after Eid prayer" → ["Early", "right after Eid prayer"]; "Morning (9 am – 12 pm)" → ["Morning", "9 am – 12 pm"]. */
+const splitLabel = (s: string): [string, string] => {
+  const m = s.match(/^(.*?)\s*(?:—\s*(.*)|\((.*)\))$/);
+  return m ? [m[1], (m[2] || m[3] || "").trim()] : [s, ""];
+};
+const field = "w-full h-12 rounded-2xl bg-surface-secondary px-4 text-[15px] text-content placeholder:text-content-tertiary outline-none ring-1 ring-transparent focus:bg-white focus:ring-2 focus:ring-primary/40 transition";
 
 export function BookingForm({ kind, title, note, ad, days, eventDate, slots, units, shares, me }: Props) {
   const router = useRouter();
@@ -51,6 +57,7 @@ export function BookingForm({ kind, title, note, ad, days, eventDate, slots, uni
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<{ field?: string; message: string } | null>(null);
   const [done, setDone] = useState<{ code: string } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   // Answers typed before signing in come back after it.
   useEffect(() => {
@@ -94,7 +101,7 @@ export function BookingForm({ kind, title, note, ad, days, eventDate, slots, uni
       router.push(loginUrl(`/ads/${ad.slug}/book`));
       return;
     }
-    if (kind === "service" && !day) { setErr({ field: "day", message: "Choose the day" }); return; }
+    if (kind === "service" && !day) { setErr({ field: "day", message: "Choose a day" }); document.getElementById("bk-day")?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     if (kind === "service" && chosen?.pickDate && !date) { setErr({ field: "date", message: "Choose the date" }); return; }
     setBusy(true);
     try {
@@ -111,160 +118,222 @@ export function BookingForm({ kind, title, note, ad, days, eventDate, slots, uni
     } catch { setErr({ message: "We couldn't reach the server — check your connection" }); } finally { setBusy(false); }
   };
 
-  const input = (bad: boolean) => `w-full h-12 rounded-xl border px-3.5 text-[15px] outline-none bg-surface ${bad ? "border-danger" : "border-card-border focus:border-primary"}`;
   const bad = (f: string) => err?.field === f;
+  const errorFor = (...f: string[]) => (err && f.includes(err.field || "") ? err.message : "");
 
+  // ── Sent ────────────────────────────────────────────────────────────────
   if (done) {
+    const steps = [
+      `${ad.provider.name} gets your request now and confirms it.`,
+      "You get a notification with the answer; their number shows in your booking once confirmed.",
+      kind === "share" ? "Pay the organiser directly when you see the animal or its video." : "Pay in person after the work is done — never an advance.",
+    ];
     return (
       <>
         <AppBar title="Booking sent" backHref={`/ads/${ad.slug}`} />
-        <div className="max-w-lg mx-auto w-full px-4 py-6 flex flex-col gap-4">
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-            <span className="mx-auto grid place-items-center h-14 w-14 rounded-full bg-emerald-600 text-white"><Check className="h-7 w-7" /></span>
-            <h1 className="mt-3 text-xl font-bold text-slate-900">Booking sent</h1>
-            <p className="mt-1 text-sm text-slate-700">Your booking number is <b className="font-mono">{done.code}</b>.</p>
+        <div className="max-w-lg mx-auto w-full px-4 pt-8 pb-10 flex flex-col gap-5">
+          <div className="text-center">
+            <span className="mx-auto grid place-items-center h-20 w-20 rounded-full bg-primary-soft">
+              <span className="grid place-items-center h-14 w-14 rounded-full bg-primary text-white"><Check className="h-7 w-7 stroke-[3]" /></span>
+            </span>
+            <h1 className="mt-5 text-[24px] font-extrabold tracking-tight text-content">Request sent</h1>
+            <p className="mt-1 text-[14.5px] text-content-secondary">We&apos;ll let you know as soon as {ad.provider.name} replies.</p>
+            <button type="button" onClick={() => { navigator.clipboard?.writeText(done.code).then(() => setCopied(true)).catch(() => {}); }}
+              className="mt-4 inline-flex items-center gap-2 h-10 px-4 rounded-full bg-surface-secondary text-[15px] font-semibold text-content">
+              Booking no. <span className="font-mono font-bold">{done.code}</span>
+              {copied ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4 text-content-tertiary" />}
+            </button>
           </div>
-          <section className="rounded-2xl border border-card-border bg-card p-4">
-            <h2 className="text-sm font-bold text-content mb-2">What happens next</h2>
-            <ol className="flex flex-col gap-2 text-[13px] text-content-secondary">
-              <li className="flex gap-2"><span className="font-bold text-primary">1.</span> {ad.provider.name} gets your request straight away and confirms or declines it.</li>
-              <li className="flex gap-2"><span className="font-bold text-primary">2.</span> You get a notification and an email with the answer. Their number shows in your booking once confirmed.</li>
-              <li className="flex gap-2"><span className="font-bold text-primary">3.</span> {kind === "share" ? "Pay the organiser directly when you see the animal or its video and weight." : "Pay in person when the work is done. Never send an advance."}</li>
+
+          <section className="card p-5">
+            <h2 className="text-[15px] font-bold text-content">What happens next</h2>
+            <ol className="mt-3 flex flex-col gap-3.5">
+              {steps.map((s, i) => (
+                <li key={i} className="flex gap-3 text-[15px] text-content-secondary leading-snug">
+                  <span className="grid place-items-center h-6 w-6 rounded-full bg-primary-soft text-primary-dark text-[13px] font-bold shrink-0">{i + 1}</span>
+                  <span className="pt-0.5">{s}</span>
+                </li>
+              ))}
             </ol>
           </section>
+
           <PushNudge context="booking" />
-          <div className="grid grid-cols-2 gap-2">
-            <Link href="/dashboard/bookings" className="h-12 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold grid place-items-center">My bookings</Link>
-            <Link href={`/ads/${ad.slug}`} className="h-12 rounded-xl border border-card-border bg-card text-content font-semibold grid place-items-center">Back to the ad</Link>
+
+          <div className="grid grid-cols-2 gap-2.5">
+            <Link href="/dashboard/bookings" className="h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white font-bold grid place-items-center">My bookings</Link>
+            <Link href={`/ads/${ad.slug}`} className="h-12 rounded-2xl bg-surface-secondary text-content font-bold grid place-items-center">Back to ad</Link>
           </div>
         </div>
       </>
     );
   }
 
+  // ── Form ────────────────────────────────────────────────────────────────
+  const canSend = !(busy || full || me.isOwner || (kind === "service" && !totalUnits));
+
   return (
     <>
-      <AppBar title={title} subtitle={ad.name} backHref={`/ads/${ad.slug}`} />
-      <div className="max-w-lg mx-auto w-full px-4 py-4 pb-36 flex flex-col gap-5">
-        {/* The ad */}
-        <Link href={`/ads/${ad.slug}`} className="flex items-center gap-3 rounded-2xl border border-card-border bg-card p-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {ad.image ? <img src={ad.image} alt="" className="h-16 w-16 rounded-xl object-cover shrink-0" /> : <div className="h-16 w-16 rounded-xl bg-surface-secondary shrink-0" />}
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-content line-clamp-2">{ad.name}</p>
-            <p className="text-[12px] text-content-secondary flex items-center gap-1 mt-0.5">{ad.provider.name}{ad.provider.verified && <BadgeCheck className="h-3.5 w-3.5 text-primary" aria-label="Verified" />}</p>
-            {ad.place && <p className="text-[11px] text-content-tertiary flex items-center gap-1"><MapPin className="h-3 w-3" /> {ad.place}</p>}
-          </div>
-        </Link>
+      <AppBar title={title} backHref={`/ads/${ad.slug}`} />
+      <div className="max-w-lg mx-auto w-full px-4 pt-4 pb-40 flex flex-col gap-3">
 
-        {me.isOwner && <p className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2.5 text-sm text-amber-950">This is your own ad — you'll see bookings for it in <Link href="/dashboard/bookings?tab=received" className="font-bold underline">My bookings</Link>.</p>}
-        {full && <p className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2.5 text-sm text-amber-950">{kind === "share" ? "All shares on this animal are booked." : "Every day on this ad is fully booked."} Have a look at other ads in this section.</p>}
+        {/* Who you're booking */}
+        {kind === "share" ? (
+          <Link href={`/ads/${ad.slug}`} className="card overflow-hidden block">
+            {ad.image && (
+              <span className="relative block aspect-[16/9] bg-surface-tertiary">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={ad.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              </span>
+            )}
+            <span className="block p-4">
+              <span className="block text-[16px] font-bold text-content leading-snug line-clamp-2">{ad.name}</span>
+              <span className="mt-1 flex items-center gap-1.5 text-[14px] text-content-secondary">
+                {ad.provider.name}{ad.provider.verified && <BadgeCheck className="h-4 w-4 text-primary" aria-label="Verified" />}
+                {ad.place && <><span className="text-content-tertiary">·</span><MapPin className="h-3.5 w-3.5" />{ad.place}</>}
+              </span>
+              {shares && <ShareMeter total={shares.total} free={shares.available} />}
+            </span>
+          </Link>
+        ) : (
+          <Link href={`/ads/${ad.slug}`} className="card flex items-center gap-3.5 p-3.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {ad.image ? <img src={ad.image} alt="" className="h-16 w-16 rounded-2xl object-cover shrink-0" /> : <span className="h-16 w-16 rounded-2xl bg-surface-secondary shrink-0" />}
+            <span className="min-w-0">
+              <span className="flex items-center gap-1.5 text-[15.5px] font-bold text-content">
+                <span className="truncate">{ad.provider.name}</span>{ad.provider.verified && <BadgeCheck className="h-4 w-4 text-primary shrink-0" aria-label="Verified" />}
+              </span>
+              <span className="block text-[14px] text-content-secondary line-clamp-1 mt-0.5">{ad.name}</span>
+              {ad.place && <span className="mt-0.5 flex items-center gap-1 text-[13px] text-content-tertiary"><MapPin className="h-3 w-3" /> {ad.place}</span>}
+            </span>
+          </Link>
+        )}
+
+        {me.isOwner && <Notice>This is your own ad — bookings for it show in <Link href="/dashboard/bookings?tab=received" className="font-bold underline">My bookings</Link>.</Notice>}
+        {full && <Notice>{kind === "share" ? "All shares on this animal are booked." : "Every day on this ad is fully booked."} Have a look at other ads in this section.</Notice>}
 
         {kind === "service" ? (
           <>
-            <Step n={1} icon={CalendarDays} title="Which day?" error={bad("day") || bad("date") ? err!.message : ""}>
-              <div className="grid grid-cols-2 gap-2">
+            <Section id="bk-day" title="Day" error={errorFor("day", "date")}>
+              <div className="flex gap-2 overflow-x-auto hide-scrollbar snap-x scroll-px-0">
                 {days.map((d) => {
                   const off = d.past || d.left === 0;
                   const on = day === d.key;
+                  const status = d.past ? "Over" : d.left === 0 ? "Full" : d.left != null ? `${d.left} left` : "Open";
                   return (
-                    <button key={d.key} type="button" disabled={off} onClick={() => { setDay(d.key); setErr(null); }}
-                      className={`rounded-xl border p-3 text-left transition-colors disabled:opacity-45 ${on ? "border-primary bg-primary/5 ring-2 ring-primary/20" : "border-card-border bg-card hover:border-primary/50"}`}>
-                      <span className="block text-sm font-bold text-content">{d.label}</span>
-                      <span className="block text-[12px] text-content-secondary">{d.pickDate ? "Pick a date" : d.date ? shortDate(d.date) : ""}</span>
-                      <span className={`block text-[11px] font-semibold mt-1 ${d.past ? "text-content-tertiary" : d.left === 0 ? "text-danger" : d.left != null && d.left <= 3 ? "text-amber-600" : "text-emerald-600"}`}>
-                        {d.past ? "Over" : d.left === 0 ? "Fully booked" : d.left != null ? `${d.left} of ${d.capacity} left` : "Open"}
+                    <button key={d.key} type="button" disabled={off} onClick={() => { setDay(d.key); setErr(null); }} aria-pressed={on}
+                      className={`snap-start shrink-0 w-[104px] rounded-2xl p-3 text-left transition-colors disabled:opacity-40 ${on ? "bg-primary text-white" : "bg-surface-secondary text-content active:bg-surface-tertiary"}`}>
+                      <span className={`block text-[12.5px] font-semibold ${on ? "text-white/75" : "text-content-tertiary"}`}>{d.pickDate ? "Pick a date" : d.date ? shortDate(d.date) : ""}</span>
+                      <span className="block mt-0.5 text-[14.5px] font-bold leading-tight">{d.label}</span>
+                      <span className={`mt-2 inline-flex items-center gap-1 text-[12.5px] font-semibold ${on ? "text-white" : d.left === 0 ? "text-danger" : d.left != null && d.left <= 3 ? "text-amber-600" : "text-primary"}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${on ? "bg-white" : d.left === 0 || d.past ? "bg-content-tertiary" : d.left != null && d.left <= 3 ? "bg-amber-500" : "bg-primary"}`} />{status}
                       </span>
                     </button>
                   );
                 })}
               </div>
               {chosen?.pickDate && (
-                <input type="date" value={date} min={todayPk()} max={lastBefore || undefined} onChange={(e) => setDate(e.target.value)} className={`${input(bad("date"))} mt-2`} aria-label="Date" />
+                <label className="mt-2.5 flex items-center gap-3 h-12 rounded-2xl bg-surface-secondary px-4 focus-within:ring-2 focus-within:ring-primary/40">
+                  <CalendarDays className="h-[18px] w-[18px] text-content-tertiary" />
+                  <input type="date" value={date} min={todayPk()} max={lastBefore || undefined} onChange={(e) => setDate(e.target.value)} className="flex-1 bg-transparent outline-none text-[15px]" aria-label="Date" />
+                </label>
               )}
-            </Step>
+              {left != null && chosen && <p className="mt-2 text-[13.5px] text-content-tertiary">{left} {left === 1 ? "animal" : "animals"} can still be booked for {chosen.label}.</p>}
+            </Section>
 
             {slots.length > 0 && (
-              <Step n={2} icon={Clock} title="What time suits you?" hint="Optional — the provider confirms the exact time.">
-                <div className="flex flex-wrap gap-2">
-                  {slots.map((s) => (
-                    <button key={s.key} type="button" onClick={() => setSlot(slot === s.key ? "" : s.key)}
-                      className={`rounded-full border px-3.5 py-2 text-[13px] font-semibold ${slot === s.key ? "border-primary bg-primary text-white" : "border-card-border bg-card text-content hover:border-primary"}`}>
-                      {s.label}
-                    </button>
-                  ))}
+              <Section title="Time" aside="Optional">
+                <div className="grid grid-cols-2 gap-2">
+                  {slots.map((s) => {
+                    const [main, sub] = splitLabel(s.label);
+                    const on = slot === s.key;
+                    return (
+                      <button key={s.key} type="button" onClick={() => setSlot(on ? "" : s.key)} aria-pressed={on}
+                        className={`rounded-2xl px-3.5 py-3 text-left transition-colors ${on ? "bg-primary text-white" : "bg-surface-secondary text-content active:bg-surface-tertiary"}`}>
+                        <span className="block text-[15px] font-bold leading-tight">{main}</span>
+                        {sub && <span className={`block mt-0.5 text-[12.5px] leading-snug ${on ? "text-white/80" : "text-content-tertiary"}`}>{sub}</span>}
+                      </button>
+                    );
+                  })}
                 </div>
-              </Step>
+              </Section>
             )}
 
-            <Step n={3} icon={Users} title="How many animals?" error={bad("units") ? err!.message : ""} hint={left != null ? `${left} can still be booked for ${chosen?.label}.` : undefined}>
-              <div className="rounded-2xl border border-card-border bg-card divide-y divide-card-border">
+            <Section title="Animals" error={errorFor("units")}>
+              <div className="flex flex-col divide-y divide-card-border">
                 {units.map((u) => (
-                  <div key={u.key} className="flex items-center gap-3 px-3.5 py-3">
+                  <div key={u.key} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-content">{u.label}</p>
-                      <p className="text-[12px] text-content-secondary">{u.rate ? `${rs(u.rate)} each` : "Price on confirmation"}</p>
+                      <p className="text-[15px] font-semibold text-content">{u.label}</p>
+                      <p className="text-[13.5px] text-content-tertiary">{u.rate ? `${rs(u.rate)} each` : "Price on confirmation"}</p>
                     </div>
-                    <Stepper value={counts[u.key] || 0} onMinus={() => setCount(u.key, -1)} onPlus={() => setCount(u.key, 1)} label={u.label} />
+                    <Stepper value={counts[u.key] || 0} min={0} onMinus={() => setCount(u.key, -1)} onPlus={() => setCount(u.key, 1)} label={u.label} />
                   </div>
                 ))}
               </div>
-            </Step>
+            </Section>
 
-            <Step n={4} icon={MapPin} title="Where?" error={bad("address") ? err!.message : ""}>
-              <input value={area} onChange={(e) => setArea(e.target.value)} maxLength={80} placeholder="Area, e.g. Johar Town" className={input(false)} aria-label="Area" />
-              <textarea value={address} onChange={(e) => setAddress(e.target.value)} maxLength={300} rows={2} placeholder="House / street, and a landmark"
-                className={`w-full mt-2 rounded-xl border px-3.5 py-3 text-[15px] outline-none bg-surface ${bad("address") ? "border-danger" : "border-card-border focus:border-primary"}`} aria-label="Address" />
-            </Step>
+            <Section title="Address" error={errorFor("address")}>
+              <input value={area} onChange={(e) => setArea(e.target.value)} maxLength={80} placeholder="Area, e.g. Johar Town" className={field} aria-label="Area" />
+              <textarea value={address} onChange={(e) => setAddress(e.target.value)} maxLength={300} rows={2} placeholder="House, street and a landmark"
+                className={`${field} h-auto py-3 mt-2 resize-none ${bad("address") ? "!ring-2 !ring-danger/50" : ""}`} aria-label="Address" />
+            </Section>
           </>
         ) : shares && (
           <>
-            <Step n={1} icon={Users} title="How many hissay?" error={bad("shares") ? err!.message : ""} hint={`${shares.available} of ${shares.total} free${ad.price ? ` · ${rs(ad.price)} each` : ""}`}>
-              <div className="flex items-center justify-between rounded-2xl border border-card-border bg-card px-3.5 py-3">
-                <span className="text-sm font-semibold text-content">{nShares === 1 ? "1 hissa" : `${nShares} hissay`}</span>
-                <Stepper value={nShares} onMinus={() => setNShares((v) => Math.max(1, v - 1))} onPlus={() => setNShares((v) => Math.min(maxShares || 1, v + 1))} label="Shares" />
+            <Section title="Shares" error={errorFor("shares")}>
+              <div className="flex items-center gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[15px] font-semibold text-content">{nShares === 1 ? "1 hissa" : `${nShares} hissay`}</p>
+                  <p className="text-[13.5px] text-content-tertiary">{ad.price ? `${rs(ad.price)} each · ` : ""}up to {maxShares || 1}</p>
+                </div>
+                <Stepper value={nShares} min={1} onMinus={() => setNShares((v) => Math.max(1, v - 1))} onPlus={() => setNShares((v) => Math.min(maxShares || 1, v + 1))} label="Shares" />
               </div>
-            </Step>
-            <Step n={2} icon={ShieldCheck} title={shares.namesLabel} hint="Optional now — you can tell the organiser later.">
+            </Section>
+
+            <Section title={shares.namesLabel} aside="Optional">
               <div className="flex flex-col gap-2">
                 {Array.from({ length: nShares }).map((_, i) => (
                   <input key={i} value={names[i] || ""} maxLength={60} onChange={(e) => setNames((x) => { const y = [...x]; y[i] = e.target.value; return y; })}
-                    placeholder={`Hissa ${i + 1} — name`} className={input(false)} aria-label={`Name for hissa ${i + 1}`} />
+                    placeholder={`Hissa ${i + 1} — name`} className={field} aria-label={`Name for hissa ${i + 1}`} />
                 ))}
               </div>
-            </Step>
-            <Step n={3} icon={MapPin} title="Address for the meat (optional)">
-              <textarea value={address} onChange={(e) => setAddress(e.target.value)} maxLength={300} rows={2} placeholder="If the meat is delivered: house, street, area"
-                className="w-full rounded-xl border border-card-border px-3.5 py-3 text-[15px] outline-none bg-surface focus:border-primary" aria-label="Address" />
-            </Step>
+            </Section>
+
+            <Section title="Meat delivery address" aside="Optional">
+              <textarea value={address} onChange={(e) => setAddress(e.target.value)} maxLength={300} rows={2} placeholder="House, street, area"
+                className={`${field} h-auto py-3 resize-none`} aria-label="Address" />
+            </Section>
           </>
         )}
 
-        <Step n={kind === "service" ? 5 : 4} icon={ShieldCheck} title="Your details" error={bad("contactName") || bad("phone") ? err!.message : ""}>
-          <input value={contactName} onChange={(e) => setContactName(e.target.value)} maxLength={80} autoComplete="name" placeholder="Your name" className={input(bad("contactName"))} aria-label="Your name" />
-          <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel" placeholder="03XX XXXXXXX" className={`${input(bad("phone"))} mt-2`} aria-label="Mobile number" />
+        <Section title="Your details" error={errorFor("contactName", "phone")}>
+          <input value={contactName} onChange={(e) => setContactName(e.target.value)} maxLength={80} autoComplete="name" placeholder="Your name"
+            className={`${field} ${bad("contactName") ? "!ring-2 !ring-danger/50" : ""}`} aria-label="Your name" />
+          <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel" placeholder="Mobile number, 03XX XXXXXXX"
+            className={`${field} mt-2 ${bad("phone") ? "!ring-2 !ring-danger/50" : ""}`} aria-label="Mobile number" />
           <textarea value={msg} onChange={(e) => setMsg(e.target.value)} maxLength={500} rows={2} placeholder="Anything they should know (optional)"
-            className="w-full mt-2 rounded-xl border border-card-border px-3.5 py-3 text-sm outline-none bg-surface focus:border-primary" aria-label="Note" />
-          <p className="mt-1 text-[11px] text-content-tertiary">Only {ad.provider.name} sees your number, to arrange the booking.</p>
-        </Step>
+            className={`${field} h-auto py-3 mt-2 resize-none text-[15px]`} aria-label="Note" />
+          <p className="mt-2 text-[13px] text-content-tertiary">Only {ad.provider.name} sees your number.</p>
+        </Section>
 
-        {note && <p className="flex items-start gap-2 rounded-xl bg-surface-secondary px-3 py-2.5 text-[12px] text-content-secondary"><ShieldCheck className="h-4 w-4 text-primary shrink-0 mt-px" /> {note}</p>}
+        {note && <p className="px-1 text-[13.5px] text-content-tertiary leading-relaxed">{note}</p>}
         {err && !["day", "date", "units", "address", "contactName", "phone", "shares"].includes(err.field || "") && (
-          <p role="alert" className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-800"><TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" /> {err.message}</p>
+          <p role="alert" className="flex items-start gap-2 rounded-2xl bg-danger-light px-4 py-3 text-[15px] text-danger"><TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" /> {err.message}</p>
         )}
       </div>
 
-      {/* Sticky total + send */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur border-t border-card-border px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+      {/* Total + send */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-card-border px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
         <div className="max-w-lg mx-auto flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] text-content-tertiary">{kind === "share" ? (nShares === 1 ? "1 hissa" : `${nShares} hissay`) : totalUnits ? `${totalUnits} ${totalUnits === 1 ? "animal" : "animals"}` : "Nothing added"}{chosen ? ` · ${chosen.label}` : ""}</p>
-            <p className="text-lg font-bold text-content leading-tight">{est != null ? rs(est) : "Price on confirmation"}</p>
-            {est != null && <p className="text-[10px] text-content-tertiary">Estimate — paid in person</p>}
+            <p className="text-[13px] font-medium text-content-tertiary truncate">
+              {kind === "share" ? (nShares === 1 ? "1 hissa" : `${nShares} hissay`) : totalUnits ? `${totalUnits} ${totalUnits === 1 ? "animal" : "animals"}` : "No animals added"}{chosen ? ` · ${chosen.label}` : ""}
+            </p>
+            <p className="text-[20px] font-extrabold tracking-tight text-content leading-tight">{est != null ? rs(est) : "On confirmation"}</p>
           </div>
-          <button onClick={submit} disabled={busy || full || me.isOwner || (kind === "service" && !totalUnits)}
-            className="shrink-0 h-12 px-5 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold inline-flex items-center gap-2 disabled:opacity-50">
-            {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : me.signedIn ? "Send booking" : "Sign in to book"}
+          <button onClick={submit} disabled={!canSend}
+            className="shrink-0 h-[52px] px-6 rounded-2xl bg-primary hover:bg-primary-dark text-white text-[15px] font-bold inline-flex items-center gap-2 disabled:opacity-45 transition-colors">
+            {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : me.signedIn ? "Send request" : "Log in to book"}
           </button>
         </div>
       </div>
@@ -272,26 +341,49 @@ export function BookingForm({ kind, title, note, ad, days, eventDate, slots, uni
   );
 }
 
-function Step({ n, icon: Icon, title, hint, error, children }: { n: number; icon: React.ElementType; title: string; hint?: string; error?: string; children: React.ReactNode }) {
+function Section({ id, title, aside, error, children }: { id?: string; title: string; aside?: string; error?: string; children: React.ReactNode }) {
   return (
-    <section>
-      <div className="flex items-center gap-2 mb-2">
-        <span className="grid place-items-center h-6 w-6 rounded-full bg-primary/10 text-primary text-[11px] font-bold">{n}</span>
-        <Icon className="h-4 w-4 text-content-tertiary" />
-        <h2 className="text-sm font-bold text-content">{title}</h2>
+    <section id={id} className="card p-4">
+      <div className="flex items-baseline justify-between gap-2 mb-3">
+        <h2 className="text-[16px] font-bold text-content">{title}</h2>
+        {aside && <span className="text-[13px] font-medium text-content-tertiary">{aside}</span>}
       </div>
       {children}
-      {error ? <p className="mt-1.5 text-[12px] text-danger">{error}</p> : hint ? <p className="mt-1.5 text-[11px] text-content-tertiary">{hint}</p> : null}
+      {error && <p className="mt-2.5 text-[14px] font-medium text-danger">{error}</p>}
     </section>
   );
 }
 
-function Stepper({ value, onMinus, onPlus, label }: { value: number; onMinus: () => void; onPlus: () => void; label: string }) {
+function Notice({ children }: { children: React.ReactNode }) {
+  return <p className="rounded-2xl bg-amber-50 px-4 py-3 text-[15px] text-amber-950">{children}</p>;
+}
+
+/** Seven slots for an animal's shares: filled = taken, outlined = free. */
+function ShareMeter({ total, free }: { total: number; free: number }) {
+  const taken = Math.max(0, total - free);
   return (
-    <div className="flex items-center gap-1.5 shrink-0">
-      <button type="button" onClick={onMinus} aria-label={`Fewer: ${label}`} className="grid place-items-center h-9 w-9 rounded-full border border-card-border text-content hover:border-primary disabled:opacity-40" disabled={value <= 0}><Minus className="h-4 w-4" /></button>
-      <span className="w-7 text-center text-base font-bold tabular-nums text-content" aria-live="polite">{value}</span>
-      <button type="button" onClick={onPlus} aria-label={`More: ${label}`} className="grid place-items-center h-9 w-9 rounded-full bg-primary text-white hover:bg-primary-dark"><Plus className="h-4 w-4" /></button>
+    <span className="mt-3.5 block">
+      <span className="flex gap-1.5">
+        {Array.from({ length: total }).map((_, i) => (
+          <span key={i} className={`h-2 flex-1 rounded-full ${i < taken ? "bg-primary" : "bg-surface-tertiary"}`} />
+        ))}
+      </span>
+      <span className="mt-2 flex justify-between text-[13.5px] font-semibold">
+        <span className="text-content">{free} of {total} shares free</span>
+        <span className="text-content-tertiary">{taken} booked</span>
+      </span>
+    </span>
+  );
+}
+
+function Stepper({ value, min, onMinus, onPlus, label }: { value: number; min: number; onMinus: () => void; onPlus: () => void; label: string }) {
+  return (
+    <div className="flex items-center gap-1 shrink-0 rounded-full bg-surface-secondary p-1">
+      <button type="button" onClick={onMinus} aria-label={`Fewer: ${label}`} disabled={value <= min}
+        className="grid place-items-center h-9 w-9 rounded-full bg-white text-content shadow-sm disabled:opacity-35 disabled:shadow-none active:scale-90 transition-transform"><Minus className="h-4 w-4" /></button>
+      <span className="w-8 text-center text-[16px] font-bold tabular-nums text-content" aria-live="polite">{value}</span>
+      <button type="button" onClick={onPlus} aria-label={`More: ${label}`}
+        className="grid place-items-center h-9 w-9 rounded-full bg-primary text-white active:scale-90 transition-transform"><Plus className="h-4 w-4" /></button>
     </div>
   );
 }

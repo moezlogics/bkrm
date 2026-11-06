@@ -15,7 +15,7 @@ export function InfiniteListingFeed({
   initialListings,
   total,
   onLoadMore,
-  gridClassName = "grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3",
+  gridClassName = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4",
 }: Props) {
   const [items, setItems] = useState<any[]>(initialListings);
   const [page, setPage] = useState(1);

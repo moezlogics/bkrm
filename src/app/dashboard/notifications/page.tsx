@@ -133,7 +133,7 @@ export default function NotificationsPage() {
         backHref="/dashboard"
         right={<>
           {unread > 0 && (
-            <button onClick={readAll} disabled={busy === "all"} className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full text-[13px] font-semibold text-primary hover:bg-primary/5" aria-label="Mark all as read">
+            <button onClick={readAll} disabled={busy === "all"} className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full text-[14px] font-semibold text-primary hover:bg-primary/5" aria-label="Mark all as read">
               {busy === "all" ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCheck className="h-4 w-4" />} <span className="hidden sm:inline">Mark all read</span>
             </button>
           )}
@@ -146,7 +146,7 @@ export default function NotificationsPage() {
         {items === null ? (
           <div className="flex justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
         ) : items.length === 0 ? (
-          <div className="rounded-2xl border border-card-border bg-card px-6 py-14 text-center">
+          <div className="rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] px-6 py-14 text-center">
             <span className="mx-auto grid place-items-center h-14 w-14 rounded-full bg-surface-secondary text-content-tertiary"><Bell className="h-6 w-6" /></span>
             <p className="mt-3 font-semibold text-content">No notifications yet</p>
             <p className="mt-1 text-sm text-content-secondary">Offers, ad approvals, plan updates and reminders will show up here.</p>
@@ -154,8 +154,8 @@ export default function NotificationsPage() {
         ) : (
           groups.map(([label, rows]) => (
             <section key={label}>
-              <h2 className="px-1 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-content-tertiary">{label}</h2>
-              <div className="rounded-2xl border border-card-border bg-card overflow-hidden divide-y divide-card-border">
+              <h2 className="px-1 pb-1.5 text-[12px] font-semibold uppercase tracking-wider text-content-tertiary">{label}</h2>
+              <div className="rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] overflow-hidden divide-y divide-card-border">
                 {rows.map((n) => {
                   const look = LOOK[n.type] || { icon: Bell, tone: "bg-primary/10 text-primary" };
                   return (
@@ -163,8 +163,8 @@ export default function NotificationsPage() {
                       <span className={`grid place-items-center h-10 w-10 rounded-full shrink-0 ${look.tone}`}><look.icon className="h-4.5 w-4.5" /></span>
                       <span className="min-w-0 flex-1">
                         <span className={`block text-sm leading-snug ${n.read ? "font-medium text-content" : "font-semibold text-content"}`}>{n.title}</span>
-                        {n.body && <span className="block text-[13px] text-content-secondary leading-snug mt-0.5 line-clamp-3">{n.body}</span>}
-                        <span className="block text-[11px] text-content-tertiary mt-1" suppressHydrationWarning>{when(n.at)}</span>
+                        {n.body && <span className="block text-[14px] text-content-secondary leading-snug mt-0.5 line-clamp-3">{n.body}</span>}
+                        <span className="block text-[12px] text-content-tertiary mt-1" suppressHydrationWarning>{when(n.at)}</span>
                       </span>
                       {!n.read && <span className="mt-1.5 h-2.5 w-2.5 rounded-full bg-primary shrink-0" aria-label="Unread" />}
                     </button>
@@ -176,11 +176,11 @@ export default function NotificationsPage() {
         )}
 
         {more && (
-          <button onClick={loadMore} disabled={busy === "more"} className="h-11 rounded-xl border border-card-border bg-card text-sm font-semibold text-content hover:bg-surface-secondary inline-flex items-center justify-center gap-2">
+          <button onClick={loadMore} disabled={busy === "more"} className="h-11 rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] text-sm font-semibold text-content hover:bg-surface-secondary inline-flex items-center justify-center gap-2">
             {busy === "more" ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Show older
           </button>
         )}
-        <p className="text-center text-[11px] text-content-tertiary">Notifications are kept for 4 months. <Link href="/dashboard/notifications/settings" className="font-semibold text-primary">Choose what you get</Link></p>
+        <p className="text-center text-[12px] text-content-tertiary">Notifications are kept for 4 months. <Link href="/dashboard/notifications/settings" className="font-semibold text-primary">Choose what you get</Link></p>
       </div>
     </>
   );

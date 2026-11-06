@@ -13,7 +13,7 @@ import { VERTICAL } from "@/vertical";
 type City = { name: string; slug: string };
 type Area = { name: string; slug: string };
 
-const field = "h-11 w-full rounded-xl border border-card-border bg-card px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15";
+const field = "h-11 w-full rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15";
 const label = "text-xs font-semibold text-content-secondary";
 
 export default function ProfilePage() {
@@ -113,8 +113,8 @@ export default function ProfilePage() {
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-content">Profile photo</span>
               <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={() => fileRef.current?.click()} className="h-8 px-3 rounded-lg border border-card-border bg-card text-xs font-semibold hover:border-primary">Upload</button>
-                <button type="button" onClick={() => setPicker(true)} className="h-8 px-3 rounded-lg border border-card-border bg-card text-xs font-semibold hover:border-primary inline-flex items-center gap-1"><Images className="h-3.5 w-3.5" /> My uploads</button>
+                <button type="button" onClick={() => fileRef.current?.click()} className="h-8 px-3 rounded-lg bg-card shadow-sm ring-1 ring-black/[0.03] text-xs font-semibold hover:border-primary">Upload</button>
+                <button type="button" onClick={() => setPicker(true)} className="h-8 px-3 rounded-lg bg-card shadow-sm ring-1 ring-black/[0.03] text-xs font-semibold hover:border-primary inline-flex items-center gap-1"><Images className="h-3.5 w-3.5" /> My uploads</button>
                 {form.profileImage && <button type="button" onClick={() => set("profileImage", "")} className="h-8 px-2 text-xs font-semibold text-content-tertiary hover:text-red-600">Remove</button>}
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function ProfilePage() {
               <label htmlFor="phone-input" className={label}>Mobile number</label>
               <input id="phone-input" type="tel" inputMode="tel" autoComplete="tel" value={form.phoneNumber} onChange={(e) => set("phoneNumber", e.target.value)} placeholder="03XX XXXXXXX"
                 className={`${field} ${!initial.phoneNumber ? "border-amber-400" : ""}`} />
-              <p className="text-[11px] text-content-tertiary">
+              <p className="text-[12px] text-content-tertiary">
                 {initial.phoneNumber ? "Pre-filled as the contact number when you post an ad." : "Add your number to verify your account — it's also pre-filled when you post an ad. It isn't shown publicly."}
               </p>
             </div>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="seller-bio" className={label}>About you as a seller <span className="font-normal text-content-tertiary">(shown on your seller page)</span></label>
                 <textarea id="seller-bio" value={form.bio} onChange={(e) => set("bio", e.target.value)} rows={3} maxLength={300} placeholder={`e.g. Selling genuine ${VERTICAL.noun.many} since 2018 — meet in Gulberg.`} className={`${field} h-auto py-3 resize-none`} />
-                <span className="text-[11px] text-content-tertiary self-end">{form.bio.length}/300</span>
+                <span className="text-[12px] text-content-tertiary self-end">{form.bio.length}/300</span>
               </div>
             )}
           </div>
@@ -211,12 +211,12 @@ function PasswordSection() {
   };
 
   return (
-    <section id="security" className="scroll-mt-20 rounded-2xl border border-card-border bg-card p-4 flex flex-col gap-3">
+    <section id="security" className="scroll-mt-20 rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] p-4 flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <KeyRound className="h-4 w-4 text-primary" />
         <h2 className="text-sm font-semibold text-content">{hasPassword === false ? "Set a password" : "Change password"}</h2>
       </div>
-      {hasPassword === false && <p className="text-[11px] text-content-tertiary">You signed up with Google. Set a password to also log in with your email.</p>}
+      {hasPassword === false && <p className="text-[12px] text-content-tertiary">You signed up with Google. Set a password to also log in with your email.</p>}
       {hasPassword && (
         <input type={show ? "text" : "password"} value={cur} onChange={(e) => setCur(e.target.value)} placeholder="Current password" autoComplete="current-password" className={field} />
       )}

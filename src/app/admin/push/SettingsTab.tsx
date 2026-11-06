@@ -66,7 +66,7 @@ export function SettingsTab({ data, reload }: { data: any; reload: () => void })
           <ImageField label="Notification icon" value={cfg.icon} onChange={(v) => set({ icon: v })} folder="general" admin aspect="square" />
           <ImageField label="Status-bar icon (Android, plain white on transparent)" value={cfg.badge} onChange={(v) => set({ badge: v })} folder="general" admin aspect="square" />
         </div>
-        <p className="text-[11px] text-content-tertiary -mt-2">Leave the icon empty to use the site logo/favicon automatically.</p>
+        <p className="text-[12px] text-content-tertiary -mt-2">Leave the icon empty to use the site logo/favicon automatically.</p>
       </div>
 
       <div className={`${card} flex flex-col gap-4`}>
@@ -78,7 +78,7 @@ export function SettingsTab({ data, reload }: { data: any; reload: () => void })
             <option value="card">Our card first, then the browser&apos;s prompt (recommended)</option>
             <option value="browser">The browser&apos;s prompt straight away</option>
           </select>
-          <p className="text-[11px] text-content-tertiary mt-1">
+          <p className="text-[12px] text-content-tertiary mt-1">
             {cfg.prompt.style === "browser"
               ? "Chrome, Edge and Android show the browser's prompt directly; Firefox and Safari still need a tap, so they see the card. If people often close the browser's prompt, Chrome starts blocking it for the whole domain — including any other push service on it."
               : "“Not now” on our card doesn't count against the domain, so the browser's prompt stays available — safest when the domain also runs another push service."}
@@ -101,7 +101,7 @@ export function SettingsTab({ data, reload }: { data: any; reload: () => void })
           <p className="text-xs font-bold text-content-tertiary uppercase tracking-wider">Wording right after an action</p>
           {CONTEXTS.map(({ k, when: w }) => (
             <div key={k} className="grid grid-cols-1 lg:grid-cols-2 gap-3 rounded-xl bg-surface-secondary p-3">
-              <div className="lg:col-span-2 text-[11px] font-semibold text-content-secondary capitalize">{k} — {w}</div>
+              <div className="lg:col-span-2 text-[12px] font-semibold text-content-secondary capitalize">{k} — {w}</div>
               <input className={input} value={cfg.prompt.contexts[k]?.title || ""} onChange={(e) => setContext(k, { title: e.target.value })} placeholder="Title" />
               <input className={input} value={cfg.prompt.contexts[k]?.body || ""} onChange={(e) => setContext(k, { body: e.target.value })} placeholder="Message" />
             </div>
@@ -122,12 +122,12 @@ export function SettingsTab({ data, reload }: { data: any; reload: () => void })
           <div>
             <label className={label}>View milestones</label>
             <input className={`${input} mt-1`} value={cfg.milestones} onChange={(e) => set({ milestones: e.target.value })} />
-            <p className="text-[11px] text-content-tertiary mt-1">Tell a seller when their ad passes these view counts.</p>
+            <p className="text-[12px] text-content-tertiary mt-1">Tell a seller when their ad passes these view counts.</p>
           </div>
           <div>
             <label className={label}>Price drop must be at least (%)</label>
             <input type="number" min={1} max={90} className={`${input} mt-1`} value={cfg.priceDropMinPct} onChange={(e) => set({ priceDropMinPct: Number(e.target.value) })} />
-            <p className="text-[11px] text-content-tertiary mt-1">Smaller cuts don&apos;t notify the people who saved the ad.</p>
+            <p className="text-[12px] text-content-tertiary mt-1">Smaller cuts don&apos;t notify the people who saved the ad.</p>
           </div>
         </div>
       </div>

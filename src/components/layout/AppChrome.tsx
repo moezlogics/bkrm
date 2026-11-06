@@ -48,14 +48,14 @@ export function AppBar({
     else router.push(backHref);
   };
   return (
-    <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-card-border pt-[env(safe-area-inset-top)]">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-card-border pt-[env(safe-area-inset-top)]">
       <div className="h-14 max-w-5xl mx-auto px-2 sm:px-4 flex items-center gap-1">
         <button type="button" onClick={back} className="grid place-items-center h-10 w-10 rounded-full hover:bg-surface-secondary active:bg-surface-tertiary shrink-0" aria-label="Back">
-          <ArrowLeft className="h-5 w-5 text-content" />
+          <ArrowLeft className="h-[22px] w-[22px] text-content" />
         </button>
         <div className="min-w-0 flex-1 px-1">
-          <h1 className="text-[15px] font-semibold text-content truncate leading-tight">{title}</h1>
-          {subtitle && <p className="text-[11px] text-content-tertiary truncate">{subtitle}</p>}
+          <h1 className="text-[16.5px] font-bold text-content truncate leading-tight">{title}</h1>
+          {subtitle && <p className="text-[13px] text-content-tertiary truncate">{subtitle}</p>}
         </div>
         {right && <div className="flex items-center gap-1 shrink-0">{right}</div>}
       </div>

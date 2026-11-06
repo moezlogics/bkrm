@@ -549,7 +549,7 @@ export default function AdminCategoriesPage() {
                       </button>
                     ))}
                   </div>
-                  <p className="text-[11px] text-content-tertiary">
+                  <p className="text-[12px] text-content-tertiary">
                     {form.icon && (CATEGORY_ICONS as any)[form.icon] ? (CATEGORY_ICONS as any)[form.icon].label : "Shown on the homepage tiles and in the sell flow."}
                   </p>
                 </div>
@@ -653,7 +653,7 @@ export default function AdminCategoriesPage() {
                   placeholder="used, new"
                   className="bg-surface-secondary border border-card-border rounded-xl px-4 py-3 text-sm outline-none text-content focus:border-primary"
                 />
-                <p className="text-[11px] text-content-tertiary">
+                <p className="text-[12px] text-content-tertiary">
                   Comma-separated. Leave empty for verticals with no condition
                   (Jobs/Property).
                 </p>

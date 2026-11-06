@@ -264,8 +264,8 @@ function ListingsPage() {
                           </div>
                           {(r.spamScore > 0 || r.flagReasons.length > 0) && (
                             <div className="mt-1.5 flex flex-wrap gap-1">
-                              {r.spamScore > 0 && <span className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-bold border ${r.spamScore >= 55 ? "bg-rose-50 text-rose-700 border-rose-200" : "bg-amber-50 text-amber-700 border-amber-200"}`}><AlertTriangle className="h-3 w-3" />Risk {r.spamScore}</span>}
-                              {r.flagReasons.slice(0, 4).map((f) => <span key={f} className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-surface-secondary border border-card-border text-content-secondary">{f}</span>)}
+                              {r.spamScore > 0 && <span className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[12px] font-bold border ${r.spamScore >= 55 ? "bg-rose-50 text-rose-700 border-rose-200" : "bg-amber-50 text-amber-700 border-amber-200"}`}><AlertTriangle className="h-3 w-3" />Risk {r.spamScore}</span>}
+                              {r.flagReasons.slice(0, 4).map((f) => <span key={f} className="rounded px-1.5 py-0.5 text-[12px] font-semibold bg-surface-secondary border border-card-border text-content-secondary">{f}</span>)}
                             </div>
                           )}
                         </div>
@@ -280,8 +280,8 @@ function ListingsPage() {
                             {r.seller.blocked && <Ban className="h-3.5 w-3.5 text-danger shrink-0" aria-label="Blocked" />}
                           </Link>
                           <div className="text-xs text-content-secondary">{r.seller.phone || r.seller.email}</div>
-                          <div className="text-[11px] text-content-secondary">Member since {fmtDate(r.seller.since)}</div>
-                          {!seller && <Link href={`/admin/listings?seller=${r.seller._id}`} className="text-[11px] font-bold text-primary hover:underline">Their ads</Link>}
+                          <div className="text-[12px] text-content-secondary">Member since {fmtDate(r.seller.since)}</div>
+                          {!seller && <Link href={`/admin/listings?seller=${r.seller._id}`} className="text-[12px] font-bold text-primary hover:underline">Their ads</Link>}
                         </>
                       ) : <span className="text-content-secondary">Unknown</span>}
                     </td>
@@ -292,11 +292,11 @@ function ListingsPage() {
                     </td>
                     <td className="py-4 px-3 whitespace-nowrap">
                       <span className={`inline-block rounded px-2 py-1 text-xs font-bold border ${BADGE[r.status]?.cls || ""}`}>{r.blockHidden ? "Hidden (seller blocked)" : BADGE[r.status]?.label || r.status}</span>
-                      {r.isDemo && <span className="ml-1 inline-block rounded px-1.5 py-0.5 text-[10px] font-bold border border-card-border text-content-secondary">Demo</span>}
-                      <div className="text-[11px] text-content-secondary mt-1">Posted {fmtDate(r.createdAt)}</div>
-                      {r.status === "approved" && r.expiresAt && <div className="text-[11px] text-content-secondary">Expires {fmtDate(r.expiresAt)}</div>}
-                      {r.status === "expired" && r.expiresAt && <div className="text-[11px] text-content-secondary">Expired {fmtDate(r.expiresAt)}</div>}
-                      {r.status === "sold out" && r.soldAt && <div className="text-[11px] text-content-secondary">Sold {fmtDate(r.soldAt)}</div>}
+                      {r.isDemo && <span className="ml-1 inline-block rounded px-1.5 py-0.5 text-[11px] font-bold border border-card-border text-content-secondary">Demo</span>}
+                      <div className="text-[12px] text-content-secondary mt-1">Posted {fmtDate(r.createdAt)}</div>
+                      {r.status === "approved" && r.expiresAt && <div className="text-[12px] text-content-secondary">Expires {fmtDate(r.expiresAt)}</div>}
+                      {r.status === "expired" && r.expiresAt && <div className="text-[12px] text-content-secondary">Expired {fmtDate(r.expiresAt)}</div>}
+                      {r.status === "sold out" && r.soldAt && <div className="text-[12px] text-content-secondary">Sold {fmtDate(r.soldAt)}</div>}
                     </td>
                     <td className="py-4 px-3">
                       <div className="flex items-center justify-end gap-1.5 flex-wrap">

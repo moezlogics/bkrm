@@ -38,8 +38,8 @@ import mongoose from "mongoose";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const fileEnv = fs.existsSync(path.join(ROOT, ".env.local"))
   ? Object.fromEntries(fs.readFileSync(path.join(ROOT, ".env.local"), "utf8").split(/\r?\n/)
-      .filter((l) => /^[A-Z0-9_]+=/.test(l))
-      .map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1).trim().replace(/^"|"$/g, "")]))
+    .filter((l) => /^[A-Z0-9_]+=/.test(l))
+    .map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1).trim().replace(/^"|"$/g, "")]))
   : {};
 const env = (k) => process.env[k] || fileEnv[k] || "";
 const URI = env("MONGODB_URI");
@@ -54,6 +54,7 @@ const args = process.argv.slice(2);
 const has = (f) => args.includes(f);
 const listArg = (flag) => args.flatMap((a, i) => (a === flag && args[i + 1] ? [args[i + 1]] : []));
 const WITH_CONTENT = has("--with-content");
+const INCLUDE_DEMO = has("--include-demo");
 const KEEP_PASSWORDS = has("--keep-passwords");
 const drop = new Set(listArg("--drop-category"));
 const rename = new Map(listArg("--rename-category").map((s) => [s.slice(0, s.indexOf("=")), s.slice(s.indexOf("=") + 1)]));
@@ -88,13 +89,14 @@ for (const name of STRUCTURE) {
 // ───────────── content (+ photos into cdn/data) ─────────────
 const urlMap = new Map(); // old URL → new URL
 if (WITH_CONTENT) {
-  const users =(await db.collection("users").find({ role: { $ne: "admin" }, isDemo: { $ne: true } }).toArray());
+  const demoFilter = INCLUDE_DEMO ? {} : { isDemo: { $ne: true } };
+  const users = (await db.collection("users").find({ role: { $ne: "admin" }, ...demoFilter }).toArray());
   const userIds = new Set(users.map((u) => String(u._id)));
   for (const u of users) {
     delete u.lastLoginIp;
     if (!KEEP_PASSWORDS) u.password = `!${randomBytes(24).toString("hex")}`; // no hash matches → nobody can sign in with it
   }
-  const listings = (await db.collection("listings").find({ isDemo: { $ne: true } }).toArray()).filter((l) => userIds.has(String(l.userId)));
+  const listings = (await db.collection("listings").find(demoFilter).toArray()).filter((l) => userIds.has(String(l.userId)));
   // Listings in a dropped category move up to the nearest category that stays.
   const catIds = new Set(bundle.collections.categories.map((c) => String(c._id)));
   const allCats = new Map((await db.collection("categories").find({}).project({ parentCategoryId: 1 }).toArray()).map((c) => [String(c._id), c]));
@@ -154,8 +156,10 @@ if (WITH_CONTENT) {
         const url = m.isPrivate ? `${base}/media/p/${m._id}` : it.url.replace(cdn.publicUrl, TOKEN);
         const thumbUrl = m.isPrivate ? url : (it.thumbUrl || it.url).replace(cdn.publicUrl, TOKEN);
         urlMap.set(m.url, url); if (m.thumbUrl) urlMap.set(m.thumbUrl, thumbUrl);
-        Object.assign(m, { url, thumbUrl, key: it.key, driver: "cdn", mime: it.mime || m.mime, width: it.width || m.width, height: it.height || m.height,
-          sizeBytes: it.sizeBytes || m.sizeBytes, placeholder: it.placeholder || m.placeholder || "", color: it.color || m.color || "", aiStatus: "skipped" });
+        Object.assign(m, {
+          url, thumbUrl, key: it.key, driver: "cdn", mime: it.mime || m.mime, width: it.width || m.width, height: it.height || m.height,
+          sizeBytes: it.sizeBytes || m.sizeBytes, placeholder: it.placeholder || m.placeholder || "", color: it.color || m.color || "", aiStatus: "skipped"
+        });
         uploaded++;
         if ((i + 1) % 100 === 0) console.log(`  ${i + 1}/${local.length} photos → cdn/data`);
       }
@@ -218,8 +222,10 @@ async function startCdn() {
   const publicUrl = "https://cdn.export.invalid";
   const child = spawn(process.execPath, [entry], {
     cwd: CDN_DIR,
-    env: { ...process.env, NODE_ENV: "development", PORT: String(port), DATA_DIR: CDN_DATA, CDN_API_KEYS: key,
-      CDN_SIGNING_SECRET: randomBytes(24).toString("hex"), CDN_PUBLIC_URL: publicUrl, AI_ENABLED: "false", OPENAI_API_KEY: "", WEBHOOK_URL: "" },
+    env: {
+      ...process.env, NODE_ENV: "development", PORT: String(port), DATA_DIR: CDN_DATA, CDN_API_KEYS: key,
+      CDN_SIGNING_SECRET: randomBytes(24).toString("hex"), CDN_PUBLIC_URL: publicUrl, AI_ENABLED: "false", OPENAI_API_KEY: "", WEBHOOK_URL: ""
+    },
     stdio: "ignore",
   });
   const url = `http://127.0.0.1:${port}`;

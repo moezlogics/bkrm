@@ -34,7 +34,7 @@ export function VerifiedTick({
   return (
     <span className={cn("inline-flex items-center gap-1 text-blue-700", className)} title={title}>
       {seal}
-      <span className="text-[11px] font-bold">Verified</span>
+      <span className="text-[12px] font-bold">Verified</span>
     </span>
   );
 }

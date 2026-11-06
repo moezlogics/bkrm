@@ -239,7 +239,7 @@ function SearchPageContent() {
       </div>
 
       <div className="flex gap-5 items-start">
-        <aside className="hidden lg:block w-64 shrink-0 rounded-lg sm:rounded-xl border border-card-border bg-card p-5 sticky top-[calc(var(--header-height)+12px)] max-h-[calc(100vh-var(--header-height)-24px)] overflow-y-auto shadow-xs">
+        <aside className="hidden lg:block w-64 shrink-0 rounded-lg sm:rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-5 sticky top-[calc(var(--header-height)+12px)] max-h-[calc(100vh-var(--header-height)-24px)] overflow-y-auto shadow-xs">
           {filtersContent}
         </aside>
 
@@ -248,7 +248,7 @@ function SearchPageContent() {
             <div className="grid place-items-center py-24"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
           ) : listings.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">
                 {listings.map((ad: any) => <ListingCard key={ad._id} ad={ad} />)}
               </div>
               {page < totalPages && (

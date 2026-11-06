@@ -54,7 +54,7 @@ export function OwnerPanel({ o }: { o: OwnerInfo }) {
     <section aria-label="Your ad" className="rounded-xl border border-primary/30 bg-card p-4 flex flex-col gap-3 shadow-xs">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-content-tertiary">Your ad</p>
+          <p className="text-[12px] font-semibold uppercase tracking-wider text-content-tertiary">Your ad</p>
           <p className="text-sm font-bold text-content flex items-center gap-1.5 mt-0.5">
             {live ? <><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Live — buyers can see it</>
               : o.status === "review" ? <><Clock className="h-4 w-4 text-amber-600" /> Being checked — usually within a few hours</>
@@ -63,12 +63,12 @@ export function OwnerPanel({ o }: { o: OwnerInfo }) {
               : <>Not approved — see My ads for why</>}
           </p>
         </div>
-        {featured && <span className="shrink-0 inline-flex items-center gap-1 rounded-md bg-amber-50 text-amber-700 px-2 py-1 text-[11px] font-bold"><Zap className="h-3 w-3" /> Featured</span>}
+        {featured && <span className="shrink-0 inline-flex items-center gap-1 rounded-md bg-amber-50 text-amber-700 px-2 py-1 text-[12px] font-bold"><Zap className="h-3 w-3" /> Featured</span>}
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-center">
         {[["Views", o.views], ["Buyers in touch", o.leads], ["Saves", o.saves]].map(([l, v]) => (
-          <div key={l as string} className="rounded-lg bg-surface-secondary py-2"><p className="text-base font-bold text-content tabular-nums">{Number(v).toLocaleString("en-US")}</p><p className="text-[10px] text-content-tertiary">{l}</p></div>
+          <div key={l as string} className="rounded-lg bg-surface-secondary py-2"><p className="text-base font-bold text-content tabular-nums">{Number(v).toLocaleString("en-US")}</p><p className="text-[11px] text-content-tertiary">{l}</p></div>
         ))}
       </div>
 
@@ -77,7 +77,7 @@ export function OwnerPanel({ o }: { o: OwnerInfo }) {
           <span className="grid place-items-center h-9 w-9 rounded-full bg-white/15 shrink-0"><Sparkles className="h-4.5 w-4.5" /></span>
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-bold leading-tight">{justPosted ? "Your ad is live! Reach up to 3x more buyers" : "Reach up to 3x more buyers"}</span>
-            <span className="block text-[11px] text-white/85">Feature it — shown first in search and on the home page.</span>
+            <span className="block text-[12px] text-white/85">Feature it — shown first in search and on the home page.</span>
           </span>
         </Link>
       ) : o.boostsLeft > 0 ? (
@@ -95,7 +95,7 @@ export function OwnerPanel({ o }: { o: OwnerInfo }) {
         </button>
         <Link href="/dashboard/seller" className="h-10 rounded-lg border border-card-border text-xs font-bold text-content inline-flex items-center justify-center gap-1.5 hover:border-primary"><LayoutList className="h-3.5 w-3.5" /> My ads</Link>
       </div>
-      <p className="text-[11px] text-content-tertiary flex items-center gap-1"><Eye className="h-3 w-3" /> Only you see this box.</p>
+      <p className="text-[12px] text-content-tertiary flex items-center gap-1"><Eye className="h-3 w-3" /> Only you see this box.</p>
     </section>
   );
 }

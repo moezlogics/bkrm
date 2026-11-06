@@ -87,19 +87,19 @@ export function AdminLoginForm({ siteName, logo, color }: { siteName: string; lo
               <span className="grid place-items-center h-11 w-11 rounded-xl text-white shrink-0" style={{ background: color }}><ShieldCheck className="h-5.5 w-5.5" /></span>
               <div>
                 <h1 className="text-xl font-bold leading-tight">Admin sign-in</h1>
-                <p className="text-[13px] text-slate-500">For site administrators only.</p>
+                <p className="text-[14px] text-slate-500">For site administrators only.</p>
               </div>
             </div>
 
             {error && (
-              <div role="alert" className="mb-4 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-[13px] font-medium text-red-700">
+              <div role="alert" className="mb-4 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-[14px] font-medium text-red-700">
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" /> <span>{error}</span>
               </div>
             )}
 
             <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="admin-email" className="text-[13px] font-semibold text-slate-700">Email</label>
+                <label htmlFor="admin-email" className="text-[14px] font-semibold text-slate-700">Email</label>
                 <div className={field}>
                   <Mail className="h-4.5 w-4.5 text-slate-400 shrink-0" />
                   <input id="admin-email" type="email" autoComplete="username" inputMode="email" autoFocus required value={email}
@@ -108,7 +108,7 @@ export function AdminLoginForm({ siteName, logo, color }: { siteName: string; lo
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="admin-password" className="text-[13px] font-semibold text-slate-700">Password</label>
+                <label htmlFor="admin-password" className="text-[14px] font-semibold text-slate-700">Password</label>
                 <div className={field}>
                   <Lock className="h-4.5 w-4.5 text-slate-400 shrink-0" />
                   <input id="admin-password" type={show ? "text" : "password"} autoComplete="current-password" required value={password}
@@ -117,7 +117,7 @@ export function AdminLoginForm({ siteName, logo, color }: { siteName: string; lo
                     {show ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
                   </button>
                 </div>
-                {caps && <p className="text-[12px] font-medium text-amber-700">Caps Lock is on</p>}
+                {caps && <p className="text-[13px] font-medium text-amber-700">Caps Lock is on</p>}
               </div>
 
               {/* Honeypot: hidden from people and screen readers; bots fill it in. */}
@@ -128,13 +128,13 @@ export function AdminLoginForm({ siteName, logo, color }: { siteName: string; lo
               </button>
             </form>
 
-            <p className="mt-5 text-[12px] leading-relaxed text-slate-500 flex items-start gap-2">
+            <p className="mt-5 text-[13px] leading-relaxed text-slate-500 flex items-start gap-2">
               <ShieldCheck className="h-4 w-4 shrink-0 mt-px text-emerald-600" />
               Failed attempts are limited, and every admin sign-in is emailed to the account owner.
             </p>
           </div>
 
-          <a href={withBasePath("/")} className="mt-6 inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-500 hover:text-slate-800">
+          <a href={withBasePath("/")} className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-semibold text-slate-500 hover:text-slate-800">
             <ArrowLeft className="h-4 w-4" /> Back to {siteName}
           </a>
         </div>

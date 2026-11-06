@@ -80,7 +80,7 @@ export function ReviewSection({ sellerId, sellerName, initial }: { sellerId: str
       <div className="flex items-center justify-between gap-3 mb-3">
         <div>
           <h2 className="text-base sm:text-lg font-bold text-content">Reviews ({reviews.length})</h2>
-          {reviews.length > 0 && <p className="text-[11px] text-content-tertiary">{verifiedCount} from verified members</p>}
+          {reviews.length > 0 && <p className="text-[12px] text-content-tertiary">{verifiedCount} from verified members</p>}
         </div>
         {!isOwn && (
           <button onClick={rate} className="inline-flex items-center gap-1.5 rounded-lg border border-card-border px-3 py-1.5 text-sm font-semibold text-content hover:border-primary hover:text-primary">
@@ -96,7 +96,7 @@ export function ReviewSection({ sellerId, sellerName, initial }: { sellerId: str
       ) : (
         <div className="flex flex-col gap-2">
           {reviews.map((rv) => (
-            <div key={rv._id} className="rounded-xl border border-card-border bg-card p-3.5 flex gap-3">
+            <div key={rv._id} className="rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-3.5 flex gap-3">
               <div className={`h-9 w-9 rounded-full grid place-items-center font-bold shrink-0 ${rv.verified ? "bg-primary/10 text-primary" : "bg-surface-secondary text-content-secondary"}`}>
                 {rv.reviewer?.name?.[0]?.toUpperCase() || "?"}
               </div>
@@ -105,15 +105,15 @@ export function ReviewSection({ sellerId, sellerName, initial }: { sellerId: str
                   <span className="flex items-center gap-1.5 min-w-0 flex-wrap">
                     <span className="font-semibold text-sm text-content truncate">{rv.reviewer?.name || "Member"}</span>
                     {rv.verified ? (
-                      <span title="Written by a logged-in member" className="inline-flex items-center gap-0.5 rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-[10px] font-bold"><BadgeCheck className="h-3 w-3" /> Verified</span>
+                      <span title="Written by a logged-in member" className="inline-flex items-center gap-0.5 rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-[11px] font-bold"><BadgeCheck className="h-3 w-3" /> Verified</span>
                     ) : (
-                      <span title="Written without an account — the name isn't checked" className="rounded-full bg-surface-secondary text-content-tertiary px-1.5 py-0.5 text-[10px] font-semibold">Guest</span>
+                      <span title="Written without an account — the name isn't checked" className="rounded-full bg-surface-secondary text-content-tertiary px-1.5 py-0.5 text-[11px] font-semibold">Guest</span>
                     )}
                     {rv.dealVerified && (
-                      <span title="Had an accepted deal with this seller" className="inline-flex items-center gap-0.5 rounded-full bg-blue-50 text-blue-700 px-1.5 py-0.5 text-[10px] font-bold"><Handshake className="h-3 w-3" /> Bought here</span>
+                      <span title="Had an accepted deal with this seller" className="inline-flex items-center gap-0.5 rounded-full bg-blue-50 text-blue-700 px-1.5 py-0.5 text-[11px] font-bold"><Handshake className="h-3 w-3" /> Bought here</span>
                     )}
                   </span>
-                  <span suppressHydrationWarning className="text-[11px] text-content-tertiary shrink-0">{formatDate(rv.createdAt)}</span>
+                  <span suppressHydrationWarning className="text-[12px] text-content-tertiary shrink-0">{formatDate(rv.createdAt)}</span>
                 </div>
                 <div className="flex items-center gap-0.5 my-0.5" aria-label={`${rv.rating} out of 5 stars`}>
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -122,8 +122,8 @@ export function ReviewSection({ sellerId, sellerName, initial }: { sellerId: str
                 </div>
                 {rv.comment && <p className="text-sm text-content-secondary whitespace-pre-line break-words">{rv.comment}</p>}
                 <div className="flex items-center gap-3">
-                  {rv.item && <Link href={`/ads/${rv.item.slug}`} className="text-[11px] text-primary hover:underline truncate">{rv.item.title}</Link>}
-                  {isAdmin && <button onClick={() => remove(rv._id)} className="ml-auto text-[11px] font-semibold text-danger hover:underline">Remove</button>}
+                  {rv.item && <Link href={`/ads/${rv.item.slug}`} className="text-[12px] text-primary hover:underline truncate">{rv.item.title}</Link>}
+                  {isAdmin && <button onClick={() => remove(rv._id)} className="ml-auto text-[12px] font-semibold text-danger hover:underline">Remove</button>}
                 </div>
               </div>
             </div>
@@ -160,11 +160,11 @@ export function ReviewSection({ sellerId, sellerName, initial }: { sellerId: str
               {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : "Post review"}
             </button>
             {guest ? (
-              <p className="text-[11px] text-content-tertiary text-center">
+              <p className="text-[12px] text-content-tertiary text-center">
                 Posting as a guest. <Link href={loginUrl(pathname, "review")} className="font-semibold text-primary hover:underline">Log in</Link> to post as a <b>verified</b> member.
               </p>
             ) : (
-              <p className="text-[11px] text-content-tertiary text-center">Posted as {session?.user?.name || "you"} with a <b>Verified</b> tag. Posting again updates your review.</p>
+              <p className="text-[12px] text-content-tertiary text-center">Posted as {session?.user?.name || "you"} with a <b>Verified</b> tag. Posting again updates your review.</p>
             )}
           </form>
         </div>

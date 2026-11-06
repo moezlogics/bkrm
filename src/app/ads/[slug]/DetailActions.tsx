@@ -128,7 +128,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
             ) : (
               <>
                 <MessageSquare className="h-4 w-4" />
-                <span>Live Chat</span>
+                <span>Chat</span>
               </>
             )}
           </button>
@@ -144,7 +144,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
         {/* WhatsApp Button */}
         <button
           onClick={() => openWhatsApp()}
-          className="w-full flex items-center justify-center gap-2.5 btn-whatsapp py-3 px-4 rounded-md text-sm font-semibold tracking-wide transition-all shadow-sm active:scale-[0.99]"
+          className="w-full flex items-center justify-center gap-2.5 btn-whatsapp h-12 px-4 text-[15px]"
         >
           <WaIcon className="h-4.5 w-4.5" />
           <span>Chat on WhatsApp</span>
@@ -155,7 +155,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
           {(loggedIn ? callNum : true) && (
             <button
               onClick={callSeller}
-              className="flex-1 flex items-center justify-center gap-2 btn-call py-2.5 px-3 rounded-md text-xs sm:text-sm font-semibold tracking-wide transition-all active:scale-[0.99]"
+              className="flex-1 flex items-center justify-center gap-2 btn-call h-12 px-3 text-sm"
             >
               <Phone className="h-4 w-4" />
               <span>Call Seller</span>
@@ -164,14 +164,14 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
           <button
             onClick={startChat}
             disabled={chatLoading}
-            className="flex-1 flex items-center justify-center gap-2 btn-chat-primary py-2.5 px-3 rounded-md text-xs sm:text-sm font-semibold tracking-wide transition-all disabled:opacity-50 active:scale-[0.99]"
+            className="flex-1 flex items-center justify-center gap-2 btn-chat-primary h-12 px-3 text-sm disabled:opacity-50"
           >
             {chatLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <>
                 <MessageSquare className="h-4 w-4" />
-                <span>Live Chat</span>
+                <span>Chat</span>
               </>
             )}
           </button>
@@ -181,7 +181,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
       {/* ─── Mobile Sticky Action Bar (App-Native Dock) ──────────────────── */}
       {mounted && typeof document !== "undefined" && createPortal(
         <nav
-          className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))] grid grid-cols-3 gap-2 shadow-[0_-8px_24px_rgba(15,23,42,0.08)]"
+          className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-xl border-t border-card-border px-3 pt-2.5 pb-[max(10px,env(safe-area-inset-bottom))] grid grid-cols-3 gap-2"
           aria-label="Contact the seller"
         >
           {/* Three equal buttons — the old bar squeezed a Home link in as well,
@@ -190,7 +190,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
             type="button"
             onClick={callSeller}
             disabled={loggedIn && !callNum}
-            className="flex items-center justify-center gap-1.5 h-12 rounded-xl border border-slate-300 bg-white text-slate-900 text-sm font-semibold active:scale-95 transition-transform disabled:opacity-40"
+            className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-surface-secondary text-content text-sm font-bold active:scale-95 transition-transform disabled:opacity-40"
             aria-label="Call the seller"
           >
             <Phone className="h-4 w-4 shrink-0" />
@@ -200,7 +200,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
           <button
             type="button"
             onClick={() => openWhatsApp()}
-            className="flex items-center justify-center gap-1.5 h-12 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-sm font-semibold min-w-0 active:scale-95 transition-transform"
+            className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-whatsapp text-white text-sm font-bold min-w-0 active:scale-95 transition-transform"
             aria-label="Chat on WhatsApp"
           >
             <WaIcon className="h-4.5 w-4.5 shrink-0" />
@@ -210,7 +210,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
           {booking && !isSeller ? (
             <Link
               href={booking.href}
-              className="flex items-center justify-center gap-1.5 h-12 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-semibold active:scale-95 transition-transform"
+              className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white text-sm font-bold active:scale-95 transition-transform"
             >
               <CalendarCheck className="h-4 w-4 shrink-0" />
               <span>{booking.cta.replace(/ now$/i, "")}</span>
@@ -220,7 +220,7 @@ export function DetailActions({ adId, sellerId, price, priceLabel, title, slug, 
             type="button"
             onClick={startChat}
             disabled={chatLoading}
-            className="flex items-center justify-center gap-1.5 h-12 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-semibold disabled:opacity-60 active:scale-95 transition-transform"
+            className="flex items-center justify-center gap-1.5 h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white text-sm font-bold disabled:opacity-60 active:scale-95 transition-transform"
             aria-label="Live Chat"
           >
             {chatLoading ? (

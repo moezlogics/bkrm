@@ -62,13 +62,13 @@ export function PushNudge({ context, className = "" }: { context: AskContext; cl
         <span className="grid place-items-center h-9 w-9 shrink-0 rounded-full bg-primary text-white"><BellRing className="h-4.5 w-4.5" /></span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-content leading-snug">{copy.title}</p>
-          <p className="text-[12px] text-content-secondary mt-0.5 leading-snug">{copy.body}</p>
+          <p className="text-[13px] text-content-secondary mt-0.5 leading-snug">{copy.body}</p>
           {ios ? (
-            <p className="mt-2 text-[12px] text-content-secondary leading-relaxed">
+            <p className="mt-2 text-[13px] text-content-secondary leading-relaxed">
               On iPhone: tap <Share className="inline h-3.5 w-3.5 -mt-0.5" /> <b>Share</b> → <b>Add to Home Screen</b>, open {copy.site} from there and turn notifications on.
             </p>
           ) : (
-            <button onClick={allow} disabled={busy} className="mt-2.5 inline-flex items-center gap-2 h-9 rounded-xl bg-primary hover:bg-primary-dark px-3.5 text-[13px] font-semibold text-white disabled:opacity-60">
+            <button onClick={allow} disabled={busy} className="mt-2.5 inline-flex items-center gap-2 h-9 rounded-xl bg-primary hover:bg-primary-dark px-3.5 text-[14px] font-semibold text-white disabled:opacity-60">
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BellRing className="h-4 w-4" />} Turn on notifications
             </button>
           )}

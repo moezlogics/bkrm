@@ -173,26 +173,26 @@ export function LocationPicker({
 
   const panelContent = (
     <>
-      <div className="md:hidden flex items-center justify-between px-4 pt-3 pb-1">
-        <span className="font-semibold text-content">Choose location</span>
+      <div className="md:hidden flex items-center justify-between px-5 pt-4 pb-2">
+        <span className="text-[17px] font-bold text-content">Choose location</span>
         <button onClick={() => setOpen(false)} aria-label="Close" className="grid place-items-center h-8 w-8 rounded-full hover:bg-surface-secondary">
           <X className="h-5 w-5" />
         </button>
       </div>
 
-      <div className="p-2 border-b border-card-border space-y-1.5">
+      <div className="p-3 space-y-2">
         <button
           type="button"
           onClick={useMyLocation}
           disabled={locating}
-          className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 disabled:opacity-70"
+          className="w-full flex items-center gap-2.5 rounded-xl px-3.5 h-11 text-sm font-semibold text-primary-dark bg-primary-soft hover:bg-primary/15 disabled:opacity-70"
         >
           {locating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
           <span className="flex-1 text-left">{locating ? "Finding your location…" : "Use my current location"}</span>
-          {location.precise && <span className="text-[10px] font-medium text-content-tertiary">On</span>}
+          {location.precise && <span className="text-[11px] font-medium text-content-tertiary">On</span>}
         </button>
-        {gpsError && <p className="px-3 pb-1 text-[11px] text-danger">{gpsError}</p>}
-        <div className="flex items-center gap-2 h-9 rounded-lg bg-surface-secondary px-3">
+        {gpsError && <p className="px-3 pb-1 text-[12px] text-danger">{gpsError}</p>}
+        <div className="flex items-center gap-2 h-11 rounded-xl bg-surface-secondary px-3.5">
           <Search className="h-4 w-4 text-content-tertiary shrink-0" />
           <input
             value={filter}
@@ -225,11 +225,11 @@ export function LocationPicker({
                 >
                   <ChevronRight className={`h-4 w-4 text-content-tertiary transition-transform ${isOpen ? "rotate-90" : ""}`} />
                   <span className={`flex-1 text-left ${isCurrentCity ? "font-semibold text-primary" : "text-content"}`}>{c.name}</span>
-                  <span className="text-[11px] text-content-tertiary tabular-nums">{c.count}</span>
+                  <span className="text-[12px] text-content-tertiary tabular-nums">{c.count}</span>
                 </button>
                 {isOpen && (
                   <div className="pb-1.5">
-                    <a href={go(c.slug)} className="flex items-center justify-between pl-10 pr-4 py-2 text-[13px] hover:bg-surface-secondary">
+                    <a href={go(c.slug)} className="flex items-center justify-between pl-10 pr-4 py-2 text-[14px] hover:bg-surface-secondary">
                       <span className="font-medium text-content">All of {c.name}</span>
                       {isCurrentCity && !location.area && <Check className="h-4 w-4 text-primary" />}
                     </a>
@@ -239,10 +239,10 @@ export function LocationPicker({
                       cityAreas.map((a) => {
                         const isCurrent = isCurrentCity && location.area?.slug === a.slug;
                         return (
-                          <a key={a.slug} href={go(c.slug, a.slug)} className="flex items-center gap-2 pl-10 pr-4 py-2 text-[13px] hover:bg-surface-secondary">
+                          <a key={a.slug} href={go(c.slug, a.slug)} className="flex items-center gap-2 pl-10 pr-4 py-2 text-[14px] hover:bg-surface-secondary">
                             <span className={`flex-1 ${isCurrent ? "font-semibold text-primary" : "text-content-secondary"}`}>{a.name}</span>
                             {isCurrent ? <Check className="h-4 w-4 text-primary" /> : (
-                              <span className={`text-[11px] tabular-nums ${a.count ? "text-content-tertiary" : "text-content-tertiary/50"}`}>{a.count}</span>
+                              <span className={`text-[12px] tabular-nums ${a.count ? "text-content-tertiary" : "text-content-tertiary/50"}`}>{a.count}</span>
                             )}
                           </a>
                         );
@@ -265,9 +265,9 @@ export function LocationPicker({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className={`flex items-center gap-1 min-w-0 text-sm font-medium text-content ${variant === "compact" ? "max-w-[46vw]" : ""}`}
+        className={`flex items-center gap-1.5 min-w-0 text-[14.5px] font-semibold text-content ${variant === "compact" ? "max-w-[44vw] h-9 pl-2.5 pr-2 rounded-full bg-surface-secondary active:bg-surface-tertiary" : ""}`}
       >
-        <MapPin className={`h-4 w-4 shrink-0 ${location.precise ? "text-primary fill-primary/15" : "text-primary"}`} />
+        <MapPin className={`h-4 w-4 shrink-0 text-primary ${location.precise ? "fill-primary/15" : ""}`} />
         <span className="truncate max-w-[160px]">{label}</span>
         <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-content-tertiary transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -277,7 +277,7 @@ export function LocationPicker({
         <div
           role="dialog"
           aria-label="Choose location"
-          className="hidden md:flex absolute inset-x-auto bottom-auto left-0 top-full mt-2 w-80 max-h-[70vh] rounded-xl z-50 bg-surface border border-card-border shadow-xl flex-col"
+          className="hidden md:flex absolute inset-x-auto bottom-auto left-0 top-full mt-3 w-80 max-h-[70vh] rounded-2xl z-50 bg-surface ring-1 ring-black/5 shadow-xl flex-col overflow-hidden"
         >
           {panelContent}
         </div>
@@ -286,11 +286,11 @@ export function LocationPicker({
       {/* Mobile bottom sheet modal via Portal */}
       {open && mounted && createPortal(
         <div className="md:hidden fixed inset-0 z-[100] flex flex-col justify-end">
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setOpen(false)} />
+          <div className="fixed inset-0 bg-overlay animate-fade-in" onClick={() => setOpen(false)} />
           <div
             role="dialog"
             aria-label="Choose location"
-            className="relative z-10 bg-surface border-t border-card-border shadow-2xl flex flex-col max-h-[82vh] rounded-t-2xl animate-slide-up"
+            className="relative z-10 bg-surface flex flex-col max-h-[85vh] rounded-t-[28px] animate-sheet-up pb-[env(safe-area-inset-bottom)]"
           >
             {panelContent}
           </div>

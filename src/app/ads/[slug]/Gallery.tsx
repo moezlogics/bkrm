@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/components/ui/Toast";
 import { loginUrl, useResumeIntent } from "@/lib/auth-intent";
-import { ChevronLeft, ChevronRight, ArrowLeft, Heart, Share2, Zap, X, Maximize2, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowLeft, Heart, Share2, X, Maximize2, Play } from "lucide-react";
 
 export function Gallery({
   images,
@@ -248,7 +248,7 @@ export function Gallery({
           whole column — ~715px tall on a wide screen), 5:4 on phones. Portrait
           phone photos sit on a blurred copy of themselves instead of grey bars.
         */}
-        <div className="relative aspect-[5/4] md:aspect-auto md:h-[clamp(320px,58vh,540px)] bg-slate-100 md:rounded-xl overflow-hidden md:border md:border-card-border select-none group">
+        <div className="relative aspect-[5/4] md:aspect-auto md:h-[clamp(320px,58vh,540px)] bg-surface-tertiary md:rounded-[24px] overflow-hidden select-none group">
           {/* Scrollable Main Media Track with Native Scroll-Snap & Desktop Mouse Drag */}
           <div
             ref={mainScrollRef}
@@ -335,12 +335,6 @@ export function Gallery({
               <Heart className={`h-5 w-5 ${fav ? "fill-red-500 text-red-500" : "text-slate-700"}`} />
             </button>
           </div>
-
-          {isFeatured && (
-            <span className="absolute top-3 left-1/2 -translate-x-1/2 md:left-3 md:translate-x-0 inline-flex items-center gap-1 bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm pointer-events-none z-10">
-              <Zap className="h-3 w-3 fill-white" /> Featured
-            </span>
-          )}
 
           {/* Expand hint (desktop hover) */}
           {current.type !== "video" && (

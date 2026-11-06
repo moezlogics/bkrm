@@ -41,9 +41,9 @@ export function waMessage(ad: WaAdInfo): string {
   const lines = [
     `Salam! I saw your ad on ${brand}:`,
     "",
-    `📱 *${ad.title}*`,
-    ad.price ? `💰 Price: ${ad.price}` : "",
-    `🔗 Link: ${ad.url}`,
+    `*${ad.title}*`,
+    ad.price ? `Price: ${ad.price}` : "",
+    `Link: ${ad.url}`,
     "",
     "Is this still available? Can we negotiate on the price? Please let me know. Thanks!",
   ].filter((l) => l !== "");

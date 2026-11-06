@@ -152,7 +152,7 @@ export function PushPrompt() {
       role="dialog"
       aria-live="polite"
       aria-label={ask.title}
-      className="fixed z-[70] left-3 right-3 bottom-[calc(env(safe-area-inset-bottom)+76px)] sm:left-auto sm:right-5 sm:bottom-5 sm:w-[380px] rounded-2xl border border-card-border bg-card shadow-xl p-4 animate-slide-up"
+      className="fixed z-[70] left-3 right-3 bottom-[calc(env(safe-area-inset-bottom)+76px)] sm:left-auto sm:right-5 sm:bottom-5 sm:w-[380px] rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] shadow-xl p-4 animate-slide-up"
     >
       <button onClick={later} aria-label="Close" className="absolute top-2.5 right-2.5 p-1.5 rounded-full text-content-tertiary hover:bg-surface-secondary"><X className="h-4 w-4" /></button>
       <div className="flex gap-3 pr-6">

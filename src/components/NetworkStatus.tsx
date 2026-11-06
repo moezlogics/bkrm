@@ -37,7 +37,7 @@ export function NetworkStatus() {
   if (online && !back) return null;
   return (
     <div role="status" aria-live="polite"
-      className={`fixed top-0 inset-x-0 z-[95] flex items-center justify-center gap-2 px-4 py-2 pt-[max(0.5rem,env(safe-area-inset-top))] text-[13px] font-semibold text-white shadow-md ${online ? "bg-emerald-600" : "bg-slate-900"}`}>
+      className={`fixed top-0 inset-x-0 z-[95] flex items-center justify-center gap-2 px-4 py-2 pt-[max(0.5rem,env(safe-area-inset-top))] text-[14px] font-semibold text-white shadow-md ${online ? "bg-emerald-600" : "bg-slate-900"}`}>
       {online ? <><Wifi className="h-4 w-4" /> Back online</> : <><WifiOff className="h-4 w-4" /> You&apos;re offline — we&apos;ll reconnect automatically</>}
     </div>
   );

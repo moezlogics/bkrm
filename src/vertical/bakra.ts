@@ -58,7 +58,7 @@ export const bakra: Vertical = {
         { key: "eid3", label: "Eid day 3", offset: 2 },
       ],
       maxPerBooking: 7,
-      namesLabel: "Whose name is each hissa in? (for the niyyat)",
+      namesLabel: "Names for the niyyat",
       note: "Your shares are held while the organiser confirms. Pay the organiser directly — never before you've seen the animal or its video and weight.",
     },
   },

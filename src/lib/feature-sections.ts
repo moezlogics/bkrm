@@ -12,9 +12,41 @@ import Listing from "@/models/Listing";
 import User from "@/models/User";
 import { getCatalog } from "@/lib/catalog";
 import { CARD_SELECT, CARD_SELLER_SELECT, toCards } from "@/lib/listing-card";
+import { nearestListings } from "@/lib/geo-feed";
 
-/** Loader — use the cached `getHomepageSections` from lib/home-content. */
-export async function loadHomepageSections() {
+/** Turn one admin section into a listing filter (null = section can't apply). */
+function sectionQuery(s: any, catalog: Awaited<ReturnType<typeof getCatalog>>): Record<string, any> | null {
+  const query: Record<string, any> = {};
+  if (s.filter === "featured") query.isFeatured = true;
+  else if (s.filter === "category" && s.value) {
+    // The value is a category path ("bakray/beetal") or, on older sections, a slug.
+    const v = String(s.value).trim().toLowerCase();
+    const cat = catalog.categoryByPath(v) || catalog.categories.find((c) => c.slug === v);
+    if (!cat) return null;
+    query.allCategoryIds = String(cat._id);
+  } else if (s.filter === "city" && s.value) {
+    // Indexed city reference, not a case-insensitive regex over every ad.
+    const v = String(s.value).trim().toLowerCase();
+    const city = catalog.city(v) || catalog.cities.find((c) => c.name.toLowerCase() === v);
+    if (!city) return null;
+    query["locationRefs.cityId"] = city._id;
+  }
+  if (s.minPrice != null || s.maxPrice != null) {
+    query.price = {};
+    if (s.minPrice != null) query.price.$gte = s.minPrice;
+    if (s.maxPrice != null) query.price.$lte = s.maxPrice;
+  }
+  return query;
+}
+
+/**
+ * Loader — use the cached getHomepageSections / getLocalHomepageSections from
+ * lib/home-content. With a point (the visitor's location) every rail is
+ * nearest-first: the visitor's own area and city fill it, and only when they
+ * run short do the closest other cities follow — never Karachi first for
+ * someone in Lahore. A rail pinned to a city by the admin stays that city.
+ */
+export async function loadHomepageSections(point?: [number, number] | null) {
   try {
     await dbConnect();
     const [sections, catalog] = await Promise.all([
@@ -25,36 +57,21 @@ export async function loadHomepageSections() {
 
     const rails = await Promise.all(
       (sections as any[]).map(async (s) => {
-        const query: Record<string, any> = { status: "approved" };
-        if (s.filter === "featured") query.isFeatured = true;
-        else if (s.filter === "category" && s.value) {
-          const cat = catalog.categories.find((c) => c.slug === s.value);
-          if (cat) query.allCategoryIds = String(cat._id);
-        } else if (s.filter === "city" && s.value) {
-          // Indexed city reference, not a case-insensitive regex over every ad.
-          const v = String(s.value).trim().toLowerCase();
-          const city = catalog.city(v) || catalog.cities.find((c) => c.name.toLowerCase() === v);
-          if (!city) return null;
-          query["locationRefs.cityId"] = city._id;
-        }
-        if (s.minPrice != null || s.maxPrice != null) {
-          query.price = {};
-          if (s.minPrice != null) query.price.$gte = s.minPrice;
-          if (s.maxPrice != null) query.price.$lte = s.maxPrice;
-        }
-
-        const listings = await Listing.find(query)
-          .select(CARD_SELECT)
-          .sort({ isFeatured: -1, createdAt: -1 })
-          .limit(4) // a rail is a teaser; keep the homepage DOM light
-          .populate({ path: "userId", model: User, select: CARD_SELLER_SELECT })
-          .maxTimeMS(5000)
-          .lean();
-
-        return listings.length ? { _id: String(s._id), title: s.title, listings: toCards(listings) } : null;
+        const query = sectionQuery(s, catalog);
+        if (!query) return null;
+        const listings = point && s.filter !== "city"
+          ? await nearestListings({ point, match: query, limit: 4 })
+          : toCards(await Listing.find({ status: "approved", ...query })
+            .select(CARD_SELECT)
+            .sort({ isFeatured: -1, createdAt: -1 })
+            .limit(4) // a rail is a teaser; keep the homepage DOM light
+            .populate({ path: "userId", model: User, select: CARD_SELLER_SELECT })
+            .maxTimeMS(5000)
+            .lean());
+        return listings.length ? { _id: String(s._id), title: s.title, listings: JSON.parse(JSON.stringify(listings)) as any[] } : null;
       })
     );
-    return rails.filter(Boolean) as { _id: string; title: string; listings: ReturnType<typeof toCards> }[];
+    return rails.filter(Boolean) as { _id: string; title: string; listings: any[] }[];
   } catch (e) {
     console.error("getHomepageSections error:", e);
     return [];

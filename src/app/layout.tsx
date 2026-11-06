@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -15,11 +15,10 @@ import { getBranding, brandStyle } from "@/lib/branding";
 import { getVisitorLocation, toClientLocation, getPlacesMap } from "@/lib/visitor-location";
 import { HeadCode, BodyCode } from "@/lib/head-code";
 
-// Only the weights the UI actually uses (400/500/600/700) — each extra weight
-// is another font file on the critical path.
-const poppins = Poppins({
-  variable: "--font-poppins",
-  weight: ["400", "500", "600", "700"],
+// Inter as one variable font file: every weight (400–900) from a single
+// download, built for screens and very legible at small sizes.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
   preload: true,
@@ -59,6 +58,7 @@ import { SessionProvider } from "next-auth/react";
 import { getCatalog } from "@/lib/catalog";
 import { BASE_PATH_SHIM, withBasePath } from "@/lib/base-path";
 import { VERTICAL } from "@/vertical";
+import { getSectionCovers } from "@/lib/section-covers";
 
 // Header category strip: from the cached catalog (no per-request query).
 // Only the four fields the client header needs cross the wire.
@@ -69,13 +69,13 @@ async function getShellCategories() {
 
 async function getShellData() {
   try {
-    const [settings, cats] = await Promise.all([getSettings(), getShellCategories()]);
+    const [settings, cats, covers] = await Promise.all([getSettings(), getShellCategories(), getSectionCovers()]);
     return {
       siteName: settings.site_name || process.env.NEXT_PUBLIC_APP_NAME || "Classifieds", categories: cats, brand: getBranding(settings),
-      headCode: settings.head_code || "", bodyCode: settings.body_code || "",
+      headCode: settings.head_code || "", bodyCode: settings.body_code || "", covers,
     };
   } catch {
-    return { siteName: process.env.NEXT_PUBLIC_APP_NAME || "Classifieds", categories: [], brand: getBranding({}), headCode: "", bodyCode: "" };
+    return { siteName: process.env.NEXT_PUBLIC_APP_NAME || "Classifieds", categories: [], brand: getBranding({}), headCode: "", bodyCode: "", covers: {} };
   }
 }
 
@@ -86,12 +86,12 @@ export default async function RootLayout({
 }>) {
   // The visitor's location is read here (from cookies) so every page — header
   // links, search, bottom nav, footer — is scoped to it on the first paint.
-  const [{ siteName, categories, brand, headCode, bodyCode }, visitorLoc, places] = await Promise.all([
+  const [{ siteName, categories, brand, headCode, bodyCode, covers }, visitorLoc, places] = await Promise.all([
     getShellData(), getVisitorLocation(), getPlacesMap().catch(() => ({})),
   ]);
   const location = toClientLocation(visitorLoc);
   return (
-    <html lang="en" className={`${poppins.variable} h-full`} style={brandStyle(brand)} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} h-full`} style={brandStyle(brand)} data-scroll-behavior="smooth" suppressHydrationWarning>
       {/* Admin → Settings → Code & tracking (Search Console, Analytics, Pixel…) */}
       <head>
         <HeadCode html={headCode} />
@@ -106,7 +106,7 @@ export default async function RootLayout({
             <ScrollToTop />
             <NavProgress />
             <SiteChromeOnly>
-              <Header siteName={siteName} brand={brand} categories={categories} location={location} places={places} />
+              <Header siteName={siteName} brand={brand} categories={categories} covers={covers} location={location} places={places} />
             </SiteChromeOnly>
             <MainArea>{children}</MainArea>
             <PushPrompt />

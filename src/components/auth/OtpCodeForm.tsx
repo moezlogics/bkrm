@@ -126,12 +126,12 @@ export function OtpCodeForm({
   return (
     <form onSubmit={(e) => { e.preventDefault(); lastWrong.current = ""; verify(code); }} className="flex flex-col gap-4">
       {sendState === "failed" ? (
-        <div role="alert" className="flex items-start gap-2.5 rounded-lg bg-red-50 border border-red-200 px-3 py-2.5 text-[13px] text-red-800">
+        <div role="alert" className="flex items-start gap-2.5 rounded-lg bg-red-50 border border-red-200 px-3 py-2.5 text-[14px] text-red-800">
           <MailWarning className="h-4.5 w-4.5 shrink-0 mt-0.5" />
           <span>We couldn&apos;t send the email to <b className="break-all">{email}</b>. Check the address is right, then tap <b>Resend code</b>.</span>
         </div>
       ) : (
-        <div role="status" className="flex items-start gap-2.5 rounded-lg bg-surface-secondary px-3 py-2.5 text-[13px] text-content-secondary">
+        <div role="status" className="flex items-start gap-2.5 rounded-lg bg-surface-secondary px-3 py-2.5 text-[14px] text-content-secondary">
           {sendState === "sending" ? <Loader2 className="h-4.5 w-4.5 text-primary shrink-0 mt-0.5 animate-spin" /> : <MailCheck className="h-4.5 w-4.5 text-primary shrink-0 mt-0.5" />}
           <span>{sendState === "sending"
             ? <>Sending your code to <b className="text-content break-all">{email}</b>…</>
@@ -153,8 +153,8 @@ export function OtpCodeForm({
         disabled={done}
         className={`h-14 rounded-lg border text-center text-2xl font-bold tracking-[10px] outline-none bg-surface ${error ? "border-danger" : "border-card-border focus:border-primary"}`}
       />
-      {error && <p role="alert" className="-mt-2 text-[13px] font-medium text-danger">{error}</p>}
-      {info && !error && <p role="status" className="-mt-2 text-[13px] text-emerald-700">{info}</p>}
+      {error && <p role="alert" className="-mt-2 text-[14px] font-medium text-danger">{error}</p>}
+      {info && !error && <p role="status" className="-mt-2 text-[14px] text-emerald-700">{info}</p>}
       <button type="submit" disabled={busy || done || code.length < 6} className="h-11 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm disabled:opacity-60 flex items-center justify-center gap-2">
         {busy || done ? <><Loader2 className="h-4 w-4 animate-spin" /> {done ? "Signing you in…" : "Checking…"}</> : "Verify & continue"}
       </button>

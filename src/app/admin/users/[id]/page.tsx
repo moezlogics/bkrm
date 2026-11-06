@@ -99,7 +99,7 @@ export default function AdminUserFull() {
           <Row icon={Clock}>Last sign-in {ago(u.lastLoginAt)}{u.lastLoginIp ? ` · IP ${u.lastLoginIp}` : ""}</Row>
           <Row icon={Bell}>{sum.devices} device{sum.devices === 1 ? "" : "s"} with notifications</Row>
         </div>
-        {u.adminNote && <p className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[13px] text-amber-950"><b>Admin note:</b> {u.adminNote}</p>}
+        {u.adminNote && <p className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[14px] text-amber-950"><b>Admin note:</b> {u.adminNote}</p>}
         <nav className="flex flex-wrap gap-1.5 border-t border-card-border pt-3">
           {SECTIONS.map(([k, label]) => <a key={k} href={`#${k}`} className="h-8 px-3 rounded-full border border-card-border text-xs font-semibold text-content-secondary hover:border-primary hover:text-primary grid place-items-center">{label}</a>)}
         </nav>
@@ -127,7 +127,7 @@ export default function AdminUserFull() {
                 <a key={label} href={src} target="_blank" rel="noreferrer" className="block rounded-xl border border-card-border overflow-hidden bg-surface-secondary">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={src} alt={`CNIC ${label}`} className="aspect-[3/2] w-full object-cover" />
-                  <span className="block px-2 py-1 text-[11px] font-semibold text-content-secondary">CNIC {label.toLowerCase()}</span>
+                  <span className="block px-2 py-1 text-[12px] font-semibold text-content-secondary">CNIC {label.toLowerCase()}</span>
                 </a>
               ) : null)}
             </div>
@@ -147,7 +147,7 @@ export default function AdminUserFull() {
             {!full.phones.onAds.length && <li className="py-1.5 text-content-tertiary">No numbers on ads yet.</li>}
           </ul>
           {full.phones.others.length > 0 && (
-            <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-[13px] text-amber-950">
+            <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-[14px] text-amber-950">
               <p className="font-bold flex items-center gap-1.5"><TriangleAlert className="h-4 w-4" /> The same number is on other accounts</p>
               <ul className="mt-1.5 space-y-1">
                 {full.phones.others.map((o: any) => (
@@ -178,7 +178,7 @@ export default function AdminUserFull() {
                   {l.image ? <img src={l.image} alt="" className="h-11 w-11 rounded-lg object-cover border border-card-border shrink-0" /> : <div className="h-11 w-11 rounded-lg bg-surface-secondary shrink-0" />}
                   <div className="min-w-0 flex-1">
                     <a href={withBasePath(`/ads/${l.slug}`)} target="_blank" rel="noreferrer" className="text-sm font-semibold truncate block hover:text-primary">{l.name}</a>
-                    <div className="text-[11px] text-content-secondary">
+                    <div className="text-[12px] text-content-secondary">
                       {l.price != null ? `Rs ${n(l.price)} · ` : ""}posted {fmtDate(l.createdAt)} · {n(l.clicks || 0)} views · {n((l.phoneClicks || 0) + (l.whatsappClicks || 0) + (l.chatClicks || 0))} leads
                       {l.isFeatured ? " · featured" : ""}{l.flagReasons?.length ? ` · flags: ${l.flagReasons.slice(0, 2).join(", ")}` : ""}
                     </div>
@@ -228,9 +228,9 @@ export default function AdminUserFull() {
                     <MessageSquare className="h-4 w-4 mt-0.5 text-content-tertiary shrink-0" />
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-semibold truncate">{t.role === "seller" ? "Buyer" : "Seller"}: {t.otherName} <span className="font-normal text-content-secondary">· {t.ad?.name || "deleted ad"}</span></span>
-                      <span className="block text-[12px] text-content-secondary truncate">{t.lastMine ? "They: " : `${t.otherName.split(" ")[0]}: `}{t.last}</span>
+                      <span className="block text-[13px] text-content-secondary truncate">{t.lastMine ? "They: " : `${t.otherName.split(" ")[0]}: `}{t.last}</span>
                     </span>
-                    <span className="shrink-0 text-right text-[11px] text-content-tertiary">{n(t.count)} msgs<br />{ago(t.lastAt)}</span>
+                    <span className="shrink-0 text-right text-[12px] text-content-tertiary">{n(t.count)} msgs<br />{ago(t.lastAt)}</span>
                   </button>
                 </li>
               ))}
@@ -339,7 +339,7 @@ function ChatViewer({ userId, item, other, onClose }: { userId: string; item: st
         <header className="flex items-center justify-between gap-3 px-5 h-16 border-b border-card-border shrink-0">
           <div className="min-w-0">
             <p className="text-sm font-bold text-content truncate">{d ? `${d.people[userId]} ↔ ${d.people[other]}` : "Conversation"}</p>
-            {d?.ad && <a href={withBasePath(`/ads/${d.ad.slug}`)} target="_blank" rel="noreferrer" className="text-[11px] text-primary truncate inline-flex items-center gap-1">{d.ad.name} <ExternalLink className="h-3 w-3" /></a>}
+            {d?.ad && <a href={withBasePath(`/ads/${d.ad.slug}`)} target="_blank" rel="noreferrer" className="text-[12px] text-primary truncate inline-flex items-center gap-1">{d.ad.name} <ExternalLink className="h-3 w-3" /></a>}
           </div>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-secondary" aria-label="Close"><X className="h-5 w-5" /></button>
         </header>
@@ -350,12 +350,12 @@ function ChatViewer({ userId, item, other, onClose }: { userId: string; item: st
             const mine = m.from === userId;
             return (
               <div key={m._id} className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${mine ? "self-end bg-primary text-white" : "self-start bg-card border border-card-border text-content"}`}>
-                <p className={`text-[10px] font-bold mb-0.5 ${mine ? "text-white/75" : "text-content-tertiary"}`}>{d.people[m.from]}</p>
+                <p className={`text-[11px] font-bold mb-0.5 ${mine ? "text-white/75" : "text-content-tertiary"}`}>{d.people[m.from]}</p>
                 {m.offer && <p className="font-bold">Offer: Rs {n(m.offer.amount)} · {m.offer.status}</p>}
                 {m.text && <p className="whitespace-pre-wrap break-words">{m.text}</p>}
                 {m.file && <a href={m.file} target="_blank" rel="noreferrer" className="underline text-xs">Attachment</a>}
                 {m.audio && <a href={m.audio} target="_blank" rel="noreferrer" className="underline text-xs">Voice note</a>}
-                <p className={`text-[10px] mt-0.5 ${mine ? "text-white/70" : "text-content-tertiary"}`}>{fmtTime(m.at)}{mine ? (m.read ? " · read" : " · not read") : ""}</p>
+                <p className={`text-[11px] mt-0.5 ${mine ? "text-white/70" : "text-content-tertiary"}`}>{fmtTime(m.at)}{mine ? (m.read ? " · read" : " · not read") : ""}</p>
               </div>
             );
           })}
@@ -381,9 +381,9 @@ function Row({ icon: Icon, children }: { icon: React.ElementType; children: Reac
   return <div className="flex items-start gap-2 text-content-secondary"><Icon className="h-4 w-4 mt-0.5 shrink-0 text-content-tertiary" /><span className="min-w-0">{children}</span></div>;
 }
 function Stat({ label, value, hint }: { label: string; value: React.ReactNode; hint?: string }) {
-  return <div className="rounded-xl bg-surface-secondary px-3 py-2" title={hint}><div className="text-[10px] font-bold uppercase tracking-wide text-content-tertiary">{label}</div><div className="text-lg font-bold text-content tabular-nums">{value}</div></div>;
+  return <div className="rounded-xl bg-surface-secondary px-3 py-2" title={hint}><div className="text-[11px] font-bold uppercase tracking-wide text-content-tertiary">{label}</div><div className="text-lg font-bold text-content tabular-nums">{value}</div></div>;
 }
 function Tag({ tone, children }: { tone: "ok" | "warn" | "danger" | "muted"; children: React.ReactNode }) {
   const cls = { ok: "bg-emerald-50 text-emerald-700", warn: "bg-amber-50 text-amber-700", danger: "bg-red-50 text-red-600", muted: "bg-surface-secondary text-content-secondary" }[tone];
-  return <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${cls}`}>{children}</span>;
+  return <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${cls}`}>{children}</span>;
 }

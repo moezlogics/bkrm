@@ -92,7 +92,7 @@ export default function VerifyPage() {
       <AppBar title="Seller verification" backHref="/dashboard" />
       <div className="max-w-lg w-full mx-auto px-4 py-5 pb-12">
         {loadError ? (
-          <div className="rounded-2xl border border-card-border bg-card p-8 text-center">
+          <div className="rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] p-8 text-center">
             <p className="text-sm text-content-secondary">Couldn't load your verification status.</p>
             <button onClick={load} className="mt-3 rounded-lg bg-primary text-white font-semibold text-sm px-5 py-2.5">Try again</button>
           </div>
@@ -129,20 +129,20 @@ export default function VerifyPage() {
             {/* 1. CNIC details */}
             <section className="mt-5">
               <StepTitle n={1} icon={UserRound} title="Your CNIC details" done={cnicOk && !!fullName.trim() && !errors.cnicNumber && !errors.fullName} />
-              <label htmlFor="cnic-no" className="text-[13px] font-semibold text-content">CNIC number</label>
+              <label htmlFor="cnic-no" className="text-[14px] font-semibold text-content">CNIC number</label>
               <input
                 id="cnic-no" inputMode="numeric" autoComplete="off" value={cnic} maxLength={15}
                 onChange={(e) => { setCnic(formatCnic(e.target.value)); setErrors((x) => ({ ...x, cnicNumber: "" })); }}
                 placeholder="35202-1234567-1" aria-invalid={!!errors.cnicNumber}
                 className={`w-full h-12 mt-1 rounded-xl border px-3.5 text-[15px] tracking-wide tabular-nums outline-none bg-surface ${errors.cnicNumber ? "border-danger" : "border-card-border focus:border-primary"}`}
               />
-              {errors.cnicNumber ? <p className="mt-1 text-[12px] text-danger">{errors.cnicNumber}</p>
-                : <p className="mt-1 text-[11px] text-content-tertiary">The 13 digits on the front of the card. One CNIC can verify one account.</p>}
-              <label htmlFor="cnic-name" className="block mt-3 text-[13px] font-semibold text-content">Name as written on the CNIC</label>
+              {errors.cnicNumber ? <p className="mt-1 text-[13px] text-danger">{errors.cnicNumber}</p>
+                : <p className="mt-1 text-[12px] text-content-tertiary">The 13 digits on the front of the card. One CNIC can verify one account.</p>}
+              <label htmlFor="cnic-name" className="block mt-3 text-[14px] font-semibold text-content">Name as written on the CNIC</label>
               <input id="cnic-name" value={fullName} onChange={(e) => { setFullName(e.target.value); setErrors((x) => ({ ...x, fullName: "" })); }} maxLength={80} autoComplete="name" placeholder="Full name"
                 aria-invalid={!!errors.fullName}
                 className={`w-full h-11 mt-1 rounded-xl border px-3.5 text-sm outline-none bg-surface ${errors.fullName ? "border-danger" : "border-card-border focus:border-primary"}`} />
-              {errors.fullName && <p className="mt-1 text-[12px] text-danger">{errors.fullName}</p>}
+              {errors.fullName && <p className="mt-1 text-[13px] text-danger">{errors.fullName}</p>}
             </section>
 
             {/* 2 + 3. CNIC photos */}
@@ -152,7 +152,7 @@ export default function VerifyPage() {
                 <UploadBox label="Front side" value={front} onChange={(v) => { setFront(v); setErrors((x) => ({ ...x, frontImage: "" })); }} error={errors.frontImage} />
                 <UploadBox label="Back side" value={back} onChange={(v) => { setBack(v); setErrors((x) => ({ ...x, backImage: "" })); }} error={errors.backImage} />
               </div>
-              <ul className="mt-3 grid gap-1.5 text-[12px] text-content-secondary">
+              <ul className="mt-3 grid gap-1.5 text-[13px] text-content-secondary">
                 <li className="flex items-center gap-2"><Sun className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Good light, no glare or flash reflection</li>
                 <li className="flex items-center gap-2"><IdCard className="h-3.5 w-3.5 text-primary shrink-0" /> The whole card in the frame, all text readable</li>
                 <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" /> The original card — not a photocopy or screenshot</li>
@@ -163,8 +163,8 @@ export default function VerifyPage() {
             <button onClick={submit} disabled={submitting} className="w-full h-12 mt-6 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold flex items-center justify-center gap-2 disabled:opacity-60">
               {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <><ShieldCheck className="h-5 w-5" /> Send for verification</>}
             </button>
-            {missing.length > 0 && <p className="text-[12px] text-content-tertiary text-center mt-2">Still needed: {missing.join(", ")}</p>}
-            <p className="flex items-start justify-center gap-1.5 text-[11px] text-content-tertiary text-center mt-3">
+            {missing.length > 0 && <p className="text-[13px] text-content-tertiary text-center mt-2">Still needed: {missing.join(", ")}</p>}
+            <p className="flex items-start justify-center gap-1.5 text-[12px] text-content-tertiary text-center mt-3">
               <Lock className="h-3.5 w-3.5 shrink-0 mt-px" />
               Your CNIC is stored privately — only our verification team can see it. It&apos;s never shown on your ads or profile.
             </p>
@@ -178,7 +178,7 @@ export default function VerifyPage() {
 function StepTitle({ n, icon: Icon, title, done }: { n: number; icon: React.ElementType; title: string; done: boolean }) {
   return (
     <div className="flex items-center gap-2 mb-2">
-      <span className={`grid place-items-center h-6 w-6 rounded-full text-[11px] font-bold ${done ? "bg-emerald-600 text-white" : "bg-primary/10 text-primary"}`}>
+      <span className={`grid place-items-center h-6 w-6 rounded-full text-[12px] font-bold ${done ? "bg-emerald-600 text-white" : "bg-primary/10 text-primary"}`}>
         {done ? <Check className="h-3.5 w-3.5" /> : n}
       </span>
       <Icon className="h-4 w-4 text-content-tertiary" />
@@ -200,12 +200,12 @@ function State({ icon, title, desc, tone }: { icon: React.ReactNode; title: stri
 
 function Sent({ label, src }: { label: string; src: string }) {
   return (
-    <div className="rounded-xl border border-card-border bg-card overflow-hidden">
+    <div className="rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] overflow-hidden">
       <div className="aspect-[3/2] bg-surface-secondary">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {src ? <img src={src} alt={label} className="h-full w-full object-cover" /> : null}
       </div>
-      <p className="px-2.5 py-1.5 text-[11px] font-semibold text-content-secondary flex items-center gap-1"><Check className="h-3 w-3 text-emerald-600" /> {label} sent</p>
+      <p className="px-2.5 py-1.5 text-[12px] font-semibold text-content-secondary flex items-center gap-1"><Check className="h-3 w-3 text-emerald-600" /> {label} sent</p>
     </div>
   );
 }
@@ -262,30 +262,30 @@ function UploadBox({ label, value, onChange, error }: { label: string; value: st
           <span className="flex flex-col items-center gap-1.5 text-content-tertiary">
             <Camera className="h-6 w-6" />
             <span className="text-xs font-semibold">{label}</span>
-            <span className="text-[10px]">Take or choose a photo</span>
+            <span className="text-[11px]">Take or choose a photo</span>
           </span>
         )}
         {busy && (
           <span className="absolute inset-0 bg-black/45 grid place-items-center">
             <span className="w-3/4">
               <span className="block h-1.5 rounded-full bg-white/30 overflow-hidden"><span className="block h-full bg-white transition-all" style={{ width: `${Math.round((progress || 0) * 100)}%` }} /></span>
-              <span className="mt-1.5 block text-center text-[11px] font-semibold text-white">Uploading… {Math.round((progress || 0) * 100)}%</span>
+              <span className="mt-1.5 block text-center text-[12px] font-semibold text-white">Uploading… {Math.round((progress || 0) * 100)}%</span>
             </span>
           </span>
         )}
         {failed && !busy && (
-          <span className="absolute inset-0 bg-black/55 grid place-items-center text-white text-[11px] font-semibold px-2 text-center">
+          <span className="absolute inset-0 bg-black/55 grid place-items-center text-white text-[12px] font-semibold px-2 text-center">
             <span className="flex flex-col items-center gap-1"><RotateCcw className="h-5 w-5" /> Try again</span>
           </span>
         )}
         {value && !busy && (
-          <span className="absolute bottom-0 inset-x-0 bg-emerald-600 text-white text-[10px] font-bold py-1 flex items-center justify-center gap-1"><Check className="h-3 w-3" /> {label}</span>
+          <span className="absolute bottom-0 inset-x-0 bg-emerald-600 text-white text-[11px] font-bold py-1 flex items-center justify-center gap-1"><Check className="h-3 w-3" /> {label}</span>
         )}
       </button>
       <div className="mt-1 flex items-center justify-between gap-2 min-h-[18px]">
-        {(failed || error) ? <p className="text-[11px] text-danger leading-snug">{failed || error}</p> : <span />}
+        {(failed || error) ? <p className="text-[12px] text-danger leading-snug">{failed || error}</p> : <span />}
         {(value || failed) && !busy && (
-          <button type="button" onClick={() => { onChange(""); setPreview(""); setFile(null); setFailed(""); ref.current?.click(); }} className="shrink-0 text-[11px] font-semibold text-primary flex items-center gap-0.5">
+          <button type="button" onClick={() => { onChange(""); setPreview(""); setFile(null); setFailed(""); ref.current?.click(); }} className="shrink-0 text-[12px] font-semibold text-primary flex items-center gap-0.5">
             <X className="h-3 w-3" /> Change
           </button>
         )}

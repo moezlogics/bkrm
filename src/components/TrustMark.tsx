@@ -23,7 +23,7 @@ export function TrustMark({ user, kind, size = 16, withLabel = false, className 
           <circle cx="12" cy="12" r="10" fill="#10b981" />
           <path d="M7.8 12.4l2.7 2.7 5.7-5.9" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        {withLabel && <span className="text-[11px] font-semibold">{t.label}</span>}
+        {withLabel && <span className="text-[12px] font-semibold">{t.label}</span>}
       </span>
     );
   }
@@ -31,7 +31,7 @@ export function TrustMark({ user, kind, size = 16, withLabel = false, className 
   return (
     <span className={cn("inline-flex items-center gap-1", k === "shop" ? "text-amber-700" : "text-blue-700", className)} title={t.title}>
       {k === "shop" ? <ShopSeal size={size} /> : <VerifiedTick size={size} title={t.title} />}
-      {withLabel && <span className="text-[11px] font-semibold">{t.label}</span>}
+      {withLabel && <span className="text-[12px] font-semibold">{t.label}</span>}
     </span>
   );
 }

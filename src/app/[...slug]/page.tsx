@@ -4,10 +4,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, MapPin, SlidersHorizontal, Navigation, X } from "lucide-react";
-import { ListingCard } from "@/components/ListingCard";
+import { ListingCard, ListingGrid } from "@/components/ListingCard";
 import { IntentLink } from "@/components/IntentLink";
 import { SyncLocation } from "@/components/SyncLocation";
-import { getVisitorLocation } from "@/lib/visitor-location";
+import { getVisitorLocation, oid } from "@/lib/visitor-location";
 import { getScopeCounts } from "@/lib/scope-counts";
 import {
   resolveArchive, archiveRef, archiveSort, archiveTotal, archiveListings, archiveChildren,
@@ -54,6 +54,8 @@ const resolve = cache(async (segments: string[]): Promise<Resolved> => resolveAr
 // A page's data is the same for everyone with the same reference point
 // (area/city centre for most visitors), so it's shared for 10 s: a popular
 // archive costs one set of queries per 10 s instead of one per visitor.
+/** Below this many ads a page is topped up with the nearest ones outside it. */
+const NEARBY_MIN = 8;
 const shared = new TtlLru<Awaited<ReturnType<typeof loadData>>>(500, 10_000);
 const fetchData = cache(async function fetchData(
   r: NonNullable<Resolved>, sort: string, page: number, q: string, ref: ArchiveRef
@@ -78,8 +80,17 @@ async function loadData(r: NonNullable<Resolved>, sort: string, page: number, q:
     if (near.length) fallback = { label: ref.label, listings: near };
   }
 
+  // Thin here (a few ads)? Top the page up with the closest ones outside it —
+  // other areas of the city first on an area page, then other cities (OLX).
+  let nearby: any[] = [];
+  if (total > 0 && total < NEARBY_MIN && page === 1 && ref && r.city) {
+    const exclude = r.area ? { "locationRefs.areaId": { $ne: oid(r.area._id) } } : { "locationRefs.cityId": { $ne: oid(r.city._id) } };
+    nearby = await archiveFallback(r, q, ref, counts, exclude, NEARBY_MIN * 2 - total);
+  }
+
   return {
     listings: plain(listings),
+    nearby: plain(nearby),
     total,
     totalCapped: total >= TOTAL_CAP,
     children: plain(children),
@@ -143,7 +154,7 @@ export default async function Browse({ params, searchParams }: {
   const defaultSort = ARCHIVE_DEFAULT_SORT;
   const sort = archiveSort(sp.sort, ref);
 
-  const { listings, total, totalCapped, children, areaFacet, fallback } = await fetchData(r, sort, page, q, ref);
+  const { listings, nearby, total, totalCapped, children, areaFacet, fallback } = await fetchData(r, sort, page, q, ref);
   // A page number past the end (?page=500) is a real 404, not an empty 200
   // page — Search Console reports those as "soft 404".
   if (page > 1 && listings.length === 0) notFound();
@@ -178,33 +189,32 @@ export default async function Browse({ params, searchParams }: {
   const nearestNote = ref && sort === "nearest" ? `closest to ${ref.label} first` : null;
 
   return (
-    <div className="wrap py-4 pb-mobile-nav">
+    <div className="wrap pt-4 md:pt-6 pb-8">
       <JsonLd data={[breadcrumbJsonLd(crumbs), itemListJsonLd(listings.map((l: any) => `${base}/ads/${l.slug}`))]} />
       {/* Browsing another city makes it the visitor's location (OLX behaviour). */}
       {r.city && r.city.slug !== loc.city?.slug && <SyncLocation city={r.city.slug} />}
 
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-xs text-content-secondary mb-3 flex-wrap">
+      <nav className="max-md:hidden flex items-center gap-1 text-[14px] text-content-tertiary mb-3 flex-wrap">
         {crumbs.map((c, i) => (
           <React.Fragment key={c.url}>
             {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 opacity-50" />}
             {i < crumbs.length - 1 || q ? (
               <IntentLink href={c.url.replace(base, "") || "/"} className="hover:text-primary whitespace-nowrap">{c.name}</IntentLink>
             ) : (
-              <span className="text-content font-medium whitespace-nowrap">{c.name}</span>
+              <span className="text-content-secondary whitespace-nowrap">{c.name}</span>
             )}
           </React.Fragment>
         ))}
       </nav>
 
       {/* Title + sort */}
-      <div className="flex items-end justify-between gap-3 mb-3">
+      <div className="flex items-end justify-between gap-3 mb-4">
         <div className="min-w-0">
-          <h1 className="text-lg sm:text-2xl font-bold text-content flex items-center gap-1.5">
-            {r.city && !q && <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />}
-            <span className="truncate">{q ? `“${q}”` : pageTitle(r)}</span>
+          <h1 className="text-[22px] sm:text-[28px] font-extrabold tracking-tight text-content flex items-center gap-1.5">
+            <span className="line-clamp-2 leading-tight">{q ? `“${q}”` : pageTitle(r)}</span>
           </h1>
-          <p className="text-xs sm:text-sm text-content-secondary mt-0.5 flex items-center gap-1 flex-wrap">
+          <p className="text-[14px] sm:text-sm text-content-tertiary mt-1 flex items-center gap-1 flex-wrap">
             {q && <span>in {scopeName} ·</span>}
             <span>{total > 0 ? `${total.toLocaleString("en-PK")}${totalCapped ? "+" : ""} ${total === 1 ? "ad" : "ads"}` : "No exact matches"}</span>
             {total > 0 && nearestNote && (
@@ -213,7 +223,7 @@ export default async function Browse({ params, searchParams }: {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Link href={filtersHref} className="hidden sm:inline-flex items-center gap-1.5 border border-card-border px-3 h-9 rounded-lg text-sm font-semibold bg-surface hover:bg-surface-secondary"><SlidersHorizontal className="h-4 w-4 text-primary" /> Filters</Link>
+          <Link href={filtersHref} className="inline-flex items-center gap-1.5 px-3.5 h-10 rounded-full text-[14.5px] font-bold bg-white ring-1 ring-card-border hover:ring-content-tertiary"><SlidersHorizontal className="h-4 w-4" /> <span className="max-sm:hidden">Filters</span></Link>
           <SortSelect current={sort} canNearest={!!ref} defaultSort={defaultSort} />
         </div>
       </div>
@@ -221,7 +231,7 @@ export default async function Browse({ params, searchParams }: {
       {/* Active search */}
       {q && (
         <div className="mb-3">
-          <Link href={path} className="inline-flex items-center gap-1.5 rounded-full bg-primary/8 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/12">
+          <Link href={path} className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft h-9 px-3.5 text-[14px] font-semibold text-primary-dark">
             Search: {q} <X className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -231,7 +241,7 @@ export default async function Browse({ params, searchParams }: {
       {!r.city && loc.city && r.category && (
         <Link
           href={`/${loc.city.slug}/${r.category.path}${keepQ}`}
-          className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm hover:bg-primary/8"
+          className="mb-4 flex items-center justify-between gap-3 rounded-2xl bg-primary-soft px-4 py-3 text-[14.5px]"
         >
           <span className="text-content-secondary">
             All of Pakistan{ref ? `, nearest to ${ref.label} first` : ""}.
@@ -245,14 +255,12 @@ export default async function Browse({ params, searchParams }: {
       {/* Area facet (OLX's location filter) */}
       {r.city && areaFacet.length > 0 && (
         <div className="mb-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-content-tertiary mb-1.5">
-            {r.area ? `Areas in ${r.city.name}` : `Filter by area`}
-          </p>
+          
           <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1">
             {r.area && (
               <IntentLink
                 href={`/${r.city.slug}${r.category ? `/${r.category.path}` : ""}${keepQ}`}
-                className="shrink-0 rounded-md border border-card-border bg-surface px-3 py-1.5 text-xs font-medium text-content-secondary hover:border-primary hover:text-primary transition-colors"
+                className="shrink-0 inline-flex items-center h-9 rounded-full bg-white ring-1 ring-card-border px-3.5 text-[14px] font-semibold text-content-secondary hover:text-content"
               >
                 All {r.city.name}
               </IntentLink>
@@ -264,8 +272,8 @@ export default async function Browse({ params, searchParams }: {
                   key={a.slug}
                   href={`/${r.city.slug}/${a.slug}${r.category ? `/${r.category.path}` : ""}${keepQ}`}
                   aria-current={on ? "page" : undefined}
-                  className={`shrink-0 inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
-                    on ? "border-primary bg-primary text-white shadow-xs" : "border-card-border bg-surface text-content-secondary hover:border-primary hover:text-primary"
+                  className={`shrink-0 inline-flex items-center gap-1 h-9 rounded-full px-3.5 text-[14px] font-semibold transition-colors ${
+                    on ? "bg-content text-white" : "bg-white ring-1 ring-card-border text-content-secondary hover:text-content"
                   }`}
                 >
                   {a.name} <span className={on ? "text-white/80" : "text-content-tertiary"}>({a.n})</span>
@@ -279,10 +287,10 @@ export default async function Browse({ params, searchParams }: {
       {/* Refine: brand / model / category chips */}
       {children.length > 0 && (
         <div className="mb-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-content-tertiary mb-1.5">{r.category ? `Browse by ${VERTICAL.brandWord.one}` : "Categories"}</p>
+          
           <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1">
             {children.map((c: any) => (
-              <IntentLink key={c._id} href={`${prefix}/${c.path}${keepQ}`} className="shrink-0 rounded-md border border-card-border bg-surface px-3 py-1.5 text-xs font-medium text-content-secondary hover:border-primary hover:text-primary transition-colors">{c.name}</IntentLink>
+              <IntentLink key={c._id} href={`${prefix}/${c.path}${keepQ}`} className="shrink-0 inline-flex items-center h-9 rounded-full bg-primary-soft px-3.5 text-[14px] font-semibold text-primary-dark hover:bg-primary/15">{c.name}</IntentLink>
             ))}
           </div>
         </div>
@@ -301,7 +309,7 @@ export default async function Browse({ params, searchParams }: {
         />
       ) : fallback ? (
         <>
-          <div className="rounded-xl border border-card-border bg-surface-secondary px-4 py-3 flex items-start gap-2.5">
+          <div className="card px-4 py-3.5 flex items-start gap-2.5">
             <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
             <div className="min-w-0">
               <p className="text-sm font-medium text-content">
@@ -310,13 +318,13 @@ export default async function Browse({ params, searchParams }: {
               <p className="text-xs text-content-secondary mt-0.5">Showing the closest ones to {fallback.label} instead.</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3 mt-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4 mt-3">
             {fallback.listings.map((ad: any, i: number) => <ListingCard key={ad._id} ad={ad} priority={i < 2} />)}
           </div>
         </>
       ) : (
-        <div className="rounded-lg sm:rounded-xl border border-dashed border-card-border bg-surface-secondary p-10 text-center">
-          <MapPin className="h-9 w-9 text-content-tertiary mx-auto mb-3" />
+        <div className="card p-10 text-center">
+          <span className="mx-auto mb-4 grid place-items-center h-14 w-14 rounded-2xl bg-primary-soft text-primary"><MapPin className="h-6 w-6" /></span>
           <h3 className="font-semibold text-content">
             {q ? `No results for “${q}”` : `No ${r.category ? r.category.name.toLowerCase() : "ads"} in ${locLabel(r)} yet`}
           </h3>
@@ -325,17 +333,26 @@ export default async function Browse({ params, searchParams }: {
           </p>
           <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
             {q ? (
-              <Link href={path} className="rounded-lg bg-primary hover:bg-primary-dark text-white font-medium text-sm px-6 py-2.5 shadow-sm transition-colors">Clear search</Link>
+              <Link href={path} className="inline-flex items-center h-11 rounded-full bg-primary hover:bg-primary-dark text-white font-bold text-sm px-6">Clear search</Link>
             ) : (
-              <Link href="/ads/post" className="rounded-lg bg-primary hover:bg-primary-dark text-white font-medium text-sm px-6 py-2.5 shadow-sm transition-colors">Post an ad</Link>
+              <Link href="/ads/post" className="inline-flex items-center h-11 rounded-full bg-primary hover:bg-primary-dark text-white font-bold text-sm px-6">Post an ad</Link>
             )}
             {r.category && r.city && (
-              <Link href={`/${r.category.path}${keepQ}`} className="rounded-lg border border-card-border bg-surface font-medium text-sm px-6 py-2.5 hover:border-primary hover:text-primary transition-colors">
+              <Link href={`/${r.category.path}${keepQ}`} className="inline-flex items-center h-11 rounded-full bg-white ring-1 ring-card-border font-bold text-sm px-6">
                 All Pakistan
               </Link>
             )}
           </div>
         </div>
+      )}
+
+      {/* Thin page: the closest ads outside it */}
+      {nearby.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-[20px] font-extrabold tracking-tight text-content">{r.area ? `More near ${r.area.name}` : `Near ${r.city.name}`}</h2>
+          <p className="text-[14px] text-content-tertiary mt-0.5 mb-3">{r.category ? r.category.name : "Ads"} from {r.area ? "nearby areas and cities" : "the closest cities"}, nearest first</p>
+          <ListingGrid ads={nearby} />
+        </section>
       )}
 
       {/* SEO editorial content */}

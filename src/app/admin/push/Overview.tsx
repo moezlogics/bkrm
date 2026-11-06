@@ -82,7 +82,7 @@ export function Overview({ types }: { types: { id: string; label: string }[] }) 
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead><tr className="text-[11px] uppercase tracking-wider text-content-tertiary text-left">
+              <thead><tr className="text-[12px] uppercase tracking-wider text-content-tertiary text-left">
                 <th className="py-2 font-bold">Notification</th><th className="font-bold">Sent</th><th className="font-bold">Shown</th><th className="font-bold">Tapped</th><th className="font-bold">Tap rate</th><th className="font-bold">Failed</th>
               </tr></thead>
               <tbody className="divide-y divide-card-border/60">
@@ -110,7 +110,7 @@ export function Overview({ types }: { types: { id: string; label: string }[] }) 
               <Link key={c._id} href={`/admin/push/campaigns/${c._id}`} className="py-2.5 flex items-center gap-3 hover:bg-surface-secondary rounded-lg px-1">
                 <span className="flex-1 min-w-0">
                   <span className="block text-sm font-semibold text-content truncate">{c.name || c.title}</span>
-                  <span className="block text-[11px] text-content-tertiary">{when(c.finishedAt || c.sendAt || c.createdAt)}</span>
+                  <span className="block text-[12px] text-content-tertiary">{when(c.finishedAt || c.sendAt || c.createdAt)}</span>
                 </span>
                 <span className="text-xs text-content-secondary tabular-nums hidden sm:block">{fmt(c.stats?.sent)} sent · {pct(c.stats?.clicked || 0, c.stats?.delivered || c.stats?.sent || 0)} tapped</span>
                 <Pill status={c.status} />

@@ -66,7 +66,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <Link href="/blog" className="hover:text-primary">Blog</Link>
       </nav>
 
-      <span className="text-[11px] font-bold uppercase tracking-wider text-primary">{post.category}</span>
+      <span className="text-[12px] font-bold uppercase tracking-wider text-primary">{post.category}</span>
       <h1 className="text-3xl font-bold text-content mt-1 mb-2">{post.title}</h1>
       <p className="text-xs text-content-tertiary mb-6">{post.publishedAt ? formatDate(post.publishedAt) : ""}</p>
 

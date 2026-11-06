@@ -4,7 +4,7 @@
 import React from "react";
 
 export const input = "bg-surface-secondary border border-card-border rounded-xl px-3 py-2.5 text-sm outline-none text-content focus:border-primary w-full";
-export const label = "text-[11px] font-bold text-content uppercase tracking-wider";
+export const label = "text-[12px] font-bold text-content uppercase tracking-wider";
 export const card = "bg-card border border-card-border rounded-2xl p-5";
 export const btn = "rounded-xl px-4 py-2.5 text-sm font-bold inline-flex items-center justify-center gap-2 disabled:opacity-50";
 export const btnPrimary = `${btn} bg-primary hover:bg-primary-dark text-white`;
@@ -22,9 +22,9 @@ export const when = (d?: string | null) => (d ? new Date(d).toLocaleString("en-G
 export function Stat({ label: l, value, hint }: { label: string; value: React.ReactNode; hint?: string }) {
   return (
     <div className="bg-card border border-card-border rounded-2xl p-4">
-      <p className="text-[11px] font-bold uppercase tracking-wider text-content-tertiary">{l}</p>
+      <p className="text-[12px] font-bold uppercase tracking-wider text-content-tertiary">{l}</p>
       <p className="text-2xl font-bold text-content mt-1 tabular-nums">{value}</p>
-      {hint && <p className="text-[11px] text-content-secondary mt-0.5">{hint}</p>}
+      {hint && <p className="text-[12px] text-content-secondary mt-0.5">{hint}</p>}
     </div>
   );
 }
@@ -42,7 +42,7 @@ const TONES: Record<string, string> = {
   unsubscribed: "bg-slate-100 text-slate-600",
 };
 export function Pill({ status }: { status: string }) {
-  return <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-bold capitalize ${TONES[status] || TONES.draft}`}>{status}</span>;
+  return <span className={`inline-block rounded-full px-2 py-0.5 text-[12px] font-bold capitalize ${TONES[status] || TONES.draft}`}>{status}</span>;
 }
 
 /** A labelled switch (used for every automation and toggle on these screens). */

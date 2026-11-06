@@ -36,11 +36,11 @@ export default function RouteError({ error, reset }: { error: Error & { digest?:
           <button onClick={() => reset()} className="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-semibold">
             <RotateCcw className="h-4 w-4" /> Try again
           </button>
-          <Link href="/" className="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl border border-card-border bg-card text-sm font-semibold text-content hover:border-primary">
+          <Link href="/" className="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] text-sm font-semibold text-content hover:border-primary">
             <Home className="h-4 w-4" /> Go to the homepage
           </Link>
         </div>
-        {online && error.digest && <p className="mt-6 text-[11px] text-content-tertiary">Error reference: {error.digest}</p>}
+        {online && error.digest && <p className="mt-6 text-[12px] text-content-tertiary">Error reference: {error.digest}</p>}
       </div>
     </div>
   );

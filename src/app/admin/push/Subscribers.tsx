@@ -63,7 +63,7 @@ export function Subscribers({ options }: { options: any }) {
           <p className="text-sm text-content-secondary text-center py-16">No devices match these filters.</p>
         ) : (
           <table className="w-full text-sm">
-            <thead><tr className="text-[11px] uppercase tracking-wider text-content-tertiary text-left border-b border-card-border">
+            <thead><tr className="text-[12px] uppercase tracking-wider text-content-tertiary text-left border-b border-card-border">
               <th className="p-3 font-bold">Person</th><th className="font-bold">Where</th><th className="font-bold">Device</th>
               <th className="font-bold">Subscribed</th><th className="font-bold">Last seen</th><th className="font-bold">Sent</th><th className="font-bold">Tapped</th><th className="font-bold">Status</th><th />
             </tr></thead>
@@ -74,7 +74,7 @@ export function Subscribers({ options }: { options: any }) {
                   <tr key={s._id} className="hover:bg-surface-secondary/60">
                     <td className="p-3">
                       <span className="block font-semibold text-content">{s.userId?.name || "Guest"}</span>
-                      <span className="block text-[11px] text-content-tertiary">{s.userId?.email || (s.isSeller ? "seller" : "not signed in")}</span>
+                      <span className="block text-[12px] text-content-tertiary">{s.userId?.email || (s.isSeller ? "seller" : "not signed in")}</span>
                     </td>
                     <td className="text-content-secondary">{[s.area, s.city, s.state].filter(Boolean).join(", ") || "—"}</td>
                     <td><span className="inline-flex items-center gap-1.5 text-content-secondary"><Icon className="h-3.5 w-3.5" /> {s.browser} · {s.os}</span></td>

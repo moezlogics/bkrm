@@ -79,23 +79,23 @@ function SignupInner({ brand }: { brand?: React.ReactNode }) {
 
               <form onSubmit={register} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-content">Full name</label>
+                  <label className="text-[14px] font-semibold text-content">Full name</label>
                   <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" autoComplete="name" className="h-11 rounded-lg border border-card-border px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 bg-surface" />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-semibold text-content">Email</label>
+                  <label className="text-[14px] font-semibold text-content">Email</label>
                   <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" className="h-11 rounded-lg border border-card-border px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 bg-surface" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center justify-between">
-                    <label className="text-[13px] font-semibold text-content">Password</label>
+                    <label className="text-[14px] font-semibold text-content">Password</label>
                     <button type="button" onClick={() => setShowPw((s) => !s)} className="text-xs font-semibold text-primary">{showPw ? "Hide" : "Show"}</button>
                   </div>
                   <input type={showPw ? "text" : "password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" className="h-11 rounded-lg border border-card-border px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 bg-surface" />
                 </div>
                 <button type="submit" disabled={loading} className="h-11 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm disabled:opacity-60">{loading ? "Please wait…" : "Create account"}</button>
               </form>
-              <p className="text-[11px] text-content-tertiary text-center mt-4">By creating an account you agree to our Terms and Privacy Policy.</p>
+              <p className="text-[12px] text-content-tertiary text-center mt-4">By creating an account you agree to our Terms and Privacy Policy.</p>
             </>
           ) : (
             <OtpCodeForm email={email.trim().toLowerCase()} devCode={devCode} initialStatus={emailStatus} onVerified={afterVerified} onChangeEmail={() => { setStep("form"); setDevCode(""); }} />

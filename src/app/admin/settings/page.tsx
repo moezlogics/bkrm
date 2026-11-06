@@ -185,7 +185,7 @@ function SettingsInner() {
                   ) : (
                     <input id={f.key} type={f.type === "number" ? "number" : f.type === "url" ? "url" : "text"} value={values[f.key] ?? ""} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} className={inputCls} />
                   )}
-                  {f.hint && <p className="text-[11px] text-content-tertiary">{f.hint}</p>}
+                  {f.hint && <p className="text-[12px] text-content-tertiary">{f.hint}</p>}
                 </div>
               ))}
             </div>
@@ -227,9 +227,9 @@ function BrandingTab({ values, set }: { values: Record<string, string>; set: (k:
           <Slider label="On phones" value={hm} min={18} max={52} onChange={(n) => set("logo_height_mobile", String(n))} />
           <Slider label="On desktop" value={hd} min={20} max={56} onChange={(n) => set("logo_height_desktop", String(n))} />
           <div className="flex flex-col gap-1.5">
-            <span className="text-[11px] font-semibold text-content-tertiary">Preview — phone</span>
+            <span className="text-[12px] font-semibold text-content-tertiary">Preview — phone</span>
             <Preview h={hm} logo={values.site_logo} />
-            <span className="text-[11px] font-semibold text-content-tertiary mt-1">Preview — desktop</span>
+            <span className="text-[12px] font-semibold text-content-tertiary mt-1">Preview — desktop</span>
             <Preview h={hd} logo={values.site_logo} />
           </div>
         </div>
@@ -260,7 +260,7 @@ function BrandingTab({ values, set }: { values: Record<string, string>; set: (k:
             <input value={values.brand_color || ""} onChange={(e) => set("brand_color", e.target.value.trim())} placeholder="#1a56db" className={`${inputCls} max-w-[160px]`} />
             {values.brand_color && <button type="button" onClick={() => set("brand_color", "")} className="text-xs font-semibold text-content-tertiary hover:text-primary">Reset</button>}
           </div>
-          <p className="text-[11px] text-content-tertiary">Buttons, links and highlights across the site use this colour. Leave empty for the default blue.</p>
+          <p className="text-[12px] text-content-tertiary">Buttons, links and highlights across the site use this colour. Leave empty for the default blue.</p>
           <div className="flex gap-2 mt-1">
             <span className="h-10 px-4 rounded-lg text-white text-sm font-semibold grid place-items-center" style={{ background: color }}>Post ad</span>
             <span className="h-10 px-4 rounded-lg text-sm font-semibold grid place-items-center border" style={{ color, borderColor: color }}>View all</span>
@@ -298,7 +298,7 @@ function EmailTab() {
           <Row k="Mail server" v={`${info.host}:${info.port}`} />
           <Row k="Sent from" v={info.from || "—"} />
         </>) : <div className="flex items-center gap-2 text-sm text-content-secondary"><Loader2 className="h-4 w-4 animate-spin" /> Loading…</div>}
-        <p className="text-[11px] text-content-tertiary mt-3">These come from the server&apos;s .env file (SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM). For Gmail, SMTP_PASS must be an App Password. The name people see is your site name.</p>
+        <p className="text-[12px] text-content-tertiary mt-3">These come from the server&apos;s .env file (SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM). For Gmail, SMTP_PASS must be an App Password. The name people see is your site name.</p>
       </div>
       <div className="flex flex-col gap-3">
         <button onClick={test} disabled={busy} className="inline-flex items-center justify-center gap-2 h-11 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-bold disabled:opacity-60">
@@ -310,7 +310,7 @@ function EmailTab() {
             <span>{result.message}</span>
           </div>
         )}
-        <p className="text-[11px] text-content-tertiary">Goes to your admin email address, using the same connection as sign-up codes.</p>
+        <p className="text-[12px] text-content-tertiary">Goes to your admin email address, using the same connection as sign-up codes.</p>
       </div>
     </div>
   );
@@ -384,7 +384,7 @@ function NotificationsTab() {
           {busy === "digest" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bell className="h-4 w-4" />} Send today&apos;s report now
         </button>
       </div>
-      <p className="text-[11px] text-content-tertiary">Each alert says who it is about and links straight to it in the admin panel. Server errors are sent at most once every 30 minutes per error.</p>
+      <p className="text-[12px] text-content-tertiary">Each alert says who it is about and links straight to it in the admin panel. Server errors are sent at most once every 30 minutes per error.</p>
     </div>
   );
 }

@@ -60,7 +60,7 @@ function Stage({ icon: Icon, label, value, note }: { icon: React.ElementType; la
     <div className="bg-card border border-card-border rounded-2xl p-5 shadow-sm">
       <div className="flex items-center gap-2 text-xs font-semibold text-content-secondary"><Icon className="h-4 w-4 text-primary" />{label}</div>
       <div className="text-2xl font-bold text-content mt-1">{n(value)}</div>
-      <div className="text-[11px] text-content-secondary mt-0.5">{note}</div>
+      <div className="text-[12px] text-content-secondary mt-0.5">{note}</div>
     </div>
   );
 }
@@ -95,7 +95,7 @@ export default async function InsightsPage() {
             <div key={x.label} className="rounded-xl bg-surface-secondary p-3">
               <x.icon className="h-4 w-4 mx-auto text-primary" />
               <div className="text-lg font-bold text-content mt-1">{n(x.v)}</div>
-              <div className="text-[11px] text-content-secondary">{x.label} · {pct(x.v, leads)}</div>
+              <div className="text-[12px] text-content-secondary">{x.label} · {pct(x.v, leads)}</div>
             </div>
           ))}
         </div>

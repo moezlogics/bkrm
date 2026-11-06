@@ -52,14 +52,14 @@ function Inner({ brand }: { brand?: React.ReactNode }) {
         </div>
         <div className="bg-card border border-card-border rounded-xl p-6 shadow-xs">
           {msg && (
-            <div role="status" className={`mb-4 rounded-lg px-3 py-2.5 text-[13px] font-medium ${msg.tone === "ok" ? "border border-emerald-200 bg-emerald-50 text-emerald-800" : "border border-danger/25 bg-danger/5 text-danger"}`}>
+            <div role="status" className={`mb-4 rounded-lg px-3 py-2.5 text-[14px] font-medium ${msg.tone === "ok" ? "border border-emerald-200 bg-emerald-50 text-emerald-800" : "border border-danger/25 bg-danger/5 text-danger"}`}>
               {msg.tone === "ok" && <MailCheck className="inline h-4 w-4 mr-1 -mt-0.5" />}{msg.text}
             </div>
           )}
           {step === "email" ? (
             <form onSubmit={sendCode} className="flex flex-col gap-4">
               <label className="flex flex-col gap-1.5">
-                <span className="text-[13px] font-semibold text-content">Email</span>
+                <span className="text-[14px] font-semibold text-content">Email</span>
                 <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" className={input} />
               </label>
               <button type="submit" disabled={busy} className="h-11 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm disabled:opacity-60 flex items-center justify-center gap-2">
@@ -69,11 +69,11 @@ function Inner({ brand }: { brand?: React.ReactNode }) {
           ) : (
             <form onSubmit={reset} className="flex flex-col gap-4">
               <label className="flex flex-col gap-1.5">
-                <span className="text-[13px] font-semibold text-content">6-digit code</span>
+                <span className="text-[14px] font-semibold text-content">6-digit code</span>
                 <input inputMode="numeric" autoComplete="one-time-code" required maxLength={14} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="••••••" className={`${input} tracking-[0.4em] text-center text-lg`} />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[13px] font-semibold text-content">New password</span>
+                <span className="text-[14px] font-semibold text-content">New password</span>
                 <span className="relative">
                   <input type={show ? "text" : "password"} required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" className={`${input} pr-11`} />
                   <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-content-tertiary" aria-label={show ? "Hide password" : "Show password"}>{show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
@@ -82,7 +82,7 @@ function Inner({ brand }: { brand?: React.ReactNode }) {
               <button type="submit" disabled={busy || code.length !== 6 || pw.length < 8} className="h-11 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm disabled:opacity-60 flex items-center justify-center gap-2">
                 {busy && <Loader2 className="h-4 w-4 animate-spin" />} Update password
               </button>
-              <button type="button" onClick={() => sendCode()} disabled={busy} className="text-[13px] font-semibold text-primary">Send a new code</button>
+              <button type="button" onClick={() => sendCode()} disabled={busy} className="text-[14px] font-semibold text-primary">Send a new code</button>
             </form>
           )}
         </div>

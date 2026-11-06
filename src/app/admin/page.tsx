@@ -81,7 +81,7 @@ function Tile({ label, value, sub, icon: Icon, href }: { label: string; value: s
       <div className="flex flex-col gap-1 min-w-0">
         <span className="text-xs font-semibold text-content-secondary">{label}</span>
         <span className="text-2xl font-bold text-content">{value}</span>
-        {sub && <span className="text-[11px] text-content-secondary">{sub}</span>}
+        {sub && <span className="text-[12px] text-content-secondary">{sub}</span>}
       </div>
       <div className="h-10 w-10 rounded-xl flex items-center justify-center bg-primary/10 text-primary shrink-0"><Icon className="h-5 w-5" /></div>
     </div>
@@ -131,7 +131,7 @@ export default async function AdminDashboardPage() {
         <div role="alert" className="rounded-2xl border border-amber-300 bg-amber-50 p-4 flex flex-col sm:flex-row sm:items-center gap-3 text-amber-950">
           <div className="min-w-0 flex-1">
             <p className="font-bold text-sm">Sellers can&apos;t pay for plans yet</p>
-            <p className="text-[13px] mt-0.5">Add your JazzCash, Easypaisa or bank account so the checkout shows where to send the money. Until then it sends sellers to your WhatsApp.</p>
+            <p className="text-[14px] mt-0.5">Add your JazzCash, Easypaisa or bank account so the checkout shows where to send the money. Until then it sends sellers to your WhatsApp.</p>
           </div>
           <Link href="/admin/invoices#payment-options" className="shrink-0 h-10 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold grid place-items-center">Add payment account</Link>
         </div>
@@ -154,7 +154,7 @@ export default async function AdminDashboardPage() {
               <w.icon className={`h-5 w-5 shrink-0 ${w.value ? "text-amber-600" : "text-content-secondary"}`} />
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-content">{w.label}</span>
-                <span className="block text-[11px] text-content-secondary truncate">{w.hint}</span>
+                <span className="block text-[12px] text-content-secondary truncate">{w.hint}</span>
               </span>
               <span className="text-lg font-bold text-content">{n(w.value)}</span>
             </Link>
@@ -184,7 +184,7 @@ export default async function AdminDashboardPage() {
               ))}
             </ul>
           )}
-          <p className="text-[11px] text-content-secondary mt-3">A good moment to call and offer a renewal.</p>
+          <p className="text-[12px] text-content-secondary mt-3">A good moment to call and offer a renewal.</p>
         </div>
       </div>
 

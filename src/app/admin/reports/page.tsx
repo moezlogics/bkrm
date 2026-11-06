@@ -220,14 +220,14 @@ function ReportsPage() {
                           {(s.seller?.verificationLevel || 0) >= 2 && <BadgeCheck className="h-3.5 w-3.5 text-emerald-600" />}
                         </Link>
                         <div className="text-xs text-content-secondary">{s.seller?.phoneNumber || s.seller?.email}</div>
-                        {s.seller?.isBlocked && <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-danger"><Ban className="h-3 w-3" />Blocked</span>}
+                        {s.seller?.isBlocked && <span className="mt-1 inline-flex items-center gap-1 text-[12px] font-bold text-danger"><Ban className="h-3 w-3" />Blocked</span>}
                       </td>
                       <td className="py-4 px-4">
                         <div className={`text-lg font-bold ${s.reporters >= 3 ? "text-danger" : "text-content"}`}>{s.open}</div>
                         <div className="text-xs text-content-secondary">from {s.reporters} {s.reporters === 1 ? "person" : "people"} · {s.ads} ad{s.ads === 1 ? "" : "s"}</div>
                       </td>
                       <td className="py-4 px-4">
-                        <div className="flex flex-wrap gap-1">{s.reasons.map((r) => <span key={r.reason} className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">{r.reason} ×{r.n}</span>)}</div>
+                        <div className="flex flex-wrap gap-1">{s.reasons.map((r) => <span key={r.reason} className="rounded px-1.5 py-0.5 text-[12px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">{r.reason} ×{r.n}</span>)}</div>
                       </td>
                       <td className="py-4 px-4 text-xs text-content-secondary whitespace-nowrap">{fmtDate(s.last)}</td>
                       <td className="py-4 px-4">
@@ -266,8 +266,8 @@ function ReportsPage() {
                           <span className="truncate">{r.itemId.name || "View listing"}</span><ExternalLink className="h-3 w-3 shrink-0" />
                         </a>
                       ) : <span className="text-content-secondary">Ad removed</span>}
-                      {r.itemId?.status && r.itemId.status !== "approved" && <div className="text-[11px] text-content-secondary mt-0.5">Ad is {r.itemId.status === "sold out" ? "sold" : r.itemId.status}</div>}
-                      <div className="text-[11px] text-content-secondary mt-0.5">{fmtDate(r.createdAt)}{r.status !== "open" ? ` · ${r.status === "reviewed" ? "resolved" : r.status}` : ""}</div>
+                      {r.itemId?.status && r.itemId.status !== "approved" && <div className="text-[12px] text-content-secondary mt-0.5">Ad is {r.itemId.status === "sold out" ? "sold" : r.itemId.status}</div>}
+                      <div className="text-[12px] text-content-secondary mt-0.5">{fmtDate(r.createdAt)}{r.status !== "open" ? ` · ${r.status === "reviewed" ? "resolved" : r.status}` : ""}</div>
                     </td>
                     <td className="py-4 px-3 max-w-[260px]">
                       <span className="inline-block bg-amber-50 text-amber-700 border border-amber-200 rounded px-2 py-1 text-xs font-bold">{reasonOf(r)}</span>
@@ -279,8 +279,8 @@ function ReportsPage() {
                           <Link href={`/admin/users?q=${encodeURIComponent(r.seller.email || r.seller._id)}`} className="font-semibold hover:text-primary inline-flex items-center gap-1">
                             {r.seller.name}{(r.seller.verificationLevel || 0) >= 2 && <BadgeCheck className="h-3.5 w-3.5 text-emerald-600" />}
                           </Link>
-                          {(r.seller.openReports || 0) > 1 && <div className="text-[11px] font-bold text-danger">{r.seller.openReports} open reports in total</div>}
-                          {r.seller.isBlocked && <div className="text-[11px] font-bold text-danger inline-flex items-center gap-1"><Ban className="h-3 w-3" />Blocked</div>}
+                          {(r.seller.openReports || 0) > 1 && <div className="text-[12px] font-bold text-danger">{r.seller.openReports} open reports in total</div>}
+                          {r.seller.isBlocked && <div className="text-[12px] font-bold text-danger inline-flex items-center gap-1"><Ban className="h-3 w-3" />Blocked</div>}
                         </>
                       ) : <span className="text-content-secondary">—</span>}
                     </td>

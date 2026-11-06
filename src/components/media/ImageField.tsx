@@ -79,7 +79,7 @@ export function ImageField({
           <Images className="h-3.5 w-3.5" /> Media library
         </button>
         {allowUrl && (
-          <button type="button" onClick={() => setUrlMode((v) => !v)} className="inline-flex items-center gap-1 h-8 px-2 text-[11px] font-semibold text-content-tertiary hover:text-primary">
+          <button type="button" onClick={() => setUrlMode((v) => !v)} className="inline-flex items-center gap-1 h-8 px-2 text-[12px] font-semibold text-content-tertiary hover:text-primary">
             <Link2 className="h-3.5 w-3.5" /> {urlMode ? "Hide link" : "Use a link"}
           </button>
         )}
@@ -87,7 +87,7 @@ export function ImageField({
       {urlMode && (
         <input value={value || ""} onChange={(e) => onChange(e.target.value.trim())} placeholder="https://…" className="h-9 rounded-lg border border-card-border bg-surface px-3 text-xs outline-none focus:border-primary" />
       )}
-      {hint && <p className="text-[11px] text-content-tertiary">{hint}</p>}
+      {hint && <p className="text-[12px] text-content-tertiary">{hint}</p>}
       <input ref={fileRef} type="file" accept="image/*,.heic,.heif" hidden onChange={(e) => upload(e.target.files?.[0])} />
       <MediaPicker open={picker} onClose={() => setPicker(false)} folder={folder} admin={admin} onSelect={(items) => items[0] && onChange(items[0].url)} />
     </div>

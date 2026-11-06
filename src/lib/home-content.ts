@@ -20,10 +20,17 @@ export function getHomeSliders(): Promise<any[]> {
 }
 
 export function getHomepageSections() {
-  return store.memo("sections", loadHomepageSections) as ReturnType<typeof loadHomepageSections>;
+  return store.memo("sections", () => loadHomepageSections()) as ReturnType<typeof loadHomepageSections>;
+}
+
+/** The same rails, nearest-first for a visitor at a point (shared per place for 30 s). */
+const local = new TtlLru<any>(400, 30_000);
+export function getLocalHomepageSections(key: string, point: [number, number]) {
+  return local.memo(key, () => loadHomepageSections(point)) as ReturnType<typeof loadHomepageSections>;
 }
 
 /** Call after any admin change to sliders or homepage sections. */
 export function clearHomeContent() {
   store.clear();
+  local.clear();
 }

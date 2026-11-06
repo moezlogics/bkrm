@@ -60,11 +60,11 @@ export function DayColumns({ title, hint, data, unit }: { title: string; hint?: 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-content">{title}</h3>
-          {hint && <p className="text-[11px] text-content-secondary mt-0.5">{hint}</p>}
+          {hint && <p className="text-[12px] text-content-secondary mt-0.5">{hint}</p>}
         </div>
         <div className="text-right shrink-0">
           <div className="text-xl font-bold text-content">{total.toLocaleString("en-PK")}</div>
-          <div className="text-[11px] text-content-secondary">
+          <div className="text-[12px] text-content-secondary">
             last 30 days{delta != null && <> · <span className={delta >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}>{delta >= 0 ? "▲" : "▼"} {Math.abs(delta)}%</span> vs prior week</>}
           </div>
         </div>

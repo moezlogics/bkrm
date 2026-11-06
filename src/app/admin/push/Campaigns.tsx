@@ -55,7 +55,7 @@ export function Campaigns() {
       ) : (
         <div className={`${card} !p-0 overflow-x-auto`}>
           <table className="w-full text-sm">
-            <thead><tr className="text-[11px] uppercase tracking-wider text-content-tertiary text-left border-b border-card-border">
+            <thead><tr className="text-[12px] uppercase tracking-wider text-content-tertiary text-left border-b border-card-border">
               <th className="p-3 font-bold">Campaign</th><th className="font-bold">Status</th><th className="font-bold">Audience</th>
               <th className="font-bold">Sent</th><th className="font-bold">Shown</th><th className="font-bold">Tapped</th><th className="font-bold">When</th><th />
             </tr></thead>
@@ -64,11 +64,11 @@ export function Campaigns() {
                 <tr key={c._id} className="hover:bg-surface-secondary/60">
                   <td className="p-3">
                     <Link href={`/admin/push/campaigns/${c._id}`} className="font-semibold text-content hover:text-primary block truncate max-w-[240px]">{c.name || c.title}</Link>
-                    <span className="text-[11px] text-content-tertiary block truncate max-w-[240px]">{c.title}</span>
+                    <span className="text-[12px] text-content-tertiary block truncate max-w-[240px]">{c.title}</span>
                   </td>
                   <td>
                     <Pill status={c.status} />
-                    {c.status === "sending" && <span className="block text-[11px] text-content-tertiary mt-1 tabular-nums">{fmt(c.stats?.sent)} / {fmt(c.stats?.targeted)}</span>}
+                    {c.status === "sending" && <span className="block text-[12px] text-content-tertiary mt-1 tabular-nums">{fmt(c.stats?.sent)} / {fmt(c.stats?.targeted)}</span>}
                   </td>
                   <td className="capitalize text-content-secondary">{c.audience?.who || "all"}</td>
                   <td className="tabular-nums">{fmt(c.stats?.sent)}</td>

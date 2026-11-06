@@ -33,7 +33,7 @@ export function TrendChart({ days, series, height = 170 }: { days: string[]; ser
     <div className="relative" ref={box}>
       <div className="flex items-center gap-4 mb-2 flex-wrap">
         {series.map((s) => (
-          <span key={s.name} className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-content-secondary">
+          <span key={s.name} className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-content-secondary">
             <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color }} /> {s.name}
             <span className="text-content-tertiary font-medium">{fmt(s.points.reduce((a, b) => a + b, 0))}</span>
           </span>
@@ -72,7 +72,7 @@ export function TrendChart({ days, series, height = 170 }: { days: string[]; ser
       </svg>
       {hover != null && !empty && (
         <div
-          className="pointer-events-none absolute top-8 rounded-lg border border-card-border bg-card px-2.5 py-1.5 shadow-lg text-[11px]"
+          className="pointer-events-none absolute top-8 rounded-lg border border-card-border bg-card px-2.5 py-1.5 shadow-lg text-[12px]"
           style={{ left: `calc(${(x(hover) / W) * 100}% - 60px)` }}
         >
           <p className="font-semibold text-content mb-0.5">{label(days[hover])}</p>

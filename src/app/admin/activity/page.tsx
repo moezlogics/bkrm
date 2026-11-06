@@ -123,7 +123,7 @@ function ActivityPage() {
                         : <span className="font-semibold">{r.targetLabel}</span>)}
                     </p>
                     {r.details && <p className="text-xs text-content-secondary mt-0.5 break-words">{r.details}</p>}
-                    <p className="text-[11px] text-content-secondary mt-0.5">{when(r.createdAt)}{r.ip ? ` · ${r.ip}` : ""}</p>
+                    <p className="text-[12px] text-content-secondary mt-0.5">{when(r.createdAt)}{r.ip ? ` · ${r.ip}` : ""}</p>
                   </div>
                 </li>
               );

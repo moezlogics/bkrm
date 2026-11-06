@@ -128,7 +128,7 @@ function Composer() {
             <div><label className={label}>Title</label><input className={`${input} mt-1`} maxLength={90} value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Weekend deals in Lahore" /></div>
             <div><label className={label}>Message</label><textarea rows={3} className={`${input} mt-1 resize-none`} maxLength={220} value={form.body} onChange={(e) => set({ body: e.target.value })} placeholder="One or two short lines." /></div>
             <div><label className={label}>Opens</label><input className={`${input} mt-1`} value={form.url} onChange={(e) => set({ url: e.target.value })} placeholder={`/lahore/${VERTICAL.primaryTop}`} />
-              <p className="text-[11px] text-content-tertiary mt-1">A page on this site (starts with /) or a full https:// address.</p></div>
+              <p className="text-[12px] text-content-tertiary mt-1">A page on this site (starts with /) or a full https:// address.</p></div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ImageField label="Icon (optional)" value={form.icon} onChange={(v) => set({ icon: v })} folder="general" admin aspect="square" />
               <ImageField label="Big picture (optional, Android)" value={form.image} onChange={(v) => set({ image: v })} folder="general" admin aspect="wide" />
@@ -229,7 +229,7 @@ function Composer() {
                     <img src={withBase(form.icon || site.icon)} alt="" className="h-8 w-8 rounded-lg object-cover shrink-0" />
                   ) : <span className="h-8 w-8 rounded-lg bg-primary/10 shrink-0" />}
                   <div className="min-w-0 flex-1">
-                    <p className="text-[11px] text-slate-500 truncate">{site.siteName || "Your site"} · now</p>
+                    <p className="text-[12px] text-slate-500 truncate">{site.siteName || "Your site"} · now</p>
                     <p className="text-sm font-semibold text-slate-900 break-words">{form.title || "Title goes here"}</p>
                     <p className="text-xs text-slate-600 break-words">{form.body || "Your message appears here."}</p>
                   </div>
@@ -265,7 +265,7 @@ function Composer() {
               <button onClick={() => submit("draft")} disabled={!!busy || !form.title} className={`${btnGhost} flex-1`}>{busy === "draft" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save draft</button>
               <button onClick={sendTest} disabled={!!busy || !form.title} className={`${btnGhost} flex-1`}>{busy === "test" ? <Loader2 className="h-4 w-4 animate-spin" /> : <TestTube2 className="h-4 w-4" />} Test on me</button>
             </div>
-            <p className="text-[11px] text-content-tertiary">A test goes only to your own browsers, and isn&apos;t counted in the campaign&apos;s results.</p>
+            <p className="text-[12px] text-content-tertiary">A test goes only to your own browsers, and isn&apos;t counted in the campaign&apos;s results.</p>
           </div>
         </div>
       </div>

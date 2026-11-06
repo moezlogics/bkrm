@@ -44,10 +44,10 @@ export default async function BlogIndex() {
                 )}
               </div>
               <div className="p-4 flex flex-col gap-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-primary">{p.category}</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-primary">{p.category}</span>
                 <h2 className="font-bold text-content text-base line-clamp-2 group-hover:text-primary transition-colors">{p.title}</h2>
                 {p.excerpt && <p className="text-xs text-content-secondary line-clamp-2">{p.excerpt}</p>}
-                <span className="text-[11px] text-content-tertiary mt-1">{p.publishedAt ? formatDate(p.publishedAt) : ""}</span>
+                <span className="text-[12px] text-content-tertiary mt-1">{p.publishedAt ? formatDate(p.publishedAt) : ""}</span>
               </div>
             </Link>
           ))}

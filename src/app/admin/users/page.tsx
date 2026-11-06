@@ -255,7 +255,7 @@ function UsersPage() {
                           <div className="min-w-0">
                             <div className="font-semibold truncate max-w-[200px] flex items-center gap-1.5 group-hover:text-primary">
                               {u.name}
-                              {isSelf && <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">You</span>}
+                              {isSelf && <span className="text-[11px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">You</span>}
                               {u.role === "admin" && <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" aria-label="Admin" />}
                             </div>
                             <div className="text-xs text-content-secondary flex items-center gap-1 truncate max-w-[200px]">
@@ -378,7 +378,7 @@ function Pill({ tone, icon, children }: { tone: "ok" | "warn" | "danger" | "mute
     danger: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900",
     muted: "bg-surface-secondary text-content-secondary border-card-border",
   }[tone];
-  return <span className={`inline-flex items-center gap-1 border rounded px-2 py-0.5 text-[11px] font-bold whitespace-nowrap ${cls}`}>{icon}{children}</span>;
+  return <span className={`inline-flex items-center gap-1 border rounded px-2 py-0.5 text-[12px] font-bold whitespace-nowrap ${cls}`}>{icon}{children}</span>;
 }
 
 function TrustBadge({ u }: { u: Pick<AdminUser, "verificationLevel" | "verificationStatus"> }) {
@@ -424,7 +424,7 @@ function Section({ title, icon, children, right }: { title: string; icon: React.
 function Stat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="bg-surface-secondary rounded-lg px-3 py-2">
-      <div className="text-[11px] text-content-secondary font-semibold">{label}</div>
+      <div className="text-[12px] text-content-secondary font-semibold">{label}</div>
       <div className="text-base font-bold text-content tabular-nums">{value}</div>
     </div>
   );
@@ -528,7 +528,7 @@ function UserDrawer({ id, meId, onClose, onAction, onBlock, onGrant, onDelete }:
                         {l.image ? <img src={l.image} alt="" className="h-10 w-10 rounded-md object-cover border border-card-border shrink-0" /> : <div className="h-10 w-10 rounded-md bg-surface-secondary shrink-0" />}
                         <div className="min-w-0 flex-1">
                           <a href={withBasePath(`/ads/${l.slug}`)} target="_blank" rel="noreferrer" className="text-sm font-semibold truncate block hover:text-primary">{l.name}</a>
-                          <div className="text-[11px] text-content-secondary">
+                          <div className="text-[12px] text-content-secondary">
                             {l.price != null ? `Rs ${n(l.price)} · ` : ""}{n(l.clicks || 0)} views · {n((l.phoneClicks || 0) + (l.whatsappClicks || 0) + (l.chatClicks || 0))} leads
                             {l.status === "approved" && l.expiresAt ? ` · expires ${fmtDate(l.expiresAt)}` : ""}
                           </div>

@@ -18,7 +18,7 @@ import { TrustMark } from "@/components/TrustMark";
 import { trustKind, TRUST_LABEL, verifySteps } from "@/lib/trust";
 import {
   Heart, MessageSquare, ChevronRight, ShieldCheck, Rocket, Package, Store, UserRound, KeyRound,
-  HelpCircle, Settings, Plus, Eye, Radio, Home, Clock, AlertTriangle, Bell, CheckCircle2, Circle, CalendarCheck } from "lucide-react";
+  HelpCircle, Settings, Plus, Eye, Home, Clock, AlertTriangle, Bell, CheckCircle2, Circle, CalendarCheck } from "lucide-react";
 
 export const metadata = { title: "My Account", robots: { index: false, follow: true } };
 export const dynamic = "force-dynamic";
@@ -102,22 +102,22 @@ export default async function AccountPage() {
       />
       <div className="max-w-3xl mx-auto w-full px-4 py-4 flex flex-col gap-4 pb-10">
         {/* Profile card */}
-        <Link href="/dashboard/profile" className="rounded-2xl border border-card-border bg-card p-4 flex items-center gap-3.5 hover:border-primary/40 transition-colors">
+        <Link href="/dashboard/profile" className="card p-4 flex items-center gap-4">
           {user.profileImage ? (
-            <Image src={user.profileImage} alt="" width={64} height={64} className="h-16 w-16 rounded-full object-cover border border-card-border" />
+            <Image src={user.profileImage} alt="" width={64} height={64} className="h-16 w-16 rounded-full object-cover" />
           ) : (
-            <div className="h-16 w-16 rounded-full bg-primary/10 text-primary grid place-items-center font-semibold text-2xl">{user.name?.[0]?.toUpperCase() || "U"}</div>
+            <div className="h-16 w-16 rounded-full bg-primary text-white grid place-items-center font-extrabold text-2xl">{user.name?.[0]?.toUpperCase() || "U"}</div>
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <h2 className="text-lg font-semibold text-content truncate leading-tight">{user.name || "Member"}</h2>
+              <h2 className="text-[19px] font-extrabold text-content truncate leading-tight">{user.name || "Member"}</h2>
               <TrustMark kind={kind} size={18} />
             </div>
             <p className="text-xs text-content-tertiary truncate">{user.email}</p>
             <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-              <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${isSeller ? "bg-primary/10 text-primary" : "bg-surface-secondary text-content-secondary"}`}>{isSeller ? "Seller account" : "Buyer account"}</span>
-              {kind && <span className="text-[11px] text-content-secondary">{TRUST_LABEL[kind].label}</span>}
-              <span className="text-[11px] text-content-tertiary">· Member since {memberSince}</span>
+              <span className={`rounded-full px-2.5 py-0.5 text-[12.5px] font-bold ${isSeller ? "bg-primary-soft text-primary-dark" : "bg-surface-secondary text-content-secondary"}`}>{isSeller ? "Seller account" : "Buyer account"}</span>
+              {kind && <span className="text-[12px] text-content-secondary">{TRUST_LABEL[kind].label}</span>}
+              <span className="text-[12px] text-content-tertiary">· Member since {memberSince}</span>
             </div>
           </div>
           <ChevronRight className="h-5 w-5 text-content-tertiary shrink-0" />
@@ -126,19 +126,19 @@ export default async function AccountPage() {
         {/* Selling accounts: verified only after the admin approves their CNIC
             (a buyer's phone tick doesn't carry over when switching to selling). */}
         {isSeller && kind !== "seller" && kind !== "shop" && (
-          <section aria-label="Verify as a seller" className={`rounded-2xl border p-4 ${steps.cnic === "rejected" ? "border-red-200 bg-red-50 text-red-950" : steps.cnic === "pending" ? "border-blue-200 bg-blue-50 text-blue-950" : "border-amber-300 bg-amber-50 text-amber-950"}`}>
+          <section aria-label="Verify as a seller" className={`rounded-[20px] p-4 ${steps.cnic === "rejected" ? "bg-red-50 text-red-950" : steps.cnic === "pending" ? "bg-blue-50 text-blue-950" : "bg-amber-50 text-amber-950"}`}>
             <div className="flex items-start gap-3">
               <ShieldCheck className={`h-5 w-5 shrink-0 mt-0.5 ${steps.cnic === "rejected" ? "text-red-600" : steps.cnic === "pending" ? "text-blue-600" : "text-amber-600"}`} />
               <div className="min-w-0 flex-1">
                 <h2 className="text-sm font-bold">{steps.cnic === "pending" ? "Your verification is under review" : "Verify as a seller"}</h2>
-                <p className="text-[12px] mt-0.5 leading-snug opacity-90">
+                <p className="text-[13px] mt-0.5 leading-snug opacity-90">
                   {steps.cnic === "pending"
                     ? "Our team is checking your CNIC — you'll get a notification and an email when it's done."
                     : steps.cnic === "rejected"
                       ? `We couldn't approve it: ${vs === "rejected" && (user as any).verificationDoc?.rejectionReason ? (user as any).verificationDoc.rejectionReason : "the photos weren't clear."} Please upload again.`
                       : "Buyers trust sellers with the verified badge. All you need is your CNIC (number, front and back)."}
                 </p>
-                <ul className="mt-2.5 flex flex-col gap-1.5 text-[13px]">
+                <ul className="mt-2.5 flex flex-col gap-1.5 text-[14px]">
                   <li className="flex items-center gap-2">
                     {steps.cnic === "pending" ? <Clock className="h-4 w-4 text-blue-600" /> : steps.cnic === "rejected" ? <AlertTriangle className="h-4 w-4 text-red-600" /> : <Circle className="h-4 w-4 opacity-60" />}
                     <span>CNIC photos (front &amp; back){steps.cnic === "pending" ? " — sent" : ""}</span>
@@ -149,7 +149,7 @@ export default async function AccountPage() {
                   </li>
                 </ul>
                 {steps.cnic !== "pending" && (
-                  <Link href="/dashboard/verify" className={`mt-3 inline-flex h-10 items-center justify-center rounded-xl px-4 text-sm font-semibold text-white ${steps.cnic === "rejected" ? "bg-red-600 hover:bg-red-700" : "bg-amber-600 hover:bg-amber-700"}`}>
+                  <Link href="/dashboard/verify" className={`mt-3 inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold text-white ${steps.cnic === "rejected" ? "bg-red-600 hover:bg-red-700" : "bg-amber-600 hover:bg-amber-700"}`}>
                     {steps.cnic === "rejected" ? "Upload again" : "Verify now"}
                   </Link>
                 )}
@@ -160,13 +160,13 @@ export default async function AccountPage() {
 
         {/* Buying accounts aren't "verified" until they add a mobile number. */}
         {!isSeller && !kind && (
-          <section aria-label="Verify your account" className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-950">
+          <section aria-label="Verify your account" className="rounded-[20px] bg-amber-50 p-4 text-amber-950">
             <div className="flex items-start gap-3">
               <ShieldCheck className="h-5 w-5 shrink-0 mt-0.5 text-amber-600" />
               <div className="min-w-0 flex-1">
                 <h2 className="text-sm font-bold">Verify your account</h2>
-                <p className="text-[12px] mt-0.5 leading-snug text-amber-900">Verified members get the green tick, and their reviews and messages are trusted more.</p>
-                <ul className="mt-2.5 flex flex-col gap-1.5 text-[13px]">
+                <p className="text-[13px] mt-0.5 leading-snug text-amber-900">Verified members get the green tick, and their reviews and messages are trusted more.</p>
+                <ul className="mt-2.5 flex flex-col gap-1.5 text-[14px]">
                   <li className="flex items-center gap-2">
                     {steps.email ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Circle className="h-4 w-4 text-amber-600" />}
                     <span className={steps.email ? "line-through decoration-amber-900/40" : ""}>Confirm your email address</span>
@@ -177,7 +177,7 @@ export default async function AccountPage() {
                   </li>
                 </ul>
                 {!steps.phone && (
-                  <Link href="/dashboard/profile?verify=phone#phone" className="mt-3 inline-flex h-10 items-center justify-center rounded-xl bg-amber-600 hover:bg-amber-700 px-4 text-sm font-semibold text-white">Add mobile number</Link>
+                  <Link href="/dashboard/profile?verify=phone#phone" className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 px-4 text-sm font-semibold text-white">Add mobile number</Link>
                 )}
               </div>
             </div>
@@ -189,30 +189,30 @@ export default async function AccountPage() {
         {isSeller ? (
           <>
             <div className="grid grid-cols-2 gap-2">
-              <Link href="/ads/post" className="h-12 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-semibold flex items-center justify-center gap-2"><Plus className="h-4 w-4" /> Post an ad</Link>
-              <Link href="/dashboard/seller" className="h-12 rounded-xl border border-card-border bg-card text-content text-sm font-semibold flex items-center justify-center gap-2 hover:border-primary"><Package className="h-4 w-4 text-primary" /> My ads</Link>
+              <Link href="/ads/post" className="h-12 rounded-2xl bg-primary hover:bg-primary-dark text-white text-[14.5px] font-bold flex items-center justify-center gap-2"><Plus className="h-[18px] w-[18px] stroke-[2.5]" /> Post an ad</Link>
+              <Link href="/dashboard/seller" className="h-12 rounded-2xl bg-white shadow-sm text-content text-[14.5px] font-bold flex items-center justify-center gap-2"><Package className="h-[18px] w-[18px]" /> My ads</Link>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: "Live ads", value: s.live, icon: Package },
                 { label: "Views", value: s.views, icon: Eye },
-                { label: "Seen in feeds", value: s.impressions, icon: Radio },
+                { label: "Saves", value: s.saves, icon: Heart },
               ].map((t) => (
-                <div key={t.label} className="rounded-xl border border-card-border bg-card p-3">
-                  <t.icon className="h-4 w-4 text-primary mb-1.5" />
-                  <div className="text-lg font-bold text-content tabular-nums leading-none">{Number(t.value).toLocaleString()}</div>
-                  <div className="text-[10px] text-content-tertiary mt-1">{t.label}</div>
+                <div key={t.label} className="card !rounded-2xl p-3.5">
+                  <t.icon className="h-[18px] w-[18px] text-primary mb-2" />
+                  <div className="text-[20px] font-extrabold text-content tabular-nums leading-none">{Number(t.value).toLocaleString()}</div>
+                  <div className="text-[13px] text-content-tertiary mt-1">{t.label}</div>
                 </div>
               ))}
             </div>
             <Menu title="Selling" rows={selling} />
           </>
         ) : (
-          <Link href="/ads/post" className="group rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-4 flex items-center gap-3 text-white">
+          <Link href="/ads/post" className="group rounded-[20px] bg-primary p-4 flex items-center gap-3.5 text-white">
             <span className="grid place-items-center h-11 w-11 rounded-full bg-white/15 shrink-0"><Rocket className="h-5 w-5" /></span>
             <div className="flex-1 min-w-0">
               <h2 className="text-[15px] font-semibold leading-tight text-white">Sell something</h2>
-              <p className="text-[12px] text-white/85 mt-0.5 leading-snug">Post your first ad — your account switches to Selling automatically.</p>
+              <p className="text-[13px] text-white/85 mt-0.5 leading-snug">Post your first ad — your account switches to Selling automatically.</p>
             </div>
             <ChevronRight className="h-5 w-5 text-white/80 shrink-0 group-hover:translate-x-0.5 transition-transform" />
           </Link>
@@ -228,14 +228,14 @@ export default async function AccountPage() {
 function Menu({ title, rows, footer }: { title: string; rows: Row[]; footer?: React.ReactNode }) {
   return (
     <section>
-      <h3 className="px-1 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-content-tertiary">{title}</h3>
-      <div className="rounded-2xl border border-card-border bg-card overflow-hidden divide-y divide-card-border">
+      <h3 className="px-1 pb-2 text-[14px] font-bold text-content-secondary">{title}</h3>
+      <div className="card overflow-hidden divide-y divide-card-border">
         {rows.map((m) => (
-          <Link key={m.label} href={m.href} className="flex items-center gap-3 px-4 py-3.5 hover:bg-surface-secondary active:bg-surface-tertiary transition-colors">
-            <span className={`grid place-items-center h-9 w-9 rounded-full shrink-0 ${m.tone === "ok" ? "bg-emerald-50 text-emerald-600" : m.tone === "warn" ? "bg-red-50 text-red-600" : "bg-primary/8 text-primary"}`}><m.icon className="h-4 w-4" /></span>
+          <Link key={m.label} href={m.href} className="flex items-center gap-3.5 px-4 py-3.5 hover:bg-surface-secondary active:bg-surface-tertiary transition-colors">
+            <span className={`grid place-items-center h-10 w-10 rounded-xl shrink-0 ${m.tone === "ok" ? "bg-primary-soft text-primary" : m.tone === "warn" ? "bg-danger-light text-danger" : "bg-surface-secondary text-content"}`}><m.icon className="h-[18px] w-[18px]" /></span>
             <span className="flex-1 min-w-0">
-              <span className="block text-sm font-medium text-content">{m.label}</span>
-              {m.sub && <span className="block text-[11px] text-content-tertiary truncate">{m.sub}</span>}
+              <span className="block text-[15px] font-semibold text-content">{m.label}</span>
+              {m.sub && <span className="block text-[13.5px] text-content-tertiary truncate">{m.sub}</span>}
             </span>
             <ChevronRight className="h-4 w-4 text-content-tertiary shrink-0" />
           </Link>

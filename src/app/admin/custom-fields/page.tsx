@@ -643,7 +643,7 @@ export default function AdminCustomFieldsPage() {
                       className="bg-surface-secondary border border-card-border rounded-xl px-4 py-3 text-sm outline-none text-content focus:border-primary resize-y"
                     />
                     {form.userAddedValues.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-content-secondary">
+                      <div className="flex flex-wrap items-center gap-1.5 text-[12px] text-content-secondary">
                         <span className="font-semibold">Added by sellers:</span>
                         {form.userAddedValues.map((v) => (
                           <span key={v} className="rounded-full bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5">{v}</span>

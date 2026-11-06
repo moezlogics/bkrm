@@ -127,7 +127,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <nav className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-4">
       {SECTIONS.map((s) => (
         <div key={s.title || "main"} className="flex flex-col gap-0.5">
-          {s.title && <span className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-500">{s.title}</span>}
+          {s.title && <span className="px-3 pb-1 text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-500">{s.title}</span>}
           {s.items.map((item) => {
             const Icon = item.icon;
             const on = current?.href === item.href;
@@ -135,12 +135,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-[13px] font-semibold ${on ? "bg-primary text-white" : "text-zinc-300 hover:bg-zinc-900 hover:text-white"}`}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-[14px] font-semibold ${on ? "bg-primary text-white" : "text-zinc-300 hover:bg-zinc-900 hover:text-white"}`}
               >
                 <Icon className="h-[18px] w-[18px] shrink-0" />
                 <span className="truncate flex-1">{item.label}</span>
                 {counts[item.href] > 0 && (
-                  <span className={`ml-auto min-w-5 h-5 px-1.5 rounded-full text-[11px] font-bold grid place-items-center ${on ? "bg-white text-primary" : "bg-amber-500 text-white"}`} aria-label={`${counts[item.href]} waiting`}>
+                  <span className={`ml-auto min-w-5 h-5 px-1.5 rounded-full text-[12px] font-bold grid place-items-center ${on ? "bg-white text-primary" : "bg-amber-500 text-white"}`} aria-label={`${counts[item.href]} waiting`}>
                     {counts[item.href] > 99 ? "99+" : counts[item.href]}
                   </span>
                 )}
@@ -160,10 +160,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
       {nav}
       <div className="p-3 border-t border-zinc-900 flex flex-col gap-1 shrink-0">
-        <a href={withBasePath("/")} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-semibold text-zinc-300 hover:bg-zinc-900 hover:text-white">
+        <a href={withBasePath("/")} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-300 hover:bg-zinc-900 hover:text-white">
           <ExternalLink className="h-[18px] w-[18px]" /> View site
         </a>
-        <button onClick={() => logout("/newlogin")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-semibold text-red-400 hover:bg-zinc-900">
+        <button onClick={() => logout("/newlogin")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-red-400 hover:bg-zinc-900">
           <LogOut className="h-[18px] w-[18px]" /> Sign out
         </button>
       </div>

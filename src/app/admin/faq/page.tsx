@@ -73,7 +73,7 @@ export default function AdminFaqPage() {
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-content text-sm">{f.question}</p>
                 <p className="text-xs text-content-secondary line-clamp-2 mt-1">{f.answer}</p>
-                <span className="text-[10px] text-content-tertiary">{f.category}{f.status ? "" : " · hidden"}</span>
+                <span className="text-[11px] text-content-tertiary">{f.category}{f.status ? "" : " · hidden"}</span>
               </div>
               <button onClick={() => setModal(f)} className="p-1.5 rounded-lg border border-card-border hover:bg-surface-secondary text-content-secondary"><Pencil className="h-3.5 w-3.5" /></button>
               <button onClick={() => del(f)} className="p-1.5 rounded-lg border border-card-border hover:bg-danger/10 text-danger"><Trash2 className="h-3.5 w-3.5" /></button>

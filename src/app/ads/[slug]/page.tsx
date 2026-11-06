@@ -8,13 +8,7 @@ import Category from "@/models/Category";
 import User from "@/models/User";
 import Media from "@/models/Media";
 import { notFound } from "next/navigation";
-import {
-  MapPin,
-  Calendar,
-  ChevronRight,
-  ShieldCheck,
-  Check,
-} from "lucide-react";
+import { MapPin, Clock3, ChevronRight, ShieldCheck, CircleCheck, Info, CalendarDays, Weight, Ruler, VenusAndMars, Palette, Warehouse, Users, MoonStar } from "lucide-react";
 import Link from "next/link";
 import { DetailActions } from "./DetailActions";
 import { BookingBox } from "@/components/bookings/BookingBox";
@@ -24,7 +18,7 @@ import { BOOKINGS_ON } from "@/lib/bookings/enabled";
 import { bookingSummary } from "@/lib/bookings/server";
 import { Gallery } from "./Gallery";
 import { ViewBeacon } from "./ViewBeacon";
-import { ListingCard } from "@/components/ListingCard";
+import { ListingGrid } from "@/components/ListingCard";
 import { ReportButton } from "@/components/ReportButton";
 import { JsonLd } from "@/components/JsonLd";
 import { getBaseUrl, listingJsonLd, breadcrumbJsonLd } from "@/lib/seo";
@@ -89,7 +83,7 @@ function priceLabelOf(ad: any): string {
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <h2 className="text-[11px] font-semibold uppercase tracking-wider text-content-tertiary">{children}</h2>;
+  return <h2 className="text-[17px] font-extrabold text-content">{children}</h2>;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -251,95 +245,58 @@ export default async function AdDetailPage({ params }: { params: Promise<{ slug:
   }
   crumbs.push({ name: ad.name, url });
 
+  const dropped = ad.previousPrice != null && ad.price != null && ad.previousPrice > ad.price;
+  const sellerName = ad.userId?.isShop && ad.userId?.shopName ? ad.userId.shopName : ad.userId?.name || "Seller";
+  const isShop = !!(ad.userId?.isShop || (ad.userId?.verificationLevel || 0) >= 3);
+  const statusNote = ad.status === "review" || ad.status === "rejected" || ad.status === "sold out" || ad.status === "expired";
+
   const PriceTitle = () => (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <span className="text-2xl sm:text-[26px] font-bold text-content leading-none tracking-tight">{priceLabel}</span>
-            {VERTICAL.priceStyle === "lakh" && ad.priceMode !== "free" && priceInWords(ad.price) && (
-              <span className="text-sm font-medium text-content-tertiary">({priceInWords(ad.price)})</span>
-            )}
-            {ad.previousPrice != null && ad.price != null && ad.previousPrice > ad.price && (
-              <span className="text-sm sm:text-base text-content-tertiary line-through font-normal">
-                {formatPrice(ad.previousPrice)}
-              </span>
-            )}
-            {ad.previousPrice != null && ad.price != null && ad.previousPrice > ad.price && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md">
-                📉 {formatPrice(ad.previousPrice - ad.price)} OFF
-              </span>
-            )}
-          </div>
+    <div>
+      {(ad.isUrgent || ad.isFeatured || chain[0]) && (
+        <div className="mb-2 flex items-center gap-1.5 flex-wrap">
+          {ad.isUrgent && <span className="h-6 px-2.5 rounded-md bg-danger text-white text-[12px] font-bold inline-flex items-center">Urgent sale</span>}
+          {ad.isFeatured && <span className="h-6 px-2.5 rounded-md bg-secondary-light text-amber-950 text-[12px] font-bold inline-flex items-center">Featured</span>}
+          {chain[0] && <span className="h-6 px-2.5 rounded-md bg-primary-soft text-primary-dark text-[12px] font-bold inline-flex items-center">{chain.slice(0, 2).map((c) => c.name).join(" · ")}</span>}
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          {ad.isUrgent && (
-            <span className="rounded-md bg-rose-600 px-2.5 py-0.5 text-[11px] font-bold text-white uppercase tracking-wider flex items-center gap-1 shadow-xs">
-              🔥 Urgent Sale
-            </span>
-          )}
-          {ad.condition && (
-            <span className="shrink-0 rounded-md bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[11px] font-semibold text-primary capitalize">
-              {ad.condition.replace("-", " ")}
-            </span>
-          )}
-        </div>
+      )}
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className="text-[30px] font-extrabold text-content leading-none tracking-tight">{priceLabel}</span>
+        {dropped && <span className="text-[17px] text-content-tertiary line-through">{formatPrice(ad.previousPrice)}</span>}
+        {VERTICAL.priceStyle === "lakh" && ad.priceMode !== "free" && priceInWords(ad.price) && (
+          <span className="text-[15px] font-semibold text-content-tertiary">{priceInWords(ad.price)}{ad.priceMode === "negotiable" ? " · Negotiable" : ""}</span>
+        )}
       </div>
-      <h1 className="text-base sm:text-lg font-semibold text-content leading-snug">{ad.name}</h1>
-      <div className="flex items-center justify-between gap-3 text-xs text-content-tertiary">
-        <span className="flex items-center gap-1 font-normal text-content-secondary truncate min-w-0">
-          <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span className="truncate">{ad.address || ad.city || "Pakistan"}</span>
-        </span>
-        <span className="flex items-center gap-1 shrink-0 ml-auto whitespace-nowrap text-content-tertiary" suppressHydrationWarning>
-          <Calendar className="h-3.5 w-3.5" /> {formatDate(ad.createdAt)}
-        </span>
+      <h1 className="mt-2 text-[19px] font-bold text-content leading-snug">{ad.name}</h1>
+      <div className="mt-1.5 flex items-center gap-3 text-[14.5px] text-content-secondary">
+        <span className="flex items-center gap-1 min-w-0"><MapPin className="h-[17px] w-[17px] text-primary shrink-0 stroke-[2.4]" /><span className="truncate">{ad.address || ad.city || "Pakistan"}</span></span>
+        <span className="flex items-center gap-1 shrink-0 ml-auto text-content-tertiary" suppressHydrationWarning><Clock3 className="h-[17px] w-[17px] stroke-[2.2]" />{formatDate(ad.createdAt)}</span>
       </div>
     </div>
   );
 
   return (
-    <div className="pb-28 md:pb-12 max-md:-mt-[var(--header-height)]">
+    <div className="pb-24 md:pb-12 max-md:-mt-[var(--header-height)]">
       <JsonLd data={[listingJsonLd(ad, url, { make, model: modelShort }), breadcrumbJsonLd(crumbs)]} />
       <ViewBeacon id={String(ad._id)} />
 
       {/* Desktop breadcrumb */}
-      <nav className="detail-wrap hidden md:flex items-center gap-1.5 text-xs text-content-secondary pt-4 pb-3 flex-wrap">
+      <nav className="detail-wrap hidden md:flex items-center gap-1 text-[14px] text-content-tertiary pt-4 pb-3 flex-wrap">
         {crumbs.map((c, i) => (
           <React.Fragment key={c.url}>
-            {i > 0 && <ChevronRight className="h-3 w-3 opacity-50" />}
+            {i > 0 && <ChevronRight className="h-3.5 w-3.5 opacity-60" />}
             {i < crumbs.length - 1 ? (
               <Link href={c.url.replace(base, "") || "/"} className="hover:text-primary whitespace-nowrap">{c.name}</Link>
             ) : (
-              <span className="text-content-tertiary truncate max-w-[240px]">{c.name}</span>
+              <span className="text-content-secondary truncate max-w-[280px]">{c.name}</span>
             )}
           </React.Fragment>
         ))}
       </nav>
 
-      {(ad.status === "review" || ad.status === "rejected") && (
-        <div className="detail-wrap detail-pad">
-          <div className="mb-3 rounded-lg border-l-4 border-l-amber-500 border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 text-center shadow-xs">
-            {ad.status === "review"
-              ? "This ad is waiting for review. Only you and our team can see it until it's approved."
-              : `This ad wasn't approved${ad.flagReasons?.[0] ? `: ${ad.flagReasons[0]}` : ""}. Only you and our team can see it — edit it to fix the problem.`}
-          </div>
-        </div>
-      )}
-
-      {(ad.status === "sold out" || ad.status === "expired") && (
-        <div className="detail-wrap detail-pad">
-          <div className="mb-3 rounded-lg border-l-4 border-l-amber-500 border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 text-center shadow-xs">
-            {ad.status === "sold out" ? "This listing has been sold." : "This listing has expired."} See similar live listings below.
-          </div>
-        </div>
-      )}
-
-      {/* Centred on desktop (it used to span the whole screen, gallery flush
-          against the left edge); the gallery stays full-bleed on phones. */}
-      <div className="detail-wrap grid md:grid-cols-[minmax(0,1fr)_320px] lg:grid-cols-[minmax(0,1fr)_370px] gap-3 md:gap-6 items-start">
-        {/* Left / Main Column */}
-        <div className="min-w-0 flex flex-col gap-3 md:gap-4">
+      <div className="detail-wrap grid md:grid-cols-[minmax(0,1fr)_340px] lg:grid-cols-[minmax(0,1fr)_380px] gap-2 md:gap-5 items-start">
+        {/* Main column: on phones one solid sheet of full-width blocks with
+            thin grey gaps; on desktop the blocks become cards. */}
+        <div className="min-w-0 flex flex-col gap-2 md:gap-3">
           <Gallery
             images={images}
             alts={alts}
@@ -349,93 +306,86 @@ export default async function AdDetailPage({ params }: { params: Promise<{ slug:
             slug={ad.slug}
             videoUrl={ad.videoLink || ad.videoUrl || null}
             priceLabel={priceLabel}
-            previousPriceLabel={ad.previousPrice != null && ad.price != null && ad.previousPrice > ad.price ? formatPrice(ad.previousPrice) : null}
+            previousPriceLabel={dropped ? formatPrice(ad.previousPrice) : null}
             condition={ad.condition ? ad.condition.replace("-", " ") : null}
             city={ad.city || ad.address || null}
             siteName={siteName}
-            isShop={!!(ad.userId?.isShop || (ad.userId?.verificationLevel || 0) >= 3)}
-            sellerName={ad.userId?.isShop && ad.userId?.shopName ? ad.userId.shopName : ad.userId?.name}
+            isShop={isShop}
+            sellerName={sellerName}
           />
 
+          {statusNote && <StatusNote status={ad.status} reason={ad.flagReasons?.[0]} />}
+
           {/* Price & title (phones; the sidebar shows it on desktop) */}
-          <div className="md:hidden detail-pad"><PriceTitle /></div>
-          {owner && <div className="md:hidden detail-pad"><OwnerPanel o={owner} /></div>}
-          {booking && !owner && <div className="md:hidden detail-pad"><BookingBox b={booking} /></div>}
+          <Block className="md:hidden -mt-2 md:mt-0">
+            <PriceTitle />
+            {owner && <div className="mt-3"><OwnerPanel o={owner} /></div>}
+            {booking && !owner && <div className="mt-3"><BookingBox b={booking} /></div>}
+          </Block>
 
-          {/* Key facts — the specs every buyer checks first */}
-          {keySpecs.length > 0 && (
-            <div className="detail-pad">
-              {/* 1px gaps over the border colour draw the dividers at any column count. */}
-              <div className={cn("grid gap-px rounded-2xl border border-card-border bg-card-border shadow-xs overflow-hidden",
-                keySpecs.length === 4 ? "grid-cols-2 sm:grid-cols-4" : keySpecs.length <= 2 ? "grid-cols-2" : "grid-cols-3")}>
-                {keySpecs.map((k, i) => {
-                  const Icon = iconFor(k.icon);
-                  // Five facts on three columns: the last one fills the row.
-                  const fill = keySpecs.length === 5 && i === 4;
-                  return (
-                    <div key={k.field} className={cn("bg-card flex flex-col items-center justify-center text-center gap-1 px-2 py-3.5 sm:py-4", fill && "col-span-2")}>
-                      <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary stroke-[1.7]" aria-hidden />
-                      <div className="text-[14px] sm:text-[15px] font-bold text-content leading-tight tracking-tight">{k.value}</div>
-                      <div className="text-[11px] text-content-tertiary leading-none">{k.label}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Details table */}
-          {details.length > 0 && (
-            <div className="detail-pad">
-              <div className="rounded-lg sm:rounded-xl border border-card-border bg-card p-4 sm:p-5 shadow-xs">
-                <SectionLabel>{VERTICAL.noun.One} details</SectionLabel>
-                <dl className="mt-2 grid sm:grid-cols-2 sm:gap-x-8">
+          {/* Overview: key facts, then every other detail */}
+          {(keySpecs.length > 0 || details.length > 0) && (
+            <Block>
+              <SectionLabel>Overview</SectionLabel>
+              {keySpecs.length > 0 && (
+                <div className="mt-3 grid grid-cols-3 sm:grid-cols-4 gap-x-3 gap-y-4">
+                  {keySpecs.map((k) => {
+                    const Icon = SPEC_ICON[k.field] || iconFor(k.icon);
+                    return (
+                      <div key={k.field} className="flex items-start gap-2 min-w-0">
+                        <Icon className="h-[22px] w-[22px] text-primary shrink-0 stroke-[2.3] mt-0.5" aria-hidden />
+                        <div className="min-w-0">
+                          <div className="text-[12.5px] text-content-tertiary leading-tight">{k.label.replace(/\s*\(.*\)/, "")}</div>
+                          <div className="text-[15.5px] font-bold text-content leading-tight mt-0.5 break-words">{k.value.replace(/\s*\(.*\)/, "")}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {details.length > 0 && (
+                <dl className={cn("grid sm:grid-cols-2 sm:gap-x-8", keySpecs.length > 0 && "mt-3 border-t border-card-border")}>
                   {details.map((d, i) => (
-                    <div key={`${d.label}-${i}`} className="flex items-baseline justify-between gap-4 border-b border-card-border/70 py-2.5 text-sm">
+                    <div key={`${d.label}-${i}`} className="flex items-baseline justify-between gap-4 border-b border-card-border/70 py-2.5 text-[15px]">
                       <dt className="text-content-secondary shrink-0">{d.label}</dt>
                       <dd className="font-semibold text-content text-right min-w-0 break-words">{d.value}</dd>
                     </div>
                   ))}
-                  <div className="flex items-baseline justify-between gap-4 border-b border-card-border/70 py-2.5 text-sm">
-                    <dt className="text-content-secondary">Ad ref #</dt>
-                    <dd className="font-mono text-xs text-content-secondary">{refNo}</dd>
+                  <div className="flex items-baseline justify-between gap-4 py-2.5 text-[15px]">
+                    <dt className="text-content-secondary">Ad ID</dt>
+                    <dd className="font-mono text-[14px] text-content-tertiary">{refNo}</dd>
                   </div>
                 </dl>
-              </div>
-            </div>
+              )}
+            </Block>
           )}
 
-          {/* Features checklist */}
+          {/* Highlights */}
           {features.length > 0 && (
-            <div className="detail-pad">
-              <div className="rounded-lg sm:rounded-xl border border-card-border bg-card p-4 sm:p-5 shadow-xs">
-                <SectionLabel>Features</SectionLabel>
-                <ul className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2.5">
-                  {features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-content">
-                      <span className="grid place-items-center h-[18px] w-[18px] rounded-full bg-primary/10 text-primary shrink-0"><Check className="h-3 w-3 stroke-[3]" /></span>
-                      <span className="min-w-0">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <Block>
+              <SectionLabel>Highlights</SectionLabel>
+              <ul className="mt-2.5 grid grid-cols-2 gap-x-3 gap-y-2">
+                {features.map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-[15px] font-medium text-content min-w-0">
+                    <CircleCheck className="h-5 w-5 text-primary shrink-0 stroke-[2.4]" />
+                    <span className="min-w-0">{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </Block>
           )}
 
           {/* Description */}
-          <div className="detail-pad">
-            <div className="rounded-lg sm:rounded-xl border border-card-border bg-card p-4 sm:p-5 shadow-xs">
-              <SectionLabel>Description</SectionLabel>
-              <p className="mt-2 text-sm text-content-secondary leading-relaxed whitespace-pre-line">{ad.description || "No description provided."}</p>
-            </div>
-          </div>
+          <Block>
+            <SectionLabel>Description</SectionLabel>
+            <p className="mt-2 text-[15.5px] text-content-secondary leading-relaxed whitespace-pre-line break-words">{ad.description || "No description provided."}</p>
+          </Block>
         </div>
 
-        {/* Right / sidebar */}
-        <aside className="flex flex-col gap-3">
-          {/* Desktop price + actions sticky panel */}
+        {/* Sidebar */}
+        <aside className="flex flex-col gap-2 md:gap-3 md:sticky md:top-[calc(var(--header-height)+12px)]">
           <div className="hidden md:block">
-            <div className="rounded-xl border border-card-border bg-card p-5 flex flex-col gap-4 shadow-xs">
+            <Block className="flex flex-col gap-3.5">
               <PriceTitle />
               {owner && <OwnerPanel o={owner} />}
               {booking && !owner && <BookingBox b={booking} />}
@@ -447,102 +397,81 @@ export default async function AdDetailPage({ params }: { params: Promise<{ slug:
                 siteName={siteName}
               />}
               {!owner && <AdvanceWarning />}
-            </div>
+            </Block>
           </div>
 
-          {/* Seller Information */}
-          <div className="detail-pad">
-            <div className="rounded-lg sm:rounded-xl border border-card-border bg-card p-4 sm:p-5 flex flex-col gap-3.5 shadow-xs">
-              <div className="flex items-center justify-between">
-                <SectionLabel>Seller Information</SectionLabel>
-                <Link href={`/shop/${ad.userId?._id}`} className="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
-                  <span>View profile</span>
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-
-              <div className="flex items-center gap-3.5">
-                <Link href={`/shop/${ad.userId?._id}`} className="shrink-0">
-                  {ad.userId?.profileImage ? (
-                    <img src={ad.userId.profileImage} alt="" className="h-12 w-12 rounded-full object-cover border border-card-border" />
-                  ) : (
-                    <div className="h-12 w-12 rounded-full bg-slate-100 text-slate-700 grid place-items-center font-bold text-base border border-slate-200">
-                      {ad.userId?.name?.[0]?.toUpperCase() || "U"}
-                    </div>
-                  )}
-                </Link>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <Link href={`/shop/${ad.userId?._id}`} className="font-bold text-content hover:text-primary truncate text-base">
-                      {ad.userId?.isShop && ad.userId?.shopName ? ad.userId.shopName : ad.userId?.name || "Seller"}
-                    </Link>
-                    <TrustMark user={ad.userId} size={15} />
-                  </div>
-
-                  <div className="text-xs text-content-secondary mt-0.5 flex items-center gap-1.5 flex-wrap">
-                    <span className="font-medium text-content">
-                      {ad.userId?.isShop || (ad.userId?.verificationLevel || 0) >= 3 ? "Verified Shop" : "Direct Owner"}
-                    </span>
-                    <span>·</span>
-                    <span>{sellerLiveCount} active {sellerLiveCount === 1 ? "ad" : "ads"}</span>
-                  </div>
-
-                  <div className="text-xs text-content-tertiary mt-0.5 flex items-center gap-1.5 flex-wrap">
-                    <span>Member since {new Date(ad.userId?.createdAt || Date.now()).getFullYear()}</span>
-                    {ad.userId?.rating ? (
-                      <>
-                        <span>·</span>
-                        <span className="text-amber-500 font-medium">★ {Number(ad.userId.rating).toFixed(1)}</span>
-                        {ad.userId.ratingCount ? <span>({ad.userId.ratingCount})</span> : null}
-                      </>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-card-border/60">
-                <div className="flex items-center gap-1.5 text-xs text-content-secondary">
-                  <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-                  <span>{VERTICAL.copy.inspectTip}</span>
-                </div>
-                <ReportButton type="listing" itemId={String(ad._id)} label="Report" />
-              </div>
+          {/* Seller */}
+          <Block>
+            <Link href={`/shop/${ad.userId?._id}`} className="flex items-center gap-3 group">
+              {ad.userId?.profileImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={ad.userId.profileImage} alt="" className="h-12 w-12 rounded-full object-cover shrink-0" />
+              ) : (
+                <span className="h-12 w-12 rounded-full bg-primary text-white grid place-items-center font-extrabold text-lg shrink-0">
+                  {sellerName[0]?.toUpperCase() || "S"}
+                </span>
+              )}
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-1.5">
+                  <span className="font-bold text-content group-hover:text-primary truncate text-[16px]">{sellerName}</span>
+                  <TrustMark user={ad.userId} size={17} />
+                </span>
+                <span className="block text-[14px] text-content-secondary">
+                  {isShop ? "Farm / shop" : "Individual seller"} · {sellerLiveCount} {sellerLiveCount === 1 ? "ad" : "ads"}{ad.userId?.rating ? ` · ${Number(ad.userId.rating).toFixed(1)} rating` : ""}
+                </span>
+              </span>
+              <ChevronRight className="h-5 w-5 text-content-tertiary shrink-0 stroke-[2.4]" />
+            </Link>
+            <div className="mt-3 flex items-center justify-between gap-2 pt-3 border-t border-card-border">
+              <p className="flex items-start gap-2 text-[14px] text-content-secondary leading-snug">
+                <ShieldCheck className="h-[18px] w-[18px] text-primary shrink-0 stroke-[2.3]" />
+                <span>{VERTICAL.copy.inspectTip}</span>
+              </p>
+              <ReportButton type="listing" itemId={String(ad._id)} label="Report" />
             </div>
-          </div>
-
-          {/* Location */}
-          <div className="detail-pad">
-            <div className="rounded-lg sm:rounded-xl border border-card-border bg-card p-4 sm:p-5 flex flex-col gap-3 shadow-xs">
-              <SectionLabel>Location</SectionLabel>
-              <div className="flex items-center gap-2 text-sm text-content-secondary">
-                <MapPin className="h-4 w-4 text-primary shrink-0" /> {ad.address || ad.city || "Pakistan"}
-              </div>
-            </div>
-          </div>
+          </Block>
         </aside>
       </div>
 
       {/* Similar — nearest to the visitor */}
       {similar.length > 0 && (
-        <div className="detail-wrap detail-pad mt-8">
-          <h2 className="text-base sm:text-lg font-bold text-content">{loc.point ? "Similar ads near you" : "Similar listings"}</h2>
-          {loc.point && <p className="text-xs text-content-tertiary mt-0.5 mb-3">Closest to {loc.precise ? "you" : loc.label} first</p>}
-          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-3 ${loc.point ? "" : "mt-3"}`}>
-            {similar.map((item: any) => <ListingCard key={item._id} ad={item} />)}
-          </div>
-        </div>
+        <section className="detail-wrap detail-pad mt-6">
+          <h2 className="text-[20px] font-extrabold tracking-tight text-content">{loc.point ? "Similar near you" : "Similar ads"}</h2>
+          <div className="mt-3"><ListingGrid ads={similar} className="lg:!grid-cols-4 xl:!grid-cols-4" /></div>
+        </section>
       )}
 
-      {/* Around this ad — what else is in that neighbourhood */}
+      {/* Around this ad */}
       {nearby.length > 0 && (
-        <div className="detail-wrap detail-pad mt-8">
-          <h2 className="text-base sm:text-lg font-bold text-content">More ads around {areaLabel}</h2>
-          <p className="text-xs text-content-tertiary mt-0.5 mb-3">Distances are from this listing</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            {nearby.map((item: any) => <ListingCard key={item._id} ad={item} />)}
-          </div>
-        </div>
+        <section className="detail-wrap detail-pad mt-6">
+          <h2 className="text-[20px] font-extrabold tracking-tight text-content">More around {ad.city || areaLabel}</h2>
+          <div className="mt-3"><ListingGrid ads={nearby} className="lg:!grid-cols-4 xl:!grid-cols-4" /></div>
+        </section>
       )}
+    </div>
+  );
+}
+
+/** Bold, modern line icons for the headline specs (the vertical's own icon otherwise). */
+const SPEC_ICON: Record<string, React.ElementType> = {
+  age: CalendarDays, weight_kg: Weight, height_in: Ruler, gender: VenusAndMars, colour: Palette,
+  kept_at: Warehouse, share_animal: Users, shares_left: Users, qurbani_day: MoonStar,
+};
+
+/** One section of the ad page: a full-width white block on phones, a card on desktop. */
+function Block({ className = "", children }: { className?: string; children: React.ReactNode }) {
+  return <section className={cn("bg-white px-4 py-3.5 md:px-5 md:py-4 md:rounded-2xl md:shadow-sm md:ring-1 md:ring-black/[0.03]", className)}>{children}</section>;
+}
+
+function StatusNote({ status, reason }: { status: string; reason?: string }) {
+  const text = status === "review"
+    ? "This ad is waiting for review. Only you and our team can see it until it's approved."
+    : status === "rejected"
+      ? `This ad wasn't approved${reason ? `: ${reason}` : ""}. Only you and our team can see it — edit it to fix the problem.`
+      : status === "sold out" ? "This animal has been sold. Similar live ads are below." : "This ad has expired. Similar live ads are below.";
+  return (
+    <div className="flex items-start gap-2.5 bg-amber-50 md:rounded-2xl px-4 py-3 text-[14.5px] font-semibold text-amber-900">
+      <Info className="h-[18px] w-[18px] shrink-0 mt-px stroke-[2.4]" /> {text}
     </div>
   );
 }

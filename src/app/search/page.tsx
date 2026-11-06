@@ -35,12 +35,17 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const raw = (sp.q || "").trim().slice(0, 100);
   const parsed = await parseQuery(raw, { visitorCitySlug: visitor.city?.slug, counts });
 
-  // ── Location scope: explicit ?loc wins, else a place named in the query, else anywhere ──
+  // ── Location scope: explicit ?loc wins, else a place named in the query,
+  //    else the visitor's own city (OLX); "all" searches the whole country ──
   let city = parsed.city, area = parsed.area;
+  let fromVisitor = false;
   if (sp.loc) {
     const [c, a] = sp.loc.split("/");
     city = sp.loc === "all" ? undefined : catalog.city(c);
     area = city && a ? catalog.area(city.slug, a) : undefined;
+  } else if (!city && visitor.city) {
+    city = catalog.city(visitor.city.slug);
+    fromVisitor = !!city;
   }
   const locPrefix = city ? `/${city.slug}${area ? `/${area.slug}` : ""}` : "";
 
@@ -71,13 +76,23 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const cat = sp.cat ? catalog.categoryById(sp.cat) : undefined;
   const cond = sp.cond === "new" || sp.cond === "used" ? sp.cond : undefined;
 
-  const res = await searchListings({
+  const query = {
     tokens: parsed.tokens, point, sort, page, pageSize: PAGE_SIZE,
-    cityId: area ? undefined : city ? String(city._id) : undefined,
-    areaId: area ? String(area._id) : undefined,
     categoryId: cat ? String(cat._id) : undefined,
     condition: cond,
+  };
+  let res = await searchListings({
+    ...query,
+    cityId: area ? undefined : city ? String(city._id) : undefined,
+    areaId: area ? String(area._id) : undefined,
   });
+  // Nothing in the visitor's own city: widen to all of Pakistan, nearest first.
+  let widenedFrom = "";
+  if (fromVisitor && res.total === 0 && page === 1) {
+    widenedFrom = city!.name;
+    city = undefined; area = undefined;
+    res = await searchListings({ ...query, sort: point && sort !== "price_low" && sort !== "price_high" ? "nearest" : sort });
+  }
   const suggestion = res.total === 0 && raw ? await didYouMean(raw) : null;
   const totalPages = Math.max(1, Math.ceil(res.total / PAGE_SIZE));
 
@@ -107,6 +122,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           <h1 className="text-lg sm:text-2xl font-bold text-content truncate">{raw ? <>Results for “{raw}”</> : "All ads"}</h1>
           <p className="text-xs sm:text-sm text-content-secondary mt-0.5 flex items-center gap-1 flex-wrap">
             <span>{res.total.toLocaleString("en-PK")}{res.totalCapped ? "+" : ""} {res.total === 1 && !res.totalCapped ? "ad" : "ads"} in {scope}</span>
+            {widenedFrom && <span className="text-primary font-semibold">· none in {widenedFrom}, showing the closest</span>}
             {sort === "nearest" && pointLabel && <span className="inline-flex items-center gap-1 text-primary">· <Navigation className="h-3 w-3" /> closest to {pointLabel} first</span>}
             {sort === "relevance" && <span className="text-content-tertiary">· best matches first{point ? `, nearby ones higher` : ""}</span>}
           </p>
@@ -118,7 +134,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
       {/* Sort */}
       <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">Sort</span>
+        <span className="text-[12px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">Sort</span>
         {SEARCH_SORTS.filter((s) => (s.id !== "nearest" || point) && (s.id !== "relevance" || hasText)).map((s) => (
           <IntentLink key={s.id} href={href({ sort: s.id === defaultSort ? undefined : s.id })} className={chip(sort === s.id)}>{s.label}</IntentLink>
         ))}
@@ -126,7 +142,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
       {/* Location */}
       <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">Where</span>
+        <span className="text-[12px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">Where</span>
         <IntentLink href={href({ loc: "all" })} className={chip(!city)}>Anywhere</IntentLink>
         {visitor.city && (
           <IntentLink href={href({ loc: visitor.city.slug })} className={chip(!!city && city.slug === visitor.city.slug && !area)}>
@@ -145,7 +161,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
       {/* Condition */}
       <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">Condition</span>
+        <span className="text-[12px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">Condition</span>
         <IntentLink href={href({ cond: undefined })} className={chip(!cond)}>Any</IntentLink>
         <IntentLink href={href({ cond: "new" })} className={chip(cond === "new")}>New</IntentLink>
         <IntentLink href={href({ cond: "used" })} className={chip(cond === "used")}>Used</IntentLink>
@@ -154,7 +170,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       {/* Category facet */}
       {facet.length > 0 && (
         <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-3">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">In</span>
+          <span className="text-[12px] font-semibold uppercase tracking-wide text-content-tertiary shrink-0 mr-1">In</span>
           <IntentLink href={href({ cat: undefined })} className={chip(!cat)}>All</IntentLink>
           {facet.map(({ c, n }) => (
             <IntentLink key={String(c._id)} href={href({ cat: String(c._id) })} className={chip(!!cat && String(cat._id) === String(c._id))}>

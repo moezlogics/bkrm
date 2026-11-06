@@ -113,17 +113,17 @@ export default function AdminInvoices() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-content">{iv.invoiceNumber}</span>
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${iv.status === "approved" ? "bg-emerald-50 text-emerald-700" : iv.status === "rejected" ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-700"}`}>{iv.status}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${iv.status === "approved" ? "bg-emerald-50 text-emerald-700" : iv.status === "rejected" ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-700"}`}>{iv.status}</span>
                   </div>
                   <p className="text-xs text-content-secondary mt-0.5">{iv.seller?.name} · {iv.seller?.email}{iv.seller?.phone ? " · " + iv.seller.phone : ""}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="font-bold text-content">Rs {iv.amount.toLocaleString()}</p>
-                  <p className="text-[11px] text-content-secondary">{iv.planName}</p>
+                  <p className="text-[12px] text-content-secondary">{iv.planName}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 text-[11px] text-content-secondary">
+              <div className="flex items-center gap-3 text-[12px] text-content-secondary">
                 <span>Via: <b className="text-content">{iv.paymentMethod || "—"}</b></span>
                 {iv.transactionNote && <span>Ref: {iv.transactionNote}</span>}
                 {iv.snapshot && <span className="ml-auto">{iv.snapshot.listingLimit} listings · {iv.snapshot.featuredLimit} featured</span>}
@@ -134,7 +134,7 @@ export default function AdminInvoices() {
                   <img src={iv.paymentScreenshot} alt="payment" className="h-full w-full object-contain" />
                 </button>
               )}
-              {iv.status === "rejected" && iv.rejectionReason && <p className="text-[11px] text-red-600">Rejected: {iv.rejectionReason}</p>}
+              {iv.status === "rejected" && iv.rejectionReason && <p className="text-[12px] text-red-600">Rejected: {iv.rejectionReason}</p>}
 
               {iv.status === "submitted" && (
                 <div className="flex gap-2">

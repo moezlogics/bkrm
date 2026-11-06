@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { unstable_cache } from "next/cache";
 import dbConnect from "@/lib/mongodb";
 import CmsPage from "@/models/CmsPage";
@@ -41,63 +41,81 @@ async function getFooterData() {
 }
 
 export async function Footer() {
-  const [settings, { pages }, loc] = await Promise.all([getSettings(), getFooterData(), getVisitorLocation()]);
-  const legal = pages.filter((p: any) => ["privacy-policy", "terms-of-service"].includes(p.slug));
+  const [settings, { categories, pages }, loc] = await Promise.all([getSettings(), getFooterData(), getVisitorLocation()]);
+  const brand = getBranding(settings);
+  const footerLogo = brand.footerLogo || brand.logo;
   const socials = SOCIAL.filter((x) => /^https?:\/\//.test(settings[x.key] || ""));
   const year = new Date().getFullYear();
   const copyright = (settings.footer_copyright || "").replace(/\{year\}/g, String(year)).trim()
-    || `© ${year} ${settings.site_name}. All rights reserved.`;
+    || `© ${year} ${settings.site_name}`;
+  const prefix = loc.city ? `/${loc.city.slug}` : "";
+  const phone = settings.contact_phone || "";
 
   return (
-    <footer className="bg-card border-t border-card-border/80 mt-auto pt-8 pb-24 md:pb-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Top minimal row */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-card-border/60">
+    <footer className="mt-auto bg-white border-t border-card-border">
+      <div className="wrap pt-10 pb-28 md:pb-10">
+        <div className="grid gap-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/" className="inline-block text-lg font-extrabold text-content tracking-tight hover:text-primary transition-colors">
-              {settings.site_name}
+            <Link href="/" className="inline-flex items-center">
+              {footerLogo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={footerLogo} alt={settings.site_name} className="footer-logo object-contain" />
+              ) : (
+                <span className="text-lg font-extrabold tracking-tight text-content">{settings.site_name}</span>
+              )}
             </Link>
-            <p className="text-xs text-content-tertiary mt-1">
-              {settings.site_tagline || VERTICAL.defaults.tagline}
-            </p>
+            <p className="text-sm text-content-secondary mt-3 max-w-xs">{settings.site_tagline || VERTICAL.defaults.tagline}</p>
+            {socials.length > 0 && (
+              <div className="flex items-center gap-2 mt-4">
+                {socials.map((x) => (
+                  <a key={x.key} href={settings[x.key]} target="_blank" rel="noopener noreferrer" aria-label={x.label}
+                    className="grid place-items-center h-9 w-9 rounded-full bg-surface-secondary hover:bg-primary-soft text-content-secondary hover:text-primary transition-colors">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true"><path d={x.d} /></svg>
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Quick minimal nav pills/links */}
-          <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-content-secondary">
-            <Link href="/ads" className="hover:text-primary transition-colors">Browse Ads</Link>
-            <Link href="/ads/post" className="hover:text-primary transition-colors">{VERTICAL.copy.sellCta}</Link>
-            {pages.map((p: any) => (
-              <Link key={p.slug} href={`/page/${p.slug}`} className="hover:text-primary transition-colors">{p.title}</Link>
-            ))}
+          <FooterCol title="Browse">
+            {categories.map((c: any) => <FooterLink key={c.slug} href={`${prefix}/${c.path}`}>{c.name}</FooterLink>)}
+          </FooterCol>
+
+          <FooterCol title="Help">
+            <FooterLink href="/faq">Help & FAQ</FooterLink>
+            <FooterLink href="/blog">Guides</FooterLink>
+            {pages.map((p: any) => <FooterLink key={p.slug} href={`/page/${p.slug}`}>{p.title}</FooterLink>)}
+          </FooterCol>
+
+          <FooterCol title="Sell & contact">
+            <FooterLink href="/ads/post">{VERTICAL.copy.sellCta}</FooterLink>
+            <FooterLink href="/dashboard/plans">Plans & boost</FooterLink>
             {settings.contact_email && (
-              <a href={`mailto:${settings.contact_email}`} className="hover:text-primary transition-colors">Help & Support</a>
+              <a href={`mailto:${settings.contact_email}`} className="flex items-center gap-2 text-sm text-content-secondary hover:text-primary"><Mail className="h-4 w-4" />{settings.contact_email}</a>
             )}
-          </nav>
+            {phone && (
+              <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="flex items-center gap-2 text-sm text-content-secondary hover:text-primary"><Phone className="h-4 w-4" />{phone}</a>
+            )}
+          </FooterCol>
         </div>
 
-        {/* Bottom minimal info & copyright */}
-        <div className="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-content-tertiary">
+        <div className="mt-10 pt-6 border-t border-card-border text-xs text-content-tertiary">
           <p>{copyright}</p>
-
-          {/* Socials minimal */}
-          {socials.length > 0 && (
-            <div className="flex items-center gap-2">
-              {socials.map((x) => (
-                <a
-                  key={x.key}
-                  href={settings[x.key]}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={x.label}
-                  className="grid place-items-center h-7 w-7 rounded-full bg-surface-secondary hover:bg-surface-tertiary text-content-secondary hover:text-primary transition-colors"
-                >
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true"><path d={x.d} /></svg>
-                </a>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </footer>
   );
+}
+
+function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="max-md:hidden">
+      <p className="text-sm font-bold text-content mb-3">{title}</p>
+      <div className="flex flex-col gap-2.5">{children}</div>
+    </div>
+  );
+}
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return <Link href={href} className="text-sm text-content-secondary hover:text-primary transition-colors">{children}</Link>;
 }

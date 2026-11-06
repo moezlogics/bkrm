@@ -4,9 +4,11 @@ import dbConnect from "@/lib/mongodb";
 import Listing from "@/models/Listing";
 import User from "@/models/User";
 import { getCatalog } from "@/lib/catalog";
-import { ArrowRight, MapPin, Navigation, Wallet } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { redirect } from "next/navigation";
-import { ListingCard } from "@/components/ListingCard";
+import { ListingCard, ListingGrid } from "@/components/ListingCard";
+import { SectionThumb } from "@/components/home/SectionThumb";
+import { getSectionCovers } from "@/lib/section-covers";
 import { IntentLink } from "@/components/IntentLink";
 import { HomeSlider } from "@/components/home/HomeSlider";
 import { EventBanner } from "@/components/home/EventBanner";
@@ -16,15 +18,12 @@ import { getScopeCounts } from "@/lib/scope-counts";
 import { TtlLru } from "@/lib/memo";
 import { getVisitorLocation, oid, type VisitorLocation } from "@/lib/visitor-location";
 import { getSettings } from "@/lib/settings";
-import { getHomepageSections, getHomeSliders } from "@/lib/home-content";
+import { getHomepageSections, getLocalHomepageSections, getHomeSliders } from "@/lib/home-content";
 import { siteJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
-import { SearchBox } from "@/components/search/SearchBox";
-import { withBasePath } from "@/lib/base-path";
 import { needsSetup } from "@/lib/setup-state";
 import { VERTICAL } from "@/vertical";
 import { iconFor } from "@/vertical/icons";
-import { priceInWords } from "@/lib/utils";
 
 
 /**
@@ -195,10 +194,14 @@ export default async function Home() {
   // A brand-new install has no admin yet: send the owner to first-run setup.
   if (await needsSetup().catch(() => false)) redirect("/setup");
   const loc = await getVisitorLocation();
-  const [data, settings, siteLd, sections, rawSliders] = await Promise.all([
+  const [data, settings, siteLd, sections, rawSliders, covers] = await Promise.all([
     cachedHomeData(loc).catch((e) => { console.error("Home data error:", e); return null; }),
-    getSettings(), siteJsonLd(), getHomepageSections(),
-    getHomeSliders(),
+    getSettings(), siteJsonLd(),
+    // Admin rails follow the visitor too: nearest first, other cities only to fill.
+    loc.city && loc.point
+      ? getLocalHomepageSections([loc.city.slug, loc.area?.slug ?? "", loc.precise ? loc.point.join(",") : ""].join("|"), loc.point)
+      : getHomepageSections(),
+    getHomeSliders(), getSectionCovers(),
   ]);
 
   const sliders = JSON.parse(JSON.stringify(rawSliders || []));
@@ -208,186 +211,100 @@ export default async function Home() {
     nearbyCities: [], areas: [], rails: [] as Rail[], cityTotal: 0,
   };
   const city = loc.city;
-  const primaryHref = city ? `/${city.slug}/${VERTICAL.primaryTop}` : `/${VERTICAL.primaryTop}`;
-  const cityHref = city ? `/${city.slug}` : primaryHref;
-  const primaryCat = d.categories.find((c: any) => c.path === VERTICAL.primaryTop);
+  const prefix = city ? `/${city.slug}` : "";
+  const cityHref = city ? `/${city.slug}` : `/${VERTICAL.primaryTop}`;
   const EmptyIcon = iconFor(VERTICAL.icon);
   const fromWhere = loc.precise ? "your location" : loc.area ? loc.area.name : city?.name;
 
   return (
-    <div className="pb-mobile-nav">
+    <div className="pb-6">
       <JsonLd data={siteLd} />
 
-      {/* Homepage Slider Banner from Admin Panel */}
-      <HomeSlider sliders={sliders} />
+      <EventBanner
+        name={settings.event_name} date={settings.event_date} note={settings.event_note}
+        title={settings.hero_title} subtitle={settings.hero_subtitle} prefix={prefix}
+      />
 
-      {/* The site's event (Eid ul Adha on a bakra mandi): countdown + quick links */}
-      <EventBanner name={settings.event_name} date={settings.event_date} note={settings.event_note} />
+      {/* Admin banners (Admin → Homepage sliders), when there are any */}
+      {sliders.length > 0 && <div className="wrap pt-4"><HomeSlider sliders={sliders} /></div>}
 
-
-      {/* Areas in the visitor's city (OLX's location facet) */}
-      {d.local && d.areas.length > 0 && (
-        <section className="wrap pb-3">
-          <p className="mb-2 text-xs font-semibold text-content-secondary flex items-center gap-1">
-            <MapPin className="h-3.5 w-3.5 text-primary" /> Areas in {city!.name}
-          </p>
-          <div className="flex gap-2 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1">
-            {d.areas.map((a) => {
-              const isHome = loc.area?.slug === a.slug;
-              return (
-                <IntentLink
-                  key={a.slug}
-                  href={`/${city!.slug}/${a.slug}`}
-                  className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
-                    isHome ? "border-primary bg-primary/8 text-primary" : "border-card-border bg-surface text-content-secondary hover:border-primary hover:text-primary"
-                  }`}
-                >
-                  {a.name} <span className="text-content-tertiary">({a.n})</span>
-                </IntentLink>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* Featured — nearest boosted ads */}
-      {d.featured.length > 0 && (
-        <section className="wrap py-4">
-          <SectionHead title={d.local ? "Featured near you" : "Featured"} href={cityHref} accent />
-          <Grid ads={d.featured} priorityCount={2} />
-        </section>
-      )}
-
-      {/* Browse by make */}
-      {d.makes.length > 0 && (
-        <section className="wrap py-4">
-          <SectionHead title={`Browse by ${VERTICAL.brandWord.one}`} href={primaryHref} />
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2">
-            {d.makes.map((m) => (
-              <IntentLink key={m.href} href={m.href}
-                className="group flex items-center gap-2.5 rounded-xl border border-card-border bg-card px-3 py-2.5 hover:border-primary hover:shadow-sm transition-all min-w-0">
-                <span className="hidden sm:grid place-items-center h-8 w-8 shrink-0 rounded-full bg-primary/10 text-primary text-[13px] font-bold">{m.name.slice(0, 1)}</span>
-                <span className="min-w-0">
-                  <span className="block text-[13px] font-semibold text-content truncate group-hover:text-primary">{m.name}</span>
-                  {m.count > 0 && <span className="block text-[11px] text-content-tertiary leading-tight">{m.count.toLocaleString("en-US")} {m.count === 1 ? "ad" : "ads"}</span>}
-                </span>
+      {/* Sections */}
+      {d.categories.length > 0 && (
+        <section className="pt-5">
+          {/* One swipeable row of round section photos (all fit on desktop). */}
+          <div className="wrap flex gap-3.5 sm:gap-5 overflow-x-auto hide-scrollbar snap-x scroll-px-4 md:scroll-px-6 lg:justify-between">
+            {d.categories.map((c: any) => (
+              <IntentLink key={c._id} href={c.href} className="group snap-start shrink-0 w-[76px] sm:w-[92px] flex flex-col items-center text-center gap-1.5">
+                <SectionThumb src={covers[c.slug]} icon={c.icon} sizes="96px"
+                  className="h-[68px] w-[68px] sm:h-[84px] sm:w-[84px] rounded-full ring-2 ring-white shadow-md group-hover:ring-primary transition" />
+                <span className="text-[13px] sm:text-[14px] font-semibold text-content leading-tight line-clamp-2">{c.name}</span>
               </IntentLink>
             ))}
           </div>
         </section>
       )}
 
-      {/* Browse by budget */}
-      {primaryCat && VERTICAL.budgets.length > 0 && (
-        <section className="wrap py-2">
-          <p className="mb-2 text-xs font-semibold text-content-secondary flex items-center gap-1">
-            <Wallet className="h-3.5 w-3.5 text-primary" /> {VERTICAL.noun.Many} by budget
-          </p>
-          <div className="flex gap-2 overflow-x-auto hide-scrollbar -mx-1 px-1 pb-1">
-            {VERTICAL.budgets.map((max, i) => {
-              const min = i > 0 ? VERTICAL.budgets[i - 1] : 0;
-              const label = (n: number) => priceInWords(n) || `Rs ${n.toLocaleString("en-US")}`;
-              const q = new URLSearchParams({ categoryId: String(primaryCat._id), maxPrice: String(max), ...(min ? { minPrice: String(min) } : {}), ...(city ? { city: city.name } : {}) });
-              return (
-                <Link key={max} href={`/ads?${q}`} prefetch={false}
-                  className="shrink-0 rounded-full border border-card-border bg-surface px-3.5 py-1.5 text-xs font-medium text-content-secondary hover:border-primary hover:text-primary transition-colors">
-                  {min ? `${label(min)} – ${label(max)}` : `Under ${label(max)}`}
-                </Link>
-              );
-            })}
+      {/* Featured — a swipeable row on phones */}
+      {d.featured.length > 0 && (
+        <section className="pt-8">
+          <div className="wrap"><SectionHead title={d.local ? "Featured near you" : "Featured"} href={cityHref} /></div>
+          <div className="wrap max-sm:!px-0">
+            <div className="max-sm:flex max-sm:overflow-x-auto max-sm:snap-x max-sm:snap-mandatory max-sm:px-4 max-sm:gap-2.5 hide-scrollbar sm:grid sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:gap-4">
+              {d.featured.map((ad: any, i: number) => (
+                <div key={ad._id} className="max-sm:w-[46vw] max-sm:shrink-0 max-sm:snap-start flex">
+                  <ListingCard ad={ad} priority={i < 2} className="w-full" />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* Main feed */}
-      <section className="wrap py-4">
-        <SectionHead title={d.local ? "Ads near you" : "Latest ads"} href={cityHref} />
-        {d.local && (
-          <p className="-mt-2 mb-3 flex items-center gap-1.5 text-xs text-content-tertiary">
-            <Navigation className="h-3.5 w-3.5 text-primary" />
-            {city!.name} · closest to {fromWhere} first
-          </p>
-        )}
+      <section className="wrap pt-8">
+        <SectionHead
+          title={d.local ? `Near ${fromWhere === "your location" ? "you" : fromWhere}` : "Latest"}
+          sub={d.local ? `${city!.name} · closest first` : undefined}
+          href={cityHref}
+        />
         {d.nearYou.length > 0 ? (
-          <Grid ads={d.nearYou} />
+          <ListingGrid ads={d.nearYou} priorityCount={d.featured.length ? 0 : 2} />
         ) : d.nearbyCities.length === 0 ? (
-          <div className="rounded-lg sm:rounded-xl border border-dashed border-card-border bg-surface-secondary p-10 text-center">
-            <EmptyIcon className="h-10 w-10 text-content-tertiary mx-auto mb-3" />
-            <h3 className="font-bold text-content">No listings yet</h3>
-            <p className="text-sm text-content-secondary mt-1">Be the first to post an ad{city ? ` in ${city.name}` : ""}.</p>
-            <Link href="/ads/post" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm px-6 py-3 shadow-md active:scale-95 transition-all">{VERTICAL.copy.sellCta}</Link>
+          <div className="card p-10 text-center">
+            <span className="mx-auto grid place-items-center h-14 w-14 rounded-2xl bg-primary-soft text-primary"><EmptyIcon className="h-7 w-7" /></span>
+            <h3 className="mt-4 text-base font-bold text-content">No ads yet</h3>
+            <p className="text-sm text-content-secondary mt-1">Be the first to post{city ? ` in ${city.name}` : ""}.</p>
+            <Link href="/ads/post" className="mt-5 inline-flex items-center h-11 px-6 rounded-full bg-primary hover:bg-primary-dark text-white font-bold text-sm">{VERTICAL.copy.sellCta}</Link>
           </div>
         ) : (
-          <p className="rounded-lg border border-card-border bg-surface-secondary px-4 py-3 text-sm text-content-secondary">
-            No ads in {city!.name} yet — here are the closest ones from nearby cities.
+          <p className="card px-4 py-3.5 text-sm text-content-secondary">
+            No ads in {city!.name} yet — here are the closest from nearby cities.
           </p>
         )}
       </section>
 
-      {/* Category rails (only where the city has depth) */}
+      {/* Section rails (only where the city has depth) */}
       {d.rails.map((r) => r.ads.length > 0 && (
-        <section key={r.href} className="wrap py-4">
+        <section key={r.href} className="wrap pt-8">
           <SectionHead title={r.title} href={r.href} />
-          <Grid ads={r.ads} />
+          <ListingGrid ads={r.ads} />
         </section>
       ))}
 
       {/* Thin city → widen by distance */}
       {d.nearbyCities.length > 0 && (
-        <section className="wrap py-4">
-          <SectionHead title="From nearby cities" href={`/${VERTICAL.primaryTop}`} />
-          <p className="-mt-2 mb-3 text-xs text-content-tertiary">Closest first from {city!.name}</p>
-          <Grid ads={d.nearbyCities} />
-        </section>
-      )}
-
-      {/* Trust strip */}
-      <section className="wrap py-3">
-        <div className="grid grid-cols-3 gap-2 rounded-xl bg-surface-secondary border border-card-border p-3 text-center">
-          {VERTICAL.trust.map((f) => {
-            const Icon = iconFor(f.icon);
-            return (
-              <div key={f.title} className="flex flex-col items-center gap-1">
-                <Icon className="h-5 w-5 text-primary" />
-                <p className="text-[11px] sm:text-sm font-bold text-content leading-none">{f.title}</p>
-                <p className="text-[10px] sm:text-xs text-content-tertiary">{f.sub}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Other cities — these switch the visitor's location (plain links: the
-          switch route sets a cookie and must never be prefetched). */}
-      {d.cities.length > 0 && (
-        <section className="wrap py-3">
-          <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar">
-            <span className="text-xs font-semibold text-content-secondary shrink-0 flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5" /> {d.local ? "Other cities:" : "Cities:"}
-            </span>
-            {d.cities.map((c: any) => (
-              <a
-                key={c.slug}
-                href={withBasePath(`/go/location?city=${c.slug}&next=/`)}
-                className={`shrink-0 rounded-md border px-3 py-1 text-xs font-medium transition-colors ${
-                  c.slug === city?.slug
-                    ? "border-primary bg-primary/8 text-primary"
-                    : "border-card-border bg-surface text-content-secondary hover:border-primary hover:text-primary"
-                }`}
-              >
-                {c.name}
-              </a>
-            ))}
-          </div>
+        <section className="wrap pt-8">
+          <SectionHead title="From nearby cities" sub={`Closest first from ${city!.name}`} href={`/${VERTICAL.primaryTop}`} />
+          <ListingGrid ads={d.nearbyCities} />
         </section>
       )}
 
       {/* Admin feature rails */}
       {sections.map((sec: any) => (
         sec.listings?.length ? (
-          <section key={sec._id} className="wrap py-4">
+          <section key={sec._id} className="wrap pt-8">
             <SectionHead title={sec.title} href={cityHref} />
-            <Grid ads={sec.listings} />
+            <ListingGrid ads={sec.listings} />
           </section>
         ) : null
       ))}
@@ -395,21 +312,18 @@ export default async function Home() {
   );
 }
 
-function SectionHead({ title, href, accent }: { title: string; href: string; accent?: boolean }) {
+function SectionHead({ title, sub, href }: { title: string; sub?: string; href?: string }) {
   return (
-    <div className="flex items-center justify-between mb-3">
-      <h2 className={`text-[15px] sm:text-[17px] font-bold ${accent ? "text-primary" : "text-content"}`}>{title}</h2>
-      <IntentLink href={href} className="text-xs sm:text-sm font-medium text-content-secondary hover:text-primary flex items-center gap-1">
-        View all <ArrowRight className="h-3.5 w-3.5" />
-      </IntentLink>
-    </div>
-  );
-}
-
-function Grid({ ads, priorityCount = 0 }: { ads: any[]; priorityCount?: number }) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3">
-      {ads.map((ad, i) => <ListingCard key={ad._id} ad={ad} priority={i < priorityCount} />)}
+    <div className="flex items-end justify-between gap-3 mb-3.5">
+      <div className="min-w-0">
+        <h2 className="text-[18px] sm:text-[21px] font-extrabold tracking-tight text-content truncate">{title}</h2>
+        {sub && <p className="text-[13.5px] text-content-tertiary mt-0.5 truncate">{sub}</p>}
+      </div>
+      {href && (
+        <IntentLink href={href} className="shrink-0 inline-flex items-center gap-0.5 text-[14px] font-bold text-primary hover:text-primary-dark">
+          See all <ChevronRight className="h-4 w-4" />
+        </IntentLink>
+      )}
     </div>
   );
 }

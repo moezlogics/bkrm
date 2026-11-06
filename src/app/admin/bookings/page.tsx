@@ -58,7 +58,7 @@ export default function AdminBookings() {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {["pending", "confirmed", "completed", "declined", "cancelled", "expired"].map((s) => (
           <button key={s} onClick={() => { setStatus(s); setPage(1); }} className={`rounded-xl border bg-card p-3 text-left ${status === s ? "border-primary" : "border-card-border"}`}>
-            <p className="text-[11px] font-bold uppercase tracking-wide text-content-tertiary">{STATUS_TEXT[s]}</p>
+            <p className="text-[12px] font-bold uppercase tracking-wide text-content-tertiary">{STATUS_TEXT[s]}</p>
             <p className="text-xl font-bold text-content tabular-nums">{n(c[s] || 0)}</p>
           </button>
         ))}
@@ -97,7 +97,7 @@ export default function AdminBookings() {
       ) : (
         <div className="rounded-2xl border border-card-border bg-card overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-left text-[11px] uppercase tracking-wide text-content-tertiary border-b border-card-border">
+            <thead className="text-left text-[12px] uppercase tracking-wide text-content-tertiary border-b border-card-border">
               <tr><th className="px-4 py-2.5">Booking</th><th className="px-4 py-2.5">Day</th><th className="px-4 py-2.5">What</th><th className="px-4 py-2.5">Customer</th><th className="px-4 py-2.5">Provider</th><th className="px-4 py-2.5">Status</th><th className="px-4 py-2.5" /></tr>
             </thead>
             <tbody className="divide-y divide-card-border">
@@ -108,7 +108,7 @@ export default function AdminBookings() {
                   <td className="px-4 py-3 text-xs">{b.kind === "share" ? `${b.shares} hissay` : b.units.map((u: any) => `${u.count} × ${u.label}`).join(", ")}{b.estimate != null ? <span className="block text-content-tertiary">Rs {n(b.estimate)}</span> : null}</td>
                   <td className="px-4 py-3 text-xs">{b.customer ? <Link href={`/admin/users/${b.customer.id}`} className="font-semibold hover:text-primary">{b.contactName}</Link> : b.contactName}<span className="block text-content-tertiary">{b.phone}{b.area ? ` · ${b.area}` : ""}</span></td>
                   <td className="px-4 py-3 text-xs">{b.provider ? <Link href={`/admin/users/${b.provider.id}`} className="font-semibold hover:text-primary">{b.provider.name}</Link> : "—"}</td>
-                  <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${TONE[b.status]}`}>{STATUS_TEXT[b.status]}</span>{b.reason ? <span className="block text-[11px] text-content-tertiary mt-1">{b.reason}</span> : null}</td>
+                  <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${TONE[b.status]}`}>{STATUS_TEXT[b.status]}</span>{b.reason ? <span className="block text-[12px] text-content-tertiary mt-1">{b.reason}</span> : null}</td>
                   <td className="px-4 py-3 text-right">{["pending", "confirmed"].includes(b.status) && <button onClick={() => { setCancel(b); setReason(""); }} className="text-xs font-bold text-danger hover:underline">Cancel</button>}</td>
                 </tr>
               ))}
@@ -130,7 +130,7 @@ export default function AdminBookings() {
           <div className="absolute inset-0 bg-black/55" onClick={() => setCancel(null)} />
           <div role="dialog" aria-modal="true" className="relative w-full max-w-md rounded-2xl border border-card-border bg-card p-5 flex flex-col gap-3">
             <div className="flex items-center justify-between"><h3 className="font-bold text-content">Cancel {cancel.code}</h3><button onClick={() => setCancel(null)} aria-label="Close"><X className="h-5 w-5" /></button></div>
-            <p className="text-[13px] text-content-secondary">Both {cancel.contactName} and {cancel.provider?.name || "the provider"} get a notification with your reason.</p>
+            <p className="text-[14px] text-content-secondary">Both {cancel.contactName} and {cancel.provider?.name || "the provider"} get a notification with your reason.</p>
             <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} maxLength={300} placeholder="Reason" className="w-full rounded-xl border border-card-border px-3 py-2.5 text-sm outline-none bg-surface focus:border-primary" />
             <button onClick={doCancel} disabled={busy || !reason.trim()} className="h-11 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-bold disabled:opacity-50">{busy ? <Loader2 className="h-4 w-4 animate-spin inline" /> : "Cancel booking"}</button>
           </div>

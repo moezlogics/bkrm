@@ -67,14 +67,14 @@ export function Automations({ data, reload }: { data: any; reload: () => void })
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-content-tertiary uppercase tracking-wider">Title</label>
+                    <label className="text-[12px] font-bold text-content-tertiary uppercase tracking-wider">Title</label>
                     <input className={`${input} mt-1`} value={a.title} maxLength={90} onChange={(e) => setAuto(t.id, { title: e.target.value })} />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-content-tertiary uppercase tracking-wider">Message</label>
+                    <label className="text-[12px] font-bold text-content-tertiary uppercase tracking-wider">Message</label>
                     <input className={`${input} mt-1`} value={a.body} maxLength={220} onChange={(e) => setAuto(t.id, { body: e.target.value })} />
                   </div>
-                  <p className="lg:col-span-2 text-[11px] text-content-tertiary">
+                  <p className="lg:col-span-2 text-[12px] text-content-tertiary">
                     Placeholders: {["site", ...t.vars].map((v) => (
                       <button key={v} type="button" onClick={() => setAuto(t.id, { body: `${a.body}{${v}}` })} className="mr-1.5 rounded bg-surface-secondary px-1.5 py-0.5 font-mono hover:text-primary">{`{${v}}`}</button>
                     ))}

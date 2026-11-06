@@ -111,7 +111,7 @@ export default function PlansPage() {
       {limitHit && (
         <div role="status" className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-950">
           <p className="font-bold text-sm">{!limitHit.free ? "You've used all the listings on your plan" : limitHit.max > 1 ? `Your ${limitHit.max} free ads are all live` : "Your free ad is already live"}</p>
-          <p className="text-[13px] mt-1 leading-relaxed">
+          <p className="text-[14px] mt-1 leading-relaxed">
             {limitHit.free
               ? `A free account can have ${limitHit.max > 1 ? `${limitHit.max} live ads` : "one live ad"} at a time. Choose a plan below to post more — or mark your current ad as sold to post a new one for free.`
               : "Upgrade to a bigger plan below, or mark an ad as sold to free a slot."}
@@ -122,7 +122,7 @@ export default function PlansPage() {
       {fromBoost && !limitHit && (
         <div role="status" className="rounded-2xl border border-primary/25 bg-primary/5 p-4">
           <p className="font-bold text-sm text-content flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Featured ads reach many more buyers</p>
-          <p className="text-[13px] mt-1 text-content-secondary leading-relaxed">They&apos;re shown first in search and on the home page. Pick a plan with featured ads, then tap <b>Boost</b> on your ad in My ads.</p>
+          <p className="text-[14px] mt-1 text-content-secondary leading-relaxed">They&apos;re shown first in search and on the home page. Pick a plan with featured ads, then tap <b>Boost</b> on your ad in My ads.</p>
         </div>
       )}
 
@@ -130,14 +130,14 @@ export default function PlansPage() {
       {open?.status === "submitted" && (
         <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-blue-950">
           <p className="font-bold text-sm flex items-center gap-2"><Clock className="h-4 w-4" /> Your payment is being checked</p>
-          <p className="text-[13px] mt-1 leading-relaxed">{open.invoiceNumber} · {open.planName} · {rs(open.amount)}. Your plan starts as soon as our team verifies it — usually the same day. You&apos;ll get a notification.</p>
+          <p className="text-[14px] mt-1 leading-relaxed">{open.invoiceNumber} · {open.planName} · {rs(open.amount)}. Your plan starts as soon as our team verifies it — usually the same day. You&apos;ll get a notification.</p>
         </div>
       )}
       {open && open.status !== "submitted" && (
         <div className={`rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3 ${open.status === "rejected" ? "border-red-200 bg-red-50 text-red-950" : "border-amber-300 bg-amber-50 text-amber-950"}`}>
           <div className="min-w-0 flex-1">
             <p className="font-bold text-sm">{open.status === "rejected" ? "We couldn't verify your payment" : "Payment not finished"}</p>
-            <p className="text-[13px] mt-0.5 leading-relaxed">
+            <p className="text-[14px] mt-0.5 leading-relaxed">
               {open.invoiceNumber} · {open.planName} · {rs(open.amount)}
               {open.status === "rejected" && open.rejectionReason ? ` — ${open.rejectionReason}` : ""}
             </p>
@@ -155,12 +155,12 @@ export default function PlansPage() {
 
       {/* Your plan */}
       {cur && (
-        <section className={`rounded-2xl p-4 ${cur.isFree ? "border border-card-border bg-card" : "bg-gradient-to-br from-primary to-primary-dark text-white"}`}>
+        <section className={`rounded-2xl p-4 ${cur.isFree ? "bg-card shadow-sm ring-1 ring-black/[0.03]" : "bg-gradient-to-br from-primary to-primary-dark text-white"}`}>
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className={`text-[11px] font-semibold uppercase tracking-wider ${cur.isFree ? "text-content-tertiary" : "text-white/75"}`}>Your plan</p>
+              <p className={`text-[12px] font-semibold uppercase tracking-wider ${cur.isFree ? "text-content-tertiary" : "text-white/75"}`}>Your plan</p>
               <h2 className={`text-xl font-bold leading-tight mt-0.5 ${cur.isFree ? "text-content" : "text-white"}`}>{cur.isFree ? "Free" : cur.planName}</h2>
-              <p className={`text-[12px] mt-0.5 ${cur.isFree ? "text-content-secondary" : "text-white/80"}`} suppressHydrationWarning>
+              <p className={`text-[13px] mt-0.5 ${cur.isFree ? "text-content-secondary" : "text-white/80"}`} suppressHydrationWarning>
                 {cur.isFree ? "Included with every account — no payment." : cur.endDate ? `Active until ${formatDate(cur.endDate)}` : "Active"}
               </p>
             </div>
@@ -171,14 +171,14 @@ export default function PlansPage() {
             <Meter label="Featured" used={cur.featuredUsed} limit={cur.featuredLimit} light={!cur.isFree} none="Not on the free plan" />
           </div>
           {!cur.isFree && cur.featuredLimit > cur.featuredUsed && (
-            <Link href="/dashboard/seller" className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[13px] font-semibold"><Rocket className="h-4 w-4" /> Boost an ad now</Link>
+            <Link href="/dashboard/seller" className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[14px] font-semibold"><Rocket className="h-4 w-4" /> Boost an ad now</Link>
           )}
         </section>
       )}
 
       <div>
         <h2 className="text-base font-bold text-content">Choose a plan</h2>
-        <p className="text-[13px] text-content-secondary mt-0.5">More live ads, and featured ads shown first to buyers. Pay by JazzCash, Easypaisa or bank — your plan starts when the payment is checked.</p>
+        <p className="text-[14px] text-content-secondary mt-0.5">More live ads, and featured ads shown first to buyers. Pay by JazzCash, Easypaisa or bank — your plan starts when the payment is checked.</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -186,19 +186,19 @@ export default function PlansPage() {
           const mine = !!cur && !cur.isFree && cur.planName.toLowerCase() === p.name.toLowerCase();
           return (
             <div key={p._id} className={`relative rounded-2xl border bg-card p-4 flex flex-col ${mine ? "border-emerald-400 shadow-md" : p.isPopular ? "border-primary shadow-md" : "border-card-border"}`}>
-              {mine ? <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">YOUR PLAN</span>
-                : p.isPopular && <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">MOST POPULAR</span>}
+              {mine ? <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full">YOUR PLAN</span>
+                : p.isPopular && <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full">MOST POPULAR</span>}
               <div className="flex items-center gap-2"><Crown className={`h-5 w-5 ${p.isPopular ? "text-amber-500" : "text-content-tertiary"}`} /><h3 className="font-bold text-content">{p.name}</h3></div>
-              {p.description && <p className="text-[12px] text-content-secondary mt-1">{p.description}</p>}
+              {p.description && <p className="text-[13px] text-content-secondary mt-1">{p.description}</p>}
               <div className="mt-2 flex items-baseline gap-1">
                 <span className="text-2xl font-bold text-content">{rs(p.finalPrice)}</span>
                 {p.price > p.finalPrice && <span className="text-xs text-content-tertiary line-through">{rs(p.price)}</span>}
                 <span className="text-xs text-content-secondary">/ {p.durationDays} days</span>
               </div>
               <ul className="mt-3 flex flex-col gap-1.5 flex-1">
-                <li className="flex items-start gap-1.5 text-[13px] text-content"><Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" /> {p.listingLimit} live ads at a time</li>
-                {p.featuredLimit > 0 && <li className="flex items-start gap-1.5 text-[13px] text-content"><Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" /> {p.featuredLimit} featured {p.featuredLimit === 1 ? "ad" : "ads"} for {p.featuredDurationDays} days each</li>}
-                {p.features.filter((f) => !/live ads|featured|validity|days validity/i.test(f)).map((f) => <li key={f} className="flex items-start gap-1.5 text-[13px] text-content-secondary"><Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" /> {f}</li>)}
+                <li className="flex items-start gap-1.5 text-[14px] text-content"><Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" /> {p.listingLimit} live ads at a time</li>
+                {p.featuredLimit > 0 && <li className="flex items-start gap-1.5 text-[14px] text-content"><Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" /> {p.featuredLimit} featured {p.featuredLimit === 1 ? "ad" : "ads"} for {p.featuredDurationDays} days each</li>}
+                {p.features.filter((f) => !/live ads|featured|validity|days validity/i.test(f)).map((f) => <li key={f} className="flex items-start gap-1.5 text-[14px] text-content-secondary"><Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" /> {f}</li>)}
               </ul>
               <button
                 onClick={() => buy(p._id)}
@@ -221,14 +221,14 @@ export default function PlansPage() {
             {invoices.map((iv) => {
               const s = ST[iv.status] || ST.awaiting_payment;
               return (
-                <div key={iv._id} className="rounded-xl border border-card-border bg-card p-3 flex items-center gap-3">
+                <div key={iv._id} className="rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-3 flex items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-sm text-content">{iv.invoiceNumber}</span>
-                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${s.cls}`}><s.icon className="h-3 w-3" /> {s.label}</span>
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${s.cls}`}><s.icon className="h-3 w-3" /> {s.label}</span>
                     </div>
-                    <p className="text-[11px] text-content-secondary">{iv.planName} · {rs(iv.amount)} · <span suppressHydrationWarning>{formatDate(iv.createdAt)}</span></p>
-                    {iv.status === "rejected" && iv.rejectionReason && <p className="text-[11px] text-red-600">Reason: {iv.rejectionReason}</p>}
+                    <p className="text-[12px] text-content-secondary">{iv.planName} · {rs(iv.amount)} · <span suppressHydrationWarning>{formatDate(iv.createdAt)}</span></p>
+                    {iv.status === "rejected" && iv.rejectionReason && <p className="text-[12px] text-red-600">Reason: {iv.rejectionReason}</p>}
                   </div>
                   {(iv.status === "awaiting_payment" || iv.status === "rejected") && (
                     <button onClick={() => openInvoice(iv._id)} className="shrink-0 text-xs font-bold text-primary hover:underline">{iv.status === "rejected" ? "Send again →" : "Pay now →"}</button>
@@ -258,15 +258,15 @@ function Meter({ label, used, limit, light, none }: { label: string; used: numbe
   const full = limit > 0 && used >= limit;
   return (
     <div>
-      <div className={`flex items-baseline justify-between text-[12px] ${light ? "text-white/85" : "text-content-secondary"}`}>
+      <div className={`flex items-baseline justify-between text-[13px] ${light ? "text-white/85" : "text-content-secondary"}`}>
         <span>{label}</span>
         <span className={`font-bold tabular-nums ${light ? "text-white" : "text-content"}`}>{limit > 0 ? `${used} / ${limit}` : "—"}</span>
       </div>
       <div className={`mt-1.5 h-2 rounded-full overflow-hidden ${light ? "bg-white/20" : "bg-surface-secondary"}`}>
         <div className={`h-full rounded-full ${light ? "bg-white" : full ? "bg-amber-500" : "bg-primary"}`} style={{ width: `${pct(used, limit)}%` }} />
       </div>
-      {limit === 0 && none && <p className={`text-[11px] mt-1 ${light ? "text-white/70" : "text-content-tertiary"}`}>{none}</p>}
-      {full && <p className={`text-[11px] mt-1 ${light ? "text-white/85" : "text-amber-700"}`}>All used</p>}
+      {limit === 0 && none && <p className={`text-[12px] mt-1 ${light ? "text-white/70" : "text-content-tertiary"}`}>{none}</p>}
+      {full && <p className={`text-[12px] mt-1 ${light ? "text-white/85" : "text-amber-700"}`}>All used</p>}
     </div>
   );
 }
@@ -354,7 +354,7 @@ function Checkout({ data, canPay, support, onClose, onDone }: { data: { invoice:
 
             {/* 1 · where to send it */}
             <div>
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-content-tertiary">1 · Send exactly {rs(inv.amount)} to any one</p>
+              <p className="mb-2 text-[12px] font-bold uppercase tracking-wide text-content-tertiary">1 · Send exactly {rs(inv.amount)} to any one</p>
               <button onClick={() => copy(String(Math.round(inv.amount)))} className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-card-border px-3 py-1 text-xs font-semibold text-content hover:border-primary"><Copy className="h-3 w-3" /> Copy amount {Math.round(inv.amount)}</button>
               <div className="flex flex-col gap-2">
                 {methods.map((m) => {
@@ -366,8 +366,8 @@ function Checkout({ data, canPay, support, onClose, onDone }: { data: { invoice:
                         <button onClick={() => copy(m.account)} className="text-xs font-semibold text-primary flex items-center gap-1"><Copy className="h-3 w-3" /> Copy</button>
                       </div>
                       <p className="mt-1 text-[15px] font-mono text-content break-all">{m.account}</p>
-                      {m.name && <p className="text-[11px] text-content-tertiary">Account title: {m.name}</p>}
-                      {m.instructions && <p className="text-[11px] text-content-tertiary mt-0.5">{m.instructions}</p>}
+                      {m.name && <p className="text-[12px] text-content-tertiary">Account title: {m.name}</p>}
+                      {m.instructions && <p className="text-[12px] text-content-tertiary mt-0.5">{m.instructions}</p>}
                     </div>
                   );
                 })}
@@ -376,7 +376,7 @@ function Checkout({ data, canPay, support, onClose, onDone }: { data: { invoice:
 
             {/* 2 · which one */}
             <div>
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-content-tertiary">2 · Which account did you use?</p>
+              <p className="mb-2 text-[12px] font-bold uppercase tracking-wide text-content-tertiary">2 · Which account did you use?</p>
               <div className="flex flex-wrap gap-2">
                 {methods.map((m) => (
                   <button key={m.title} type="button" onClick={() => setMethod(m.title)}
@@ -393,7 +393,7 @@ function Checkout({ data, canPay, support, onClose, onDone }: { data: { invoice:
 
             {/* 3 · the proof */}
             <div>
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-content-tertiary">3 · Upload the payment screenshot</p>
+              <p className="mb-2 text-[12px] font-bold uppercase tracking-wide text-content-tertiary">3 · Upload the payment screenshot</p>
               <button type="button" onClick={() => fileRef.current?.click()} className="relative w-full aspect-[16/9] rounded-xl border-2 border-dashed border-card-border grid place-items-center overflow-hidden bg-surface-secondary hover:border-primary">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {shot ? <img src={shot} alt="Payment screenshot" className="absolute inset-0 w-full h-full object-contain" />
@@ -409,7 +409,7 @@ function Checkout({ data, canPay, support, onClose, onDone }: { data: { invoice:
             <button onClick={submit} disabled={busy || uploading || !shot} className="h-12 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold flex items-center justify-center gap-2 disabled:opacity-60">
               {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Check className="h-5 w-5" /> I have paid — send for checking</>}
             </button>
-            <p className="text-center text-[11px] text-content-tertiary">Nothing is charged automatically. Our team checks the screenshot and starts your plan.</p>
+            <p className="text-center text-[12px] text-content-tertiary">Nothing is charged automatically. Our team checks the screenshot and starts your plan.</p>
             {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="text-center text-xs font-semibold text-primary">Need help? Message us on WhatsApp</a>}
           </>
         )}

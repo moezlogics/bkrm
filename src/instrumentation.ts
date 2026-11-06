@@ -42,7 +42,7 @@ export async function onRequestError(
     const where = String(e?.stack || "").split("\n").find((l) => /[\\/]src[\\/]/.test(l))?.trim().slice(0, 200);
     const { notifyDiscordOnce, DISCORD_COLORS } = await import("./lib/discord");
     await notifyDiscordOnce(`err:${route}|${message}`, 30, {
-      title: "💥 Server error",
+      title: "Server error",
       description: message,
       color: DISCORD_COLORS.error,
       category: "errors",

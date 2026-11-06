@@ -130,9 +130,9 @@ export function SearchBox({
   const clearRecent = () => { try { localStorage.removeItem(RECENT_KEY); } catch {} setRecent([]); };
 
   const frame = {
-    desktop: "h-10.5 rounded-none border border-slate-300 bg-white hover:border-slate-400 focus-within:bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20",
-    mobile: "h-10 rounded-none bg-slate-50 border border-slate-300 focus-within:bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20",
-    hero: "h-11 sm:h-12 rounded-none border border-slate-300 bg-surface focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20",
+    desktop: "h-12 rounded-full bg-surface-secondary ring-1 ring-transparent hover:ring-card-border focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/40",
+    mobile: "h-11 rounded-full bg-surface-secondary ring-1 ring-card-border/70 focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/40",
+    hero: "h-12 sm:h-14 rounded-full bg-white shadow-md ring-1 ring-card-border focus-within:ring-2 focus-within:ring-primary/40",
   }[variant];
 
   const showList = open && rows.length > 0;
@@ -148,8 +148,8 @@ export function SearchBox({
         className={`flex items-center w-full transition-all ${frame}`}
       >
         {leading}
-        <div className={`flex items-center gap-2 flex-1 min-w-0 h-full ${variant === "mobile" ? "px-3" : "px-3.5"}`}>
-          {loading ? <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" /> : <Search className={`h-4 w-4 shrink-0 ${variant === "hero" ? "text-primary" : "text-slate-400"}`} />}
+        <div className={`flex items-center gap-2.5 flex-1 min-w-0 h-full ${variant === "mobile" ? "pl-4 pr-2" : "px-4"}`}>
+          {loading ? <Loader2 className="h-[18px] w-[18px] text-primary animate-spin shrink-0" /> : <Search className={`h-[18px] w-[18px] shrink-0 ${variant === "hero" ? "text-primary" : "text-content-tertiary"}`} />}
           <input
             ref={inputRef}
             name="q"
@@ -165,23 +165,23 @@ export function SearchBox({
             aria-autocomplete="list"
             autoComplete="off"
             enterKeyHint="search"
-            className="w-full min-w-0 h-full bg-transparent outline-none text-[13.5px] sm:text-sm text-slate-900 placeholder:text-slate-400"
+            className="w-full min-w-0 h-full bg-transparent outline-none text-[14.5px] sm:text-[15px] font-medium text-content placeholder:text-content-tertiary placeholder:font-normal"
           />
           {q && (
-            <button type="button" onClick={() => { setQ(""); inputRef.current?.focus(); }} className="grid place-items-center h-6 w-6 rounded-full text-slate-400 hover:text-slate-600" aria-label="Clear search">
+            <button type="button" onClick={() => { setQ(""); inputRef.current?.focus(); }} className="grid place-items-center h-7 w-7 rounded-full text-content-tertiary hover:text-content hover:bg-surface-tertiary" aria-label="Clear search">
               <X className="h-4 w-4" />
             </button>
           )}
         </div>
         {variant !== "mobile" && (
-          <button type="submit" className={`shrink-0 bg-primary hover:bg-primary-dark text-white text-xs sm:text-sm font-semibold rounded-none active:scale-95 transition-all ${variant === "hero" ? "h-full px-5 sm:px-7" : "h-8.5 mr-1 px-4 sm:px-5"}`}>
-            Search
+          <button type="submit" aria-label="Search" className={`shrink-0 grid place-items-center bg-primary hover:bg-primary-dark text-white rounded-full active:scale-95 transition-all ${variant === "hero" ? "h-10 sm:h-11 mr-1.5 px-5 sm:px-6 text-sm font-bold" : "h-9 w-9 mr-1.5"}`}>
+            {variant === "hero" ? "Search" : <Search className="h-4 w-4 stroke-[2.5]" />}
           </button>
         )}
       </form>
 
       {showList && (
-        <div id={listId} role="listbox" className="absolute left-0 right-0 top-full mt-1 z-50 rounded-none border border-slate-200 bg-card shadow-xl overflow-hidden max-h-[70vh] overflow-y-auto">
+        <div id={listId} role="listbox" className="absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl ring-1 ring-black/5 bg-card shadow-xl overflow-hidden max-h-[70vh] overflow-y-auto py-1.5">
           {rows.map((row, i) => {
             const header = row.kind !== lastKind && row.kind !== "all"
               ? { recent: "Recent searches", popular: "Popular", category: "Brands & categories", ad: "Ads" }[row.kind]
@@ -191,8 +191,8 @@ export function SearchBox({
               <React.Fragment key={row.key}>
                 {header && (
                   <div className="flex items-center justify-between px-3.5 pt-2.5 pb-1">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-content-tertiary">{header}</span>
-                    {row.kind === "recent" && <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={clearRecent} className="text-[11px] font-semibold text-content-tertiary hover:text-primary">Clear</button>}
+                    <span className="text-xs font-semibold text-content-tertiary">{header}</span>
+                    {row.kind === "recent" && <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={clearRecent} className="text-[12px] font-semibold text-content-tertiary hover:text-primary">Clear</button>}
                   </div>
                 )}
                 <a
@@ -201,10 +201,10 @@ export function SearchBox({
                   aria-selected={i === active}
                   onMouseEnter={() => setActive(i)}
                   onClick={(e) => { e.preventDefault(); go(row); }}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 text-sm ${i === active ? "bg-surface-secondary" : ""} ${row.kind === "all" ? "border-t border-slate-100 text-primary font-semibold" : "text-content-secondary"}`}
+                  className={`flex items-center gap-3 px-3.5 py-2.5 text-sm ${i === active ? "bg-surface-secondary" : ""} ${row.kind === "all" ? "text-primary font-semibold" : "text-content-secondary"}`}
                 >
                   {row.kind === "ad" ? (
-                    <span className="h-10 w-10 rounded-md bg-surface-secondary overflow-hidden shrink-0">
+                    <span className="h-10 w-10 rounded-lg bg-surface-secondary overflow-hidden shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       {row.image && <img src={row.image} alt="" loading="lazy" className="h-full w-full object-cover" />}
                     </span>
@@ -215,9 +215,9 @@ export function SearchBox({
                   )}
                   <span className="flex-1 min-w-0">
                     <span className="block truncate">{row.kind === "category" || row.kind === "ad" ? <Highlight text={row.label} q={q} /> : row.label}</span>
-                    {row.sub && <span className="block text-[11px] text-content-tertiary truncate">{row.sub}</span>}
+                    {row.sub && <span className="block text-[12px] text-content-tertiary truncate">{row.sub}</span>}
                   </span>
-                  {typeof row.n === "number" && row.n > 0 && <span className="text-[11px] text-content-tertiary shrink-0">{row.n.toLocaleString()} {row.n === 1 ? "ad" : "ads"}</span>}
+                  {typeof row.n === "number" && row.n > 0 && <span className="text-[12px] text-content-tertiary shrink-0">{row.n.toLocaleString()} {row.n === 1 ? "ad" : "ads"}</span>}
                   {row.kind === "category" && <ArrowUpRight className="h-4 w-4 text-content-tertiary shrink-0" />}
                 </a>
               </React.Fragment>

@@ -97,7 +97,7 @@ function LoginInner({ brand }: { brand?: React.ReactNode }) {
           {needsCode ? (
             <>
               <h2 className="text-base font-bold text-content mb-1">Confirm your email first</h2>
-              <p className="text-[13px] text-content-secondary mb-4">You never finished signing up. Enter the code we emailed you and you're in.</p>
+              <p className="text-[14px] text-content-secondary mb-4">You never finished signing up. Enter the code we emailed you and you're in.</p>
               <OtpCodeForm
                 email={email.trim().toLowerCase()}
                 devCode={devCode}
@@ -122,30 +122,30 @@ function LoginInner({ brand }: { brand?: React.ReactNode }) {
           </div>
 
           {justVerified && !error && (
-            <div role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[13px] font-medium text-emerald-800">
+            <div role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[14px] font-medium text-emerald-800">
               Your email is verified — log in to continue.
             </div>
           )}
           {justReset && !error && (
-            <div role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[13px] font-medium text-emerald-800">
+            <div role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[14px] font-medium text-emerald-800">
               Password updated — log in with your new password.
             </div>
           )}
           {error && (
-            <div role="alert" className="mb-4 rounded-lg border border-danger/25 bg-danger/5 px-3 py-2.5 text-[13px] font-medium text-danger">
+            <div role="alert" className="mb-4 rounded-lg border border-danger/25 bg-danger/5 px-3 py-2.5 text-[14px] font-medium text-danger">
               {error}
             </div>
           )}
 
           <form onSubmit={submit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-email" className="text-[13px] font-semibold text-content">Email</label>
+              <label htmlFor="login-email" className="text-[14px] font-semibold text-content">Email</label>
               <input id="login-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email"
                 className="h-11 rounded-lg border border-card-border px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 bg-surface" />
             </div>
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <label htmlFor="login-password" className="text-[13px] font-semibold text-content">Password</label>
+                <label htmlFor="login-password" className="text-[14px] font-semibold text-content">Password</label>
                 <button type="button" onClick={() => setShowPw((s) => !s)} className="text-xs font-semibold text-primary">{showPw ? "Hide" : "Show"}</button>
               </div>
               <input id="login-password" type={showPw ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password"
@@ -154,7 +154,7 @@ function LoginInner({ brand }: { brand?: React.ReactNode }) {
             <button type="submit" disabled={loading} className="h-11 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm disabled:opacity-60">
               {loading ? "Logging in…" : "Log in"}
             </button>
-            <Link href={`/forgot-password${email ? `?email=${encodeURIComponent(email)}` : ""}`} className="text-center text-[13px] font-semibold text-primary hover:underline">Forgot your password?</Link>
+            <Link href={`/forgot-password${email ? `?email=${encodeURIComponent(email)}` : ""}`} className="text-center text-[14px] font-semibold text-primary hover:underline">Forgot your password?</Link>
           </form>
           </>)}
         </div>

@@ -38,8 +38,8 @@ export default async function SavedAdsPage() {
       <div className="max-w-3xl mx-auto w-full px-4 py-4 pb-10">
         {cards.length ? (
           <>
-            {gone > 0 && <p className="text-[11px] text-content-tertiary mb-2">{gone} of these {gone === 1 ? "is" : "are"} sold or no longer live.</p>}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {gone > 0 && <p className="text-[12px] text-content-tertiary mb-2">{gone} of these {gone === 1 ? "is" : "are"} sold or no longer live.</p>}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">
               {cards.map((ad: any) => <ListingCard key={ad._id} ad={ad} />)}
             </div>
           </>

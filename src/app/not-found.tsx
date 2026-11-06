@@ -52,7 +52,7 @@ export default async function NotFound() {
 
       <div className="mx-auto mt-8 grid max-w-3xl grid-cols-1 sm:grid-cols-2 gap-2.5">
         {links.map((l) => (
-          <Link key={l.label} href={l.href} className="group flex items-center gap-3 rounded-xl border border-card-border bg-card p-3.5 hover:border-primary/50 hover:shadow-sm transition">
+          <Link key={l.label} href={l.href} className="group flex items-center gap-3 rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-3.5 hover:border-primary/50 hover:shadow-sm transition">
             <span className="grid place-items-center h-10 w-10 rounded-lg bg-primary/10 text-primary shrink-0"><l.icon className="h-5 w-5" /></span>
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-semibold text-content">{l.label}</span>
@@ -68,7 +68,7 @@ export default async function NotFound() {
           <h2 className="text-sm font-bold text-content mb-2.5">Popular categories{loc?.city ? ` in ${loc.label}` : ""}</h2>
           <div className="flex flex-wrap gap-2">
             {cats.map((c) => (
-              <Link key={c.slug} href={`${prefix}/${c.path}`} className="rounded-full border border-card-border bg-card px-3.5 py-1.5 text-[13px] font-medium text-content-secondary hover:border-primary hover:text-primary transition-colors">
+              <Link key={c.slug} href={`${prefix}/${c.path}`} className="rounded-full bg-card shadow-sm ring-1 ring-black/[0.03] px-3.5 py-1.5 text-[14px] font-medium text-content-secondary hover:border-primary hover:text-primary transition-colors">
                 {c.name}
               </Link>
             ))}

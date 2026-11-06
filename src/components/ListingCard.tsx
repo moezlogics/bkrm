@@ -6,16 +6,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Loader2 } from "lucide-react";
 import { CardIcon } from "@/components/ui/CardIcons";
-import { formatPrice, formatDate, formatDistance, cn } from "@/lib/utils";
-import { chat as chatApi } from "@/lib/api-client";
+import { formatPrice, formatDate, cn } from "@/lib/utils";
 import { trackImpression } from "@/lib/track";
 import { useToast } from "@/components/ui/Toast";
 import { loginUrl } from "@/lib/auth-intent";
 import { useIntentPrefetch } from "@/lib/use-intent-prefetch";
 import { imageProps, PLACEHOLDER_IMG } from "@/lib/cdn-image";
-import { withBasePath } from "@/lib/base-path";
 import { specHighlights } from "@/vertical";
 
 type AnyAd = Record<string, any>;
@@ -71,7 +68,6 @@ export function ListingCard({ ad, className, priority = false }: { ad: AnyAd; cl
   const router = useRouter();
   const { toast } = useToast();
   const [fav, setFav] = useState(false);
-  const [chatBusy, setChatBusy] = useState(false);
   const [imgSrc, setImgSrc] = useState(n.image);
   // Prefetch the ad page on intent (touch/hover, or resting on screen) so the
   // tap opens it instantly. One link carries it; the others share the result.
@@ -104,181 +100,89 @@ export function ListingCard({ ad, className, priority = false }: { ad: AnyAd; cl
     }
   };
 
-  const share = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const url = typeof window !== "undefined" ? `${window.location.origin}${withBasePath(`/ads/${n.slug}`)}` : "";
-    try {
-      if (navigator.share) await navigator.share({ title: n.title, url });
-      else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
-    } catch { /* cancelled */ }
-  };
-
-  const openChat = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!session) { router.push(loginUrl(`/ads/${n.slug}`, "chat")); return; }
-    setChatBusy(true);
-    try {
-      const res = await chatApi.createThread(String(n.id));
-      if (res.success) { askForPush("chat"); router.push(`/chat?threadId=${res.data._id}`); }
-      else toast.error("Couldn't start the chat");
-    } catch (err: any) {
-      toast.error(err?.message || "Couldn't start the chat");
-    } finally {
-      setChatBusy(false);
-    }
-  };
+  const dropped = n.previousPrice != null && n.price != null && n.previousPrice > n.price;
 
   return (
     <div
       ref={pf.ref}
       {...pf.intentProps}
       className={cn(
-        // active: tints the card the instant a finger lands, before the page swaps
-        "listing-card group relative flex gap-3.5 sm:gap-4 bg-white active:bg-slate-50 rounded-lg sm:rounded-xl border border-slate-200/90 p-3 hover:border-slate-300 hover:shadow-md transition-all duration-200",
+        "listing-card group relative flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/[0.04] hover:shadow-lg active:scale-[0.985] transition-[box-shadow,transform] duration-200",
         className
       )}
     >
-      {/* The card's ONE link, stretched over the whole card */}
-      <Link href={`/ads/${n.slug}`} prefetch={pf.prefetch} className="absolute inset-0 z-0 rounded-lg sm:rounded-xl" aria-label={n.title} />
+      {/* The card's one link, stretched over the whole card */}
+      <Link href={`/ads/${n.slug}`} prefetch={pf.prefetch} className="absolute inset-0 z-0" aria-label={n.title} />
 
-      {/* Product Image Thumbnail */}
-      <div className="relative z-10 w-32 sm:w-44 aspect-[4/3] sm:aspect-square shrink-0 rounded-md overflow-hidden bg-slate-100 pointer-events-none">
-        <div className="relative w-full h-full">
-          <Image
-            src={imgSrc}
-            {...imageProps(imgSrc)}
-            alt={n.title}
-            fill
-            sizes="(max-width: 640px) 128px, 176px"
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            priority={priority}
-            loading={priority ? undefined : "lazy"}
-            onError={() => setImgSrc(PLACEHOLDER_IMG)}
-          />
-        </div>
+      <div className="relative aspect-[4/3] bg-surface-tertiary pointer-events-none overflow-hidden">
+        <Image
+          src={imgSrc}
+          {...imageProps(imgSrc)}
+          alt={n.title}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
+          className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+          priority={priority}
+          loading={priority ? undefined : "lazy"}
+          onError={() => setImgSrc(PLACEHOLDER_IMG)}
+        />
 
-        {/* Urgent or Featured Tag */}
-        {n.isUrgent ? (
-          <span className="absolute top-2 left-2 bg-rose-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider shadow-xs pointer-events-none flex items-center gap-0.5">
-            🔥 URGENT
+        {(n.isUrgent || n.isFeatured) && (
+          <span className={`absolute top-2.5 left-2.5 h-[22px] px-2 rounded-full text-[11.5px] font-bold inline-flex items-center ${n.isUrgent ? "bg-danger text-white" : "bg-secondary-light text-amber-950"}`}>
+            {n.isUrgent ? "Urgent" : "Featured"}
           </span>
-        ) : n.isFeatured ? (
-          <span className="absolute top-2 left-2 bg-amber-400 text-slate-900 text-[9px] font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wider shadow-xs pointer-events-none">
-            FEATURED
+        )}
+
+        <button
+          onClick={toggleFav}
+          aria-label={fav ? "Remove from saved" : "Save"}
+          aria-pressed={fav}
+          className="pointer-events-auto absolute z-20 top-2 right-2 grid place-items-center h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm text-content shadow-sm active:scale-90 transition-transform"
+        >
+          <CardIcon name="heart" className={fav ? "h-[18px] w-[18px] fill-danger text-danger" : "h-[18px] w-[18px]"} />
+        </button>
+
+        {(n.imageCount > 1 || n.hasVideo) && (
+          <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 h-[22px] px-2 rounded-full bg-black/55 backdrop-blur-sm text-white text-[11.5px] font-semibold">
+            <CardIcon name="camera" className="h-3 w-3" /> {n.imageCount || 1}{n.hasVideo ? " · Video" : ""}
           </span>
-        ) : null}
+        )}
+      </div>
 
-        {/* Action icons: Save & Share */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1.5 z-20 pointer-events-auto">
-          <button
-            onClick={toggleFav}
-            aria-label="Save"
-            className="grid place-items-center h-7 w-7 rounded-md bg-white/95 text-slate-700 shadow-sm hover:bg-white active:scale-90 transition-transform"
-          >
-            <CardIcon name="heart" className={fav ? "h-4 w-4 fill-red-500 text-red-500" : "h-4 w-4 text-slate-600"} />
-          </button>
-          <button
-            onClick={share}
-            aria-label="Share"
-            className="grid place-items-center h-7 w-7 rounded-md bg-white/95 text-slate-700 shadow-sm hover:bg-white active:scale-90 transition-transform"
-          >
-            <CardIcon name="share" className="h-3.5 w-3.5 text-slate-600" />
-          </button>
-        </div>
-
-        {/* Image / Video indicators */}
-        <div className="absolute bottom-2 inset-x-2 flex items-center justify-between pointer-events-none">
-          {n.imageCount > 1 ? (
-            <span className="inline-flex items-center gap-1 bg-black/65 text-white text-[10px] font-medium px-2 py-0.5 rounded backdrop-blur-xs">
-              <CardIcon name="camera" className="h-2.5 w-2.5" /> {n.imageCount}
-            </span>
-          ) : <span />}
-          {n.hasVideo && (
-            <span className="inline-flex items-center gap-1 bg-black/75 text-white text-[10px] font-medium px-1.5 py-0.5 rounded backdrop-blur-xs" title="Video available">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="text-rose-400"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Video
+      <div className="relative z-10 flex-1 flex flex-col p-3 sm:p-3.5 pointer-events-none">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="text-[16px] sm:text-[17px] font-extrabold tracking-tight text-content leading-none truncate">{priceLabel(n)}</span>
+          {dropped && <span className="text-[12px] text-content-tertiary line-through truncate">{formatPrice(n.previousPrice!)}</span>}
+          {(n.isShop || n.verified) && (
+            <span className="ml-auto shrink-0 text-primary" title={n.isShop ? "Verified farm / shop" : "Verified seller"} aria-label={n.isShop ? "Verified farm or shop" : "Verified seller"}>
+              <svg viewBox="0 0 24 24" className="h-[17px] w-[17px]" aria-hidden="true"><path fill="currentColor" d="M12 2l2.4 2.1 3.2-.3.8 3.1 2.8 1.6-1.2 3 1.2 3-2.8 1.6-.8 3.1-3.2-.3L12 22l-2.4-2.1-3.2.3-.8-3.1L2.8 15.5l1.2-3-1.2-3 2.8-1.6.8-3.1 3.2.3z"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </span>
           )}
         </div>
-      </div>
 
-      {/* Product Information */}
-      <div className="relative z-10 flex-1 min-w-0 flex flex-col justify-between py-0.5 pointer-events-none">
-        <div>
-          {/* Price Header */}
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex flex-wrap items-baseline gap-1.5">
-              <span className="text-[17px] sm:text-[19px] font-bold text-slate-900 tracking-tight leading-none group-hover:text-primary transition-colors">
-                {priceLabel(n)}
-              </span>
-              {n.previousPrice != null && n.price != null && n.previousPrice > n.price && (
-                <span className="text-[11px] text-slate-400 line-through font-normal">
-                  {formatPrice(n.previousPrice)}
-                </span>
-              )}
-              {n.previousPrice != null && n.price != null && n.previousPrice > n.price && (
-                <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1 py-0.5 rounded leading-none">
-                  {formatPrice(n.previousPrice - n.price)} OFF
-                </span>
-              )}
-            </div>
-            <div className="shrink-0 flex items-center gap-1">
-              {n.isShop ? (
-                <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-800 text-[10px] font-semibold px-1.5 py-0.5 rounded border border-amber-200">
-                  Verified Shop
-                </span>
-              ) : n.verified ? (
-                <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-[10px] font-medium px-1.5 py-0.5 rounded border border-blue-100">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2L15 5.6L19 5L18.4 9.1L22 11.2L18.4 13.3L19 17.4L15 16.8L12 20.4L9 16.8L5 17.4L5.6 13.3L2 11.2L5.6 9.1L5 5L9 5.6L12 2Z" fill="#2563eb"/><path d="M8.5 11.5L11 14L16 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  Verified
-                </span>
-              ) : null}
-            </div>
-          </div>
+        <h3 className="mt-1.5 text-[14.5px] sm:text-sm font-medium text-content-secondary leading-snug line-clamp-2 group-hover:text-content transition-colors">
+          {n.title}
+        </h3>
 
-          {/* Title */}
-          <h3 className="text-[13.5px] sm:text-[14px] font-medium text-slate-700 line-clamp-2 leading-snug group-hover:text-primary transition-colors mt-1.5">
-            {n.title}
-          </h3>
+        {specItems.length > 0 && (
+          <p className="mt-1.5 text-[13px] font-semibold text-content truncate">{specItems.slice(0, 3).map((s) => s.replace(/\s*\([^)]*\)/, "")).join(" · ")}</p>
+        )}
 
-          {/* Headline specs */}
-          {specItems.length > 0 && (
-            <div className="flex items-center flex-wrap gap-x-2 gap-y-0.5 text-[11.5px] text-slate-500 font-normal mt-1.5">
-              {specItems.map((item, idx) => (
-                <React.Fragment key={idx}>
-                  {idx > 0 && <span className="text-slate-300">·</span>}
-                  <span>{item}</span>
-                </React.Fragment>
-              ))}
-            </div>
-          )}
-          {/* Location Row (Area & City) — Dedicated Full Width Line */}
-          <div className="flex items-center gap-1.5 text-[11.5px] sm:text-[12px] text-slate-500 mt-1.5 min-w-0">
-            <CardIcon name="pin" className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-            <span className="truncate text-slate-600 font-medium" title={n.city}>
-              {n.city}
-            </span>
-          </div>
-        </div>
-
-        {/* Footer: Date and Action */}
-        <div className="flex items-center justify-between gap-2 pt-1.5 mt-auto border-t border-slate-100">
-          <span suppressHydrationWarning className="text-[11px] text-slate-400 truncate">
-            {n.createdAt ? formatDate(n.createdAt) : ""}
-          </span>
-
-          <button
-            onClick={openChat}
-            disabled={chatBusy}
-            className="pointer-events-auto inline-flex items-center gap-1 rounded-md bg-slate-900 hover:bg-primary text-white font-semibold text-xs px-2.5 py-1 sm:px-3 sm:py-1.5 shadow-xs active:scale-95 transition-all disabled:opacity-60 shrink-0"
-          >
-            {chatBusy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CardIcon name="chat" className="h-3.5 w-3.5" />}
-            <span>Chat</span>
-          </button>
+        <div className="mt-auto pt-2.5 flex items-center gap-1 text-[12.5px] text-content-tertiary min-w-0">
+          <CardIcon name="pin" className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate" title={n.city}>{n.city}</span>
+          <span suppressHydrationWarning className="ml-auto shrink-0 pl-1">{n.createdAt ? formatDate(n.createdAt) : ""}</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** The standard responsive grid for listing cards. */
+export function ListingGrid({ ads, priorityCount = 0, className = "" }: { ads: AnyAd[]; priorityCount?: number; className?: string }) {
+  return (
+    <div className={cn("grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4", className)}>
+      {ads.map((ad, i) => <ListingCard key={ad._id} ad={ad} priority={i < priorityCount} />)}
     </div>
   );
 }

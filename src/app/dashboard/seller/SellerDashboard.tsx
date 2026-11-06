@@ -142,20 +142,20 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
           {user.verificationStatus === "pending" ? <Clock className="h-6 w-6 text-amber-500 shrink-0" /> : user.verificationStatus === "rejected" ? <AlertTriangle className="h-6 w-6 text-red-500 shrink-0" /> : <ShieldCheck className="h-6 w-6 text-blue-600 shrink-0" />}
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-content">{user.verificationStatus === "pending" ? "Verification under review" : user.verificationStatus === "rejected" ? "Verification rejected — please try again" : "Get verified — build buyer trust"}</p>
-            <p className="text-[11px] text-content-secondary">{user.verificationStatus === "pending" ? "You'll get the verified badge once approved." : user.verificationStatus === "rejected" ? (user.verificationDoc?.rejectionReason || "Please re-submit with clear pictures.") : "Add your CNIC (front & back) — get the verified badge on every listing."}</p>
+            <p className="text-[12px] text-content-secondary">{user.verificationStatus === "pending" ? "You'll get the verified badge once approved." : user.verificationStatus === "rejected" ? (user.verificationDoc?.rejectionReason || "Please re-submit with clear pictures.") : "Add your CNIC (front & back) — get the verified badge on every listing."}</p>
           </div>
           <ChevronRight className="h-4 w-4 text-content-tertiary shrink-0" />
         </Link>
       )}
 
       {/* Plan & usage */}
-      <div className="rounded-2xl border border-card-border bg-card p-4 mt-3">
+      <div className="rounded-2xl bg-card shadow-sm ring-1 ring-black/[0.03] p-4 mt-3">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Crown className={`h-5 w-5 ${plan.isFree ? "text-content-tertiary" : "text-amber-500"}`} />
             <div>
               <p className="text-sm font-bold text-content">{plan.isFree ? "Free plan" : `${plan.planName} plan`}</p>
-              {!plan.isFree && plan.endDate && <p className="text-[11px] text-content-tertiary">Valid till {new Date(plan.endDate).toLocaleDateString("en-PK", { day: "numeric", month: "short" })}</p>}
+              {!plan.isFree && plan.endDate && <p className="text-[12px] text-content-tertiary">Valid till {new Date(plan.endDate).toLocaleDateString("en-PK", { day: "numeric", month: "short" })}</p>}
             </div>
           </div>
           <Link href="/dashboard/plans" className="flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-bold px-3 h-9 rounded-lg"><Rocket className="h-3.5 w-3.5" /> {plan.isFree ? "Buy plan" : "Manage / upgrade"}</Link>
@@ -170,7 +170,7 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
             <span className="grid place-items-center h-9 w-9 rounded-full bg-white/15 shrink-0"><Sparkles className="h-4.5 w-4.5" /></span>
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-bold leading-tight">Reach up to 3x more buyers</span>
-              <span className="block text-[11px] text-white/85 leading-snug">Featured ads are shown first in search and on the home page.</span>
+              <span className="block text-[12px] text-white/85 leading-snug">Featured ads are shown first in search and on the home page.</span>
             </span>
             <ChevronRight className="h-4 w-4 shrink-0 text-white/80" />
           </Link>
@@ -188,10 +188,10 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
           { label: "Buyers in touch", value: totals.leads, icon: PhoneCall, hint: totals.views ? `${Math.round((totals.leads / totals.views) * 100)}% of views called, WhatsApped or chatted` : undefined },
           { label: "Saves", value: totals.favourites, icon: Heart },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl border border-card-border bg-card p-3.5 flex flex-col gap-1">
-            <div className="flex items-center justify-between"><span className="text-[11px] font-bold uppercase tracking-wide text-content-tertiary">{s.label}</span><s.icon className="h-4 w-4 text-primary" /></div>
+          <div key={s.label} className="rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-3.5 flex flex-col gap-1">
+            <div className="flex items-center justify-between"><span className="text-[12px] font-bold uppercase tracking-wide text-content-tertiary">{s.label}</span><s.icon className="h-4 w-4 text-primary" /></div>
             <span className="text-2xl font-bold text-content tabular-nums">{s.value.toLocaleString()}</span>
-            {s.hint && <span className="text-[10px] text-content-tertiary flex items-center gap-1"><TrendingUp className="h-3 w-3" />{s.hint}</span>}
+            {s.hint && <span className="text-[11px] text-content-tertiary flex items-center gap-1"><TrendingUp className="h-3 w-3" />{s.hint}</span>}
           </div>
         ))}
       </div>
@@ -215,7 +215,7 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
             const img = it.mainImage || it.galleryImages?.[0];
             const feat = isFeaturedNow(it);
             return (
-              <div key={it._id} className="rounded-xl border border-card-border bg-card p-2.5 flex gap-3">
+              <div key={it._id} className="rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-2.5 flex gap-3">
                 <Link href={`/ads/${it.slug}`} className="shrink-0 h-16 w-16 rounded-lg overflow-hidden bg-surface-secondary grid place-items-center relative">
                   {img ? <Image src={img} alt="" width={64} height={64} className="h-full w-full object-cover" /> : <Package className="h-6 w-6 text-content-tertiary" />}
                   {feat && <span className="absolute top-0 left-0 bg-secondary text-white text-[8px] font-bold px-1 rounded-br">TOP</span>}
@@ -223,10 +223,10 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
                 <div className="flex-1 min-w-0 flex flex-col gap-1">
                   <div className="flex items-start justify-between gap-2">
                     <Link href={`/ads/${it.slug}`} className="font-semibold text-sm text-content line-clamp-1 hover:text-primary">{it.name}</Link>
-                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${st.cls}`}>{st.label}</span>
+                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold ${st.cls}`}>{st.label}</span>
                   </div>
                   <span className="text-sm font-bold text-content">{it.price != null ? formatPrice(it.price) : "—"}</span>
-                  <div className="flex items-center gap-3 text-[11px] text-content-tertiary">
+                  <div className="flex items-center gap-3 text-[12px] text-content-tertiary">
                     <span className="flex items-center gap-1"><Radio className="h-3 w-3" />{it.impressions || 0}</span>
                     <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{it.clicks || 0}</span>
                     <span className="flex items-center gap-1" title="Calls, WhatsApp and chats"><PhoneCall className="h-3 w-3" />{leadsOf(it)}</span>
@@ -234,21 +234,21 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
                     <span suppressHydrationWarning className="ml-auto">{formatDate(it.createdAt)}</span>
                   </div>
                   {it.status === "approved" && it.expiresAt && expiry.days > 0 && (
-                    <span suppressHydrationWarning className={`text-[11px] ${daysLeft(it.expiresAt) <= 3 ? "font-bold text-amber-700" : "text-content-tertiary"}`}>
+                    <span suppressHydrationWarning className={`text-[12px] ${daysLeft(it.expiresAt) <= 3 ? "font-bold text-amber-700" : "text-content-tertiary"}`}>
                       {daysLeft(it.expiresAt) === 0 ? "Expires today" : `Expires in ${daysLeft(it.expiresAt)} day${daysLeft(it.expiresAt) === 1 ? "" : "s"}`}
                     </span>
                   )}
                   {it.status === "expired" && (
-                    <span suppressHydrationWarning className="text-[11px] font-semibold text-content-secondary">
+                    <span suppressHydrationWarning className="text-[12px] font-semibold text-content-secondary">
                       {canRenew(it, expiry) ? "Expired — buyers can't see it. Renew to put it back up." : "Expired. Post it again as a new ad."}
                     </span>
                   )}
                   {it.status === "rejected" && !!it.flagReasons?.length && (
-                    <span className="text-[11px] text-red-600">Not approved: {it.flagReasons[0]}. Edit the ad to fix it.</span>
+                    <span className="text-[12px] text-red-600">Not approved: {it.flagReasons[0]}. Edit the ad to fix it.</span>
                   )}
                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                     {it.status === "approved" && (feat ? (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-secondary/10 text-secondary-dark px-2 py-1 text-[11px] font-bold"><Zap className="h-3 w-3" /> Featured</span>
+                      <span className="inline-flex items-center gap-1 rounded-md bg-secondary/10 text-secondary-dark px-2 py-1 text-[12px] font-bold"><Zap className="h-3 w-3" /> Featured</span>
                     ) : (
                       <ActBtn onClick={() => boost(it._id)} icon={Rocket} label="Boost" loading={busy === it._id} highlight />
                     ))}
@@ -260,7 +260,7 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
                       <ActBtn onClick={() => patch(it._id, { status: "sold" })} icon={CheckCircle2} label="Mark sold" loading={busy === it._id} />
                     )}
                     <ActBtn onClick={() => setFlyerAd(it)} icon={Sparkles} label="Story Flyer" />
-                    <a href={withBasePath(`/ads/${it.slug}`)} className="inline-flex items-center gap-1 rounded-md border border-card-border px-2 py-1 text-[11px] font-semibold text-content-secondary hover:border-primary hover:text-primary"><ExternalLink className="h-3 w-3" /> View</a>
+                    <a href={withBasePath(`/ads/${it.slug}`)} className="inline-flex items-center gap-1 rounded-md border border-card-border px-2 py-1 text-[12px] font-semibold text-content-secondary hover:border-primary hover:text-primary"><ExternalLink className="h-3 w-3" /> View</a>
                     <ActBtn onClick={() => setConfirmDel(it._id)} icon={Trash2} label="Delete" danger />
                   </div>
                 </div>
@@ -308,7 +308,7 @@ export function SellerDashboard({ user, listings, plan, siteName, expiry = { day
 function Usage({ label, used, limit, pct }: { label: string; used: number; limit: number; pct: number }) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between text-[11px]"><span className="font-semibold text-content-secondary">{label}</span><span className="font-bold text-content tabular-nums">{used}/{limit}</span></div>
+      <div className="flex items-center justify-between text-[12px]"><span className="font-semibold text-content-secondary">{label}</span><span className="font-bold text-content tabular-nums">{used}/{limit}</span></div>
       <div className="h-2 rounded-full bg-surface-tertiary overflow-hidden"><div className={`h-full rounded-full ${pct >= 100 ? "bg-danger" : "bg-primary"}`} style={{ width: `${pct}%` }} /></div>
     </div>
   );
@@ -316,7 +316,7 @@ function Usage({ label, used, limit, pct }: { label: string; used: number; limit
 
 function ActBtn({ onClick, icon: Icon, label, danger, loading, highlight }: { onClick: () => void; icon: any; label: string; danger?: boolean; loading?: boolean; highlight?: boolean }) {
   return (
-    <button onClick={onClick} disabled={loading} className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
+    <button onClick={onClick} disabled={loading} className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[12px] font-semibold transition-colors ${
       highlight ? "border-secondary/40 bg-secondary/10 text-secondary-dark hover:bg-secondary hover:text-white" :
       danger ? "border-red-200 text-red-600 hover:bg-red-50" : "border-card-border text-content-secondary hover:border-primary hover:text-primary"}`}>
       {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Icon className="h-3 w-3" />} {label}

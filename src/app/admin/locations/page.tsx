@@ -141,10 +141,10 @@ export default function AdminLocationsPage() {
                 <MapPin className="h-4 w-4 text-primary shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-content text-sm">{c.name}</span>{(c as any).source === "user" && <span className="rounded-full bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 text-[10px] font-semibold" title="Added by a seller while posting — check the spelling or merge it">Added by seller</span>}
+                    <span className="font-bold text-content text-sm">{c.name}</span>{(c as any).source === "user" && <span className="rounded-full bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 text-[11px] font-semibold" title="Added by a seller while posting — check the spelling or merge it">Added by seller</span>}
                     {statusBadge(c.isActive)}
                   </div>
-                  <span className="text-[11px] text-content-tertiary">
+                  <span className="text-[12px] text-content-tertiary">
                     /{c.slug}{c.stateName ? ` · ${c.stateName}` : ""} · {c.areaCount} areas · {c.listingCount} ads
                   </span>
                 </div>
@@ -173,8 +173,8 @@ export default function AdminLocationsPage() {
                         <div key={a._id} className="flex items-center gap-3 py-2">
                           <Building2 className="h-3.5 w-3.5 text-content-tertiary shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <span className="text-sm text-content">{a.name}</span>{(a as any).source === "user" && <span className="ml-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 text-[10px] font-semibold" title="Added by a seller while posting">Added by seller</span>}
-                            <span className="text-[11px] text-content-tertiary ml-2">/{a.slug} · {a.listingCount} ads</span>
+                            <span className="text-sm text-content">{a.name}</span>{(a as any).source === "user" && <span className="ml-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 text-[11px] font-semibold" title="Added by a seller while posting">Added by seller</span>}
+                            <span className="text-[12px] text-content-tertiary ml-2">/{a.slug} · {a.listingCount} ads</span>
                           </div>
                           {statusBadge(a.isActive)}
                           <button onClick={() => setAreaModal({ cityId: c._id, area: a })} className="p-1 rounded text-content-secondary hover:text-content"><Pencil className="h-3.5 w-3.5" /></button>
@@ -216,7 +216,7 @@ export default function AdminLocationsPage() {
             <Field label="Latitude"><input className={inputCls} value={(areaModal.area as any).latitude ?? ""} onChange={(e) => setAreaModal({ ...areaModal, area: { ...areaModal.area, latitude: e.target.value as any } })} placeholder="e.g. 31.4737" /></Field>
             <Field label="Longitude"><input className={inputCls} value={(areaModal.area as any).longitude ?? ""} onChange={(e) => setAreaModal({ ...areaModal, area: { ...areaModal.area, longitude: e.target.value as any } })} placeholder="e.g. 74.3921" /></Field>
           </div>
-          <p className="text-[11px] text-content-tertiary -mt-1">Lat/Lng lets auto-detect route users to the nearest area.</p>
+          <p className="text-[12px] text-content-tertiary -mt-1">Lat/Lng lets auto-detect route users to the nearest area.</p>
           <Toggle label="Active" value={!!areaModal.area.isActive} onChange={(v) => setAreaModal({ ...areaModal, area: { ...areaModal.area, isActive: v } })} />
         </Modal>
       )}

@@ -55,7 +55,7 @@ export default async function ShopPage({ params }: { params: Promise<{ slug: str
         </div>
       )}
       {/* Profile header */}
-      <div className="rounded-lg sm:rounded-xl border border-card-border bg-card p-4 sm:p-5 flex items-start gap-4 shadow-xs">
+      <div className="rounded-lg sm:rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-4 sm:p-5 flex items-start gap-4 shadow-xs">
         <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-lg sm:rounded-xl bg-primary/10 text-primary grid place-items-center overflow-hidden shrink-0 font-semibold text-2xl border border-primary/20">
           {shop.shopLogo || shop.profileImage ? <Image src={shop.shopLogo || shop.profileImage} alt="" width={80} height={80} className="h-full w-full object-cover" /> : (name?.[0]?.toUpperCase() || "S")}
         </div>
@@ -93,7 +93,7 @@ export default async function ShopPage({ params }: { params: Promise<{ slug: str
       {/* Listings */}
       <h2 className="text-base sm:text-lg font-bold text-content mb-3 mt-6">Listings</h2>
       {listings.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">
           {listings.map((item: any) => <ListingCard key={item._id} ad={item} />)}
         </div>
       ) : (

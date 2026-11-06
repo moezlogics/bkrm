@@ -1,5 +1,6 @@
 "use client";
 
+import { SectionThumb } from "@/components/home/SectionThumb";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { askForPush } from "@/lib/push-client";
 import { useRouter } from "next/navigation";
@@ -35,10 +36,10 @@ export type EditInit = {
 };
 
 export function PostWizard({
-  tops, allCats, fields, cities, areas, defaultCity = "", defaultArea = "", maxPhotos = 12, edit,
+  tops, allCats, fields, cities, areas, defaultCity = "", defaultArea = "", maxPhotos = 12, edit, covers = {},
 }: {
   tops: Cat[]; allCats: Cat[]; fields: Field[]; cities: Loc[]; areas: Loc[];
-  defaultCity?: string; defaultArea?: string; maxPhotos?: number; edit?: EditInit;
+  defaultCity?: string; defaultArea?: string; maxPhotos?: number; edit?: EditInit; covers?: Record<string, string>;
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -350,7 +351,7 @@ export function PostWizard({
             <div className="mb-4 rounded-xl border border-primary/30 bg-primary/5 p-3 flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-content">Continue your unfinished ad?</p>
-                <p className="text-[11px] text-content-secondary truncate">{draft.title || "Draft saved on this device"}</p>
+                <p className="text-[12px] text-content-secondary truncate">{draft.title || "Draft saved on this device"}</p>
               </div>
               <button onClick={discardDraft} className="text-xs font-semibold text-content-tertiary px-2">Discard</button>
               <button onClick={restoreDraft} className="h-9 px-4 rounded-lg bg-primary text-white text-xs font-semibold">Continue</button>
@@ -368,18 +369,15 @@ export function PostWizard({
 
           {!top && (
             <>
-              <h2 className="text-lg font-bold text-content mb-1">What are you selling?</h2>
-              <p className="text-xs text-content-secondary mb-4">Choose a category — it takes about a minute to post.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                {tops.map((t) => {
-                  const Icon = categoryIcon(t.icon);
-                  return (
-                    <button key={t._id} onClick={() => pickTop(t)} className="flex items-center gap-3 rounded-xl border border-card-border bg-card p-4 hover:border-primary hover:shadow-sm active:scale-[0.98] transition-all text-left">
-                      <span className="grid place-items-center h-10 w-10 rounded-full bg-primary/10 text-primary shrink-0"><Icon className="h-5 w-5" /></span>
-                      <span className="text-sm font-semibold text-content">{t.name}</span>
-                    </button>
-                  );
-                })}
+              <h2 className="text-[22px] font-extrabold tracking-tight text-content mb-1">What are you selling?</h2>
+              <p className="text-[14.5px] text-content-secondary mb-5">Pick one — posting takes about a minute.</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {tops.map((t) => (
+                  <button key={t._id} onClick={() => pickTop(t)} className="card !rounded-2xl overflow-hidden text-left active:scale-[0.98] transition-transform">
+                    <SectionThumb src={covers[t.slug]} icon={t.icon} sizes="(max-width: 640px) 50vw, 200px" className="w-full aspect-[4/3]" />
+                    <span className="block px-3.5 py-3 text-[14.5px] font-bold text-content">{t.name}</span>
+                  </button>
+                ))}
               </div>
             </>
           )}
@@ -387,7 +385,7 @@ export function PostWizard({
           {top && isBrandTree(top) && (
             <div className="relative mb-3">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-content-tertiary" />
-              <input value={catQuery} onChange={(e) => setCatQuery(e.target.value)} placeholder={brand ? `Search ${brand} models` : `Search ${VERTICAL.brandWord.many}`} className="w-full h-11 pl-9 pr-3 rounded-xl border border-card-border bg-card text-sm outline-none focus:border-primary" />
+              <input value={catQuery} onChange={(e) => setCatQuery(e.target.value)} placeholder={brand ? `Search ${brand} models` : `Search ${VERTICAL.brandWord.many}`} className="w-full h-11 pl-9 pr-3 rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] text-sm outline-none focus:border-primary" />
             </div>
           )}
 
@@ -419,7 +417,7 @@ export function PostWizard({
           {top && !isBrandTree(top) && childrenOf(top._id).length > 0 && (
             <div className="grid grid-cols-2 gap-2.5">
               {childrenOf(top._id).map((c) => (
-                <button key={c._id} onClick={() => chooseSub(c)} className="rounded-xl border border-card-border bg-card p-4 text-sm font-semibold text-content hover:border-primary hover:shadow-sm text-left transition-all">{c.name}</button>
+                <button key={c._id} onClick={() => chooseSub(c)} className="rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] p-4 text-sm font-semibold text-content hover:border-primary hover:shadow-sm text-left transition-all">{c.name}</button>
               ))}
             </div>
           )}
@@ -437,8 +435,8 @@ export function PostWizard({
     <>
       <AppBar title={edit ? "Edit ad" : VERTICAL.copy.sellCta} subtitle={edit ? edit.title : "Step 2 of 2 · Details"} onBack={onBack} />
       <div className="max-w-2xl w-full mx-auto px-4 py-4 pb-32">
-        <button onClick={() => !edit && setPhase("category")} disabled={!!edit} className="flex items-center gap-2 text-sm mb-5 rounded-xl border border-card-border bg-card px-3 py-2.5 w-full text-left">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-content-tertiary shrink-0">Category</span>
+        <button onClick={() => !edit && setPhase("category")} disabled={!!edit} className="flex items-center gap-2 text-sm mb-5 rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] px-3 py-2.5 w-full text-left">
+          <span className="text-[12px] font-semibold uppercase tracking-wider text-content-tertiary shrink-0">Category</span>
           <span className="font-semibold text-content truncate">{catLabel}</span>
           {!edit && <span className="ml-auto text-xs text-primary font-semibold shrink-0">Change</span>}
         </button>
@@ -455,7 +453,7 @@ export function PostWizard({
                       <img src={p.url} alt="" className="w-full h-full object-cover" />
                       <button type="button" onClick={() => setPhotos((x) => x.filter((_, j) => j !== i))} className="absolute top-1 right-1 grid place-items-center h-6 w-6 rounded-full bg-black/60 text-white" aria-label="Remove photo"><X className="h-3.5 w-3.5" /></button>
                       {i === 0 ? (
-                        <span className="absolute bottom-0 inset-x-0 bg-primary text-white text-[10px] font-semibold text-center py-0.5">Cover</span>
+                        <span className="absolute bottom-0 inset-x-0 bg-primary text-white text-[11px] font-semibold text-center py-0.5">Cover</span>
                       ) : (
                         <div className="absolute bottom-1 inset-x-1 flex items-center justify-between">
                           <button type="button" onClick={() => move(i, -1)} className="grid place-items-center h-6 w-6 rounded-full bg-black/55 text-white" aria-label="Move left"><ArrowLeft className="h-3.5 w-3.5" /></button>
@@ -476,13 +474,13 @@ export function PostWizard({
               ))}
               {photos.length < maxPhotos && (
                 <button type="button" onClick={() => fileRef.current?.click()} className="aspect-square rounded-xl border-2 border-dashed border-card-border grid place-items-center text-content-tertiary hover:border-primary hover:text-primary transition-colors bg-card">
-                  <span className="flex flex-col items-center gap-1"><ImagePlus className="h-6 w-6" /><span className="text-[11px] font-semibold">Add photos</span></span>
+                  <span className="flex flex-col items-center gap-1"><ImagePlus className="h-6 w-6" /><span className="text-[12px] font-semibold">Add photos</span></span>
                 </button>
               )}
             </div>
             <div className="flex items-center gap-3">
               <button type="button" onClick={() => setLibrary(true)} className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary"><Images className="h-4 w-4" /> Choose from my uploads</button>
-              <span className="text-[11px] text-content-tertiary">{readyPhotos.length}/{maxPhotos}</span>
+              <span className="text-[12px] text-content-tertiary">{readyPhotos.length}/{maxPhotos}</span>
             </div>
             <input ref={fileRef} type="file" accept="image/*,.heic,.heif" multiple hidden onChange={(e) => addFiles(e.target.files)} />
             <MediaPicker open={library} onClose={() => setLibrary(false)} multiple max={Math.max(1, maxPhotos - photos.length)} folder="listings" title="Your photos"
@@ -575,7 +573,7 @@ export function PostWizard({
           {/* Title + description */}
           <Section k="title" title="Ad title" required hint={VERTICAL.copy.titleHint}>
             <input value={title} onChange={(e) => { setTitle(e.target.value); setTitleTouched(true); setErrors((x) => ({ ...x, title: "" })); }} maxLength={90} placeholder={VERTICAL.copy.titlePlaceholder} className={inputCls(!!errors.title)} />
-            <div className="flex justify-between"><Err k="title" /><span className="text-[11px] text-content-tertiary ml-auto">{title.length}/90</span></div>
+            <div className="flex justify-between"><Err k="title" /><span className="text-[12px] text-content-tertiary ml-auto">{title.length}/90</span></div>
           </Section>
           <Section k="description" title="Description" hint={VERTICAL.copy.descriptionPlaceholder}>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={5} maxLength={4000} placeholder="Describe it honestly — buyers trust detailed ads." className={`${inputCls(!!errors.description)} h-auto py-3 resize-none`} />
@@ -585,7 +583,7 @@ export function PostWizard({
                 {contactFlag.phone ? "Please don't put a phone number here — add it in Contact number below. It's only shown to logged-in buyers." : contactFlag.url ? "Links aren't allowed in the title or description." : "Email addresses aren't allowed in the title or description."}
               </p>
             )}
-            <div className="flex justify-between"><Err k="description" /><span className="text-[11px] text-content-tertiary ml-auto">{description.length}/4000</span></div>
+            <div className="flex justify-between"><Err k="description" /><span className="text-[12px] text-content-tertiary ml-auto">{description.length}/4000</span></div>
           </Section>
 
           {/* Price */}
@@ -609,7 +607,7 @@ export function PostWizard({
                 <span className="flex items-center gap-1 text-red-600 font-bold">
                   <Flame className="h-4 w-4" /> Mark as Urgent Sale
                 </span>
-                <span className="text-xs text-content-tertiary font-normal">(Displays 🔥 URGENT tag on cards & ad page)</span>
+                <span className="text-xs text-content-tertiary font-normal">(Shows an Urgent tag on the card and the ad page)</span>
               </label>
             </div>
             <Err k="price" />
@@ -641,7 +639,7 @@ export function PostWizard({
           <button onClick={submit} disabled={submitting} className="w-full h-12 rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg shadow-primary/25 active:scale-[0.98] transition-all disabled:opacity-60">
             {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Check className="h-5 w-5" /> {edit ? "Save changes" : "Post ad"}</>}
           </button>
-          {uploading && <p className="text-[11px] text-center text-content-tertiary mt-1">Photos are uploading…</p>}
+          {uploading && <p className="text-[12px] text-center text-content-tertiary mt-1">Photos are uploading…</p>}
         </div>
       </div>
     </>
@@ -656,7 +654,7 @@ function Section({ k, title, hint, required, children }: { k: string; title: str
     <div data-field={k} className="flex flex-col gap-2 scroll-mt-20">
       <div>
         <label className="text-sm font-semibold text-content">{title}{required && <span className="text-primary"> *</span>}</label>
-        {hint && <p className="text-[11px] text-content-tertiary mt-0.5">{hint}</p>}
+        {hint && <p className="text-[12px] text-content-tertiary mt-0.5">{hint}</p>}
       </div>
       {children}
     </div>
@@ -726,14 +724,14 @@ function LocationFields({ cities, areas, city, area, onCity, onArea, onGps }: {
 
   return (
     <div className="flex flex-col gap-2.5">
-      <button type="button" onClick={onGps} className="self-start inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-card-border bg-card text-xs font-semibold text-primary hover:border-primary">
+      <button type="button" onClick={onGps} className="self-start inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-card shadow-sm ring-1 ring-black/[0.03] text-xs font-semibold text-primary hover:border-primary">
         <LocateFixed className="h-4 w-4" /> Use my current location
       </button>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {newCity ? (
           <div className="flex flex-col gap-1">
             <input value={city} onChange={(e) => onCity(e.target.value)} placeholder="Type your city" maxLength={40} className={sel} autoFocus />
-            <button type="button" onClick={() => { setNewCity(false); onCity(""); }} className="self-start text-[11px] font-semibold text-content-tertiary hover:text-primary">Choose from the list instead</button>
+            <button type="button" onClick={() => { setNewCity(false); onCity(""); }} className="self-start text-[12px] font-semibold text-content-tertiary hover:text-primary">Choose from the list instead</button>
           </div>
         ) : (
           <select value={known?.name || ""} onChange={(e) => { if (e.target.value === "__new") { setNewCity(true); onCity(""); setNewArea(true); } else { onCity(e.target.value); setNewArea(false); } }} className={sel}>
@@ -746,7 +744,7 @@ function LocationFields({ cities, areas, city, area, onCity, onArea, onGps }: {
         {newCity || newArea || (known && !areaOpts.length) ? (
           <div className="flex flex-col gap-1">
             <input value={area} onChange={(e) => onArea(e.target.value)} placeholder="Area / neighbourhood (optional)" maxLength={40} className={sel} />
-            {!newCity && areaOpts.length > 0 && <button type="button" onClick={() => { setNewArea(false); onArea(""); }} className="self-start text-[11px] font-semibold text-content-tertiary hover:text-primary">Choose from the list instead</button>}
+            {!newCity && areaOpts.length > 0 && <button type="button" onClick={() => { setNewArea(false); onArea(""); }} className="self-start text-[12px] font-semibold text-content-tertiary hover:text-primary">Choose from the list instead</button>}
           </div>
         ) : (
           <select value={areaKnown ? areaOpts.find((a) => a.name.toLowerCase() === area.toLowerCase())?.name : ""} onChange={(e) => { if (e.target.value === "__new") { setNewArea(true); onArea(""); } else onArea(e.target.value); }} disabled={!known} className={`${sel} disabled:opacity-50`}>
@@ -756,7 +754,7 @@ function LocationFields({ cities, areas, city, area, onCity, onArea, onGps }: {
           </select>
         )}
       </div>
-      {(newCity || newArea) && <p className="text-[11px] text-content-tertiary">New places are added to our list, so other people in your area can find your ad.</p>}
+      {(newCity || newArea) && <p className="text-[12px] text-content-tertiary">New places are added to our list, so other people in your area can find your ad.</p>}
     </div>
   );
 }
@@ -771,7 +769,7 @@ function BrandModelPicker({ title, options, onPick, newValue, setNewValue, onNew
       {options.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {options.map((c) => (
-            <button key={c._id} onClick={() => onPick(c)} className="flex items-center justify-between rounded-xl border border-card-border bg-card px-3.5 py-3 text-sm font-semibold text-content hover:border-primary active:scale-[0.98] transition-all text-left">
+            <button key={c._id} onClick={() => onPick(c)} className="flex items-center justify-between rounded-xl bg-card shadow-sm ring-1 ring-black/[0.03] px-3.5 py-3 text-sm font-semibold text-content hover:border-primary active:scale-[0.98] transition-all text-left">
               <span className="truncate">{label(c)}</span> <ChevronRight className="h-4 w-4 text-content-tertiary shrink-0" />
             </button>
           ))}

@@ -191,14 +191,19 @@ export async function archiveAreaFacet(r: ArchiveScope, counts: ScopeCounts) {
  * Empty here? The closest matching ads anywhere (for an area that's the rest
  * of its city first, then nearby cities) — never a dead end.
  */
-export async function archiveFallback(r: ArchiveScope, q: string, ref: NonNullable<ArchiveRef>, counts: ScopeCounts) {
+/**
+ * Nearest ads around a place, same category (and search words). `exclude`
+ * leaves out the scope already shown, so a thin page can be topped up with
+ * what is closest outside it.
+ */
+export async function archiveFallback(r: ArchiveScope, q: string, ref: NonNullable<ArchiveRef>, counts: ScopeCounts, exclude: Record<string, unknown> = {}, limit = ARCHIVE_PAGE_SIZE) {
   const tokens = q ? tokensOf(q) : [];
   const text = tokens.length ? await keywordMatch(tokens) : {};
   const wide = r.category ? { allCategoryIds: String(r.category._id) } : {};
   return nearestListings({
     point: ref.point,
-    match: { ...wide, ...text },
-    limit: ARCHIVE_PAGE_SIZE,
+    match: { ...wide, ...text, ...exclude },
+    limit,
     // Without search words we know the national size; with them, assume sparse.
     sizeHint: tokens.length ? 0 : countIn(counts, { catId: r.category ? String(r.category._id) : null }),
   });

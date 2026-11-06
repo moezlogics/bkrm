@@ -70,13 +70,13 @@ export function AdvanceWarning({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex items-start gap-2.5 rounded-lg border-l-4 border-l-amber-500 border border-slate-200 bg-amber-50/90 p-3 text-xs sm:text-sm text-slate-800 shadow-xs",
+        "flex items-start gap-2.5 rounded-2xl bg-amber-50 p-3.5 text-[13.5px] text-amber-950/80",
         className
       )}
     >
-      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+      <ShieldCheck className="mt-px h-4 w-4 shrink-0 text-amber-600" />
       <p className="leading-snug">
-        <strong className="text-amber-900 font-bold">Safety First:</strong>{" "}
+        <strong className="text-amber-950 font-bold">Stay safe:</strong>{" "}
         {VERTICAL.copy.safetyNote || `Never send advance or token payments. Always meet in a public place and inspect the ${VERTICAL.noun.one} and its documents before paying.`}
       </p>
     </div>

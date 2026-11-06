@@ -88,7 +88,7 @@ export default function AdminHomepagePage() {
               <LayoutGrid className="h-4 w-4 text-primary shrink-0" />
               <div className="flex-1 min-w-0">
                 <span className="font-bold text-content text-sm">{s.title}</span>
-                <span className="text-[11px] text-content-tertiary ml-2">
+                <span className="text-[12px] text-content-tertiary ml-2">
                   filter: {s.filter || "recent"}{s.value ? `=${s.value}` : ""} · seq {s.sequence}
                 </span>
               </div>
